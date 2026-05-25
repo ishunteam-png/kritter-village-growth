@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>India Village Economic Growth Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    :root {
+      --navy:#021B2C; --blue:#065A82; --teal:#0D9488; --mint:#4ECDC4;
+      --light:#F0F7FA; --slate:#475569; --border:#E2E8F0; --white:#FFFFFF;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--light);color:#1E293B;min-height:100vh;}
+    .header{background:var(--navy);border-bottom:3px solid var(--teal);}
+    .header-inner{max-width:1400px;margin:0 auto;padding:28px 32px 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .header h1{font-size:1.75rem;font-weight:700;color:#fff;line-height:1.2;}
+    .header h1 span{color:var(--mint);}
+    .header p{font-size:.85rem;color:#94A3B8;margin-top:4px;}
+    .header-links{display:flex;gap:12px;flex-wrap:wrap;}
+    .header-links a{font-size:.78rem;font-weight:500;padding:6px 14px;border-radius:6px;text-decoration:none;transition:opacity .15s;}
+    .header-links a:hover{opacity:.8;}
+    .btn-teal{background:var(--teal);color:#fff;}
+    .btn-ghost{background:transparent;color:#94A3B8;border:1px solid #334155;}
+    .kpi-bar{background:#fff;border-bottom:1px solid var(--border);}
+    .kpi-inner{max-width:1400px;margin:0 auto;padding:0 32px;display:flex;}
+    .kpi{flex:1;padding:20px 24px;border-right:1px solid var(--border);text-align:center;}
+    .kpi:last-child{border-right:none;}
+    .kpi-val{font-size:1.6rem;font-weight:700;color:var(--teal);}
+    .kpi-lbl{font-size:.7rem;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+    .nav-wrap{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+    .nav-inner{max-width:1400px;margin:0 auto;padding:0 32px;display:flex;gap:4px;overflow-x:auto;}
+    .tab-btn{padding:14px 20px;font-size:.85rem;font-weight:500;color:var(--slate);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+    .tab-btn:hover{color:var(--teal);}
+    .tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+    .content{max-width:1400px;margin:0 auto;padding:28px 32px 48px;}
+    .tab-pane{display:none;}
+    .tab-pane.active{display:block;}
+    .section-title{font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+    .card{background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden;margin-bottom:24px;}
+    .card-body{padding:20px;}
+    .table-wrap{overflow-x:auto;}
+    #villages-table{width:100%!important;font-size:.83rem;border-collapse:collapse;}
+    #villages-table thead th{background:var(--navy)!important;color:#fff!important;padding:10px 12px!important;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;border:none!important;}
+    #villages-table tbody tr:nth-child(even){background:#F8FAFC;}
+    #villages-table tbody tr:hover{background:#EFF6FF;}
+    #villages-table tbody td{padding:9px 12px!important;border-bottom:1px solid var(--border)!important;border-top:none!important;}
+    .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-weight:700;font-size:.75rem;background:var(--teal);color:#fff;}
+    .rank-badge.gold{background:#D97706;}
+    .rank-badge.silver{background:#6B7280;}
+    .rank-badge.bronze{background:#92400E;}
+    .growth-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:600;background:#DCFCE7;color:#15803D;}
+    .score-bar-wrap{display:flex;align-items:center;gap:8px;}
+    .score-bar{flex:1;height:6px;border-radius:3px;background:var(--border);max-width:80px;overflow:hidden;}
+    .score-bar-fill{height:100%;background:var(--teal);border-radius:3px;}
+    .score-num{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;color:var(--blue);min-width:32px;}
+    .dataTables_wrapper .dataTables_filter input{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.83rem;outline:none;}
+    .dataTables_wrapper .dataTables_filter input:focus{border-color:var(--teal);}
+    .dataTables_wrapper .dataTables_length select{border:1px solid var(--border);border-radius:6px;padding:4px 8px;}
+    .dataTables_wrapper .dataTables_info{font-size:.78rem;color:var(--slate);}
+    .dataTables_paginate .paginate_button{border-radius:4px!important;padding:4px 10px!important;font-size:.8rem!important;}
+    .dataTables_paginate .paginate_button.current{background:var(--teal)!important;border-color:var(--teal)!important;color:#fff!important;}
+    .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center;}
+    .filter-bar span{font-size:.8rem;font-weight:600;color:var(--slate);}
+    .state-pill{padding:4px 12px;border-radius:99px;font-size:.75rem;font-weight:500;border:1px solid var(--border);background:#fff;cursor:pointer;transition:all .15s;color:var(--slate);}
+    .state-pill:hover{border-color:var(--teal);color:var(--teal);}
+    .state-pill.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+    .chart-frame{width:100%;height:580px;border:none;border-radius:8px;display:block;}
+    .map-frame{width:100%;height:640px;border:none;border-radius:10px;display:block;}
+    .method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:24px;}
+    .method-card{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .method-card-top{height:5px;}
+    .method-card-body{padding:16px 18px;}
+    .method-card h3{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+    .method-card p{font-size:.82rem;color:var(--slate);line-height:1.55;}
+    .method-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+    .method-table th{background:var(--navy);color:#fff;padding:8px 12px;font-weight:600;text-align:left;}
+    .method-table td{padding:8px 12px;border-bottom:1px solid var(--border);}
+    .method-table tr:last-child td{border-bottom:none;}
+    .method-table tr:nth-child(even) td{background:#F8FAFC;}
+    .warn-box{background:#FEF3C7;border:1px solid #FCD34D;border-radius:8px;padding:12px 16px;font-size:.82rem;color:#92400E;margin-bottom:20px;line-height:1.6;}
+    .loading{text-align:center;padding:60px 20px;color:var(--slate);font-size:.9rem;}
+    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    footer{background:var(--navy);color:#64748B;text-align:center;padding:24px 32px;font-size:.78rem;line-height:1.7;}
+    footer a{color:var(--mint);text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>India Village Economic Growth <span>Intelligence</span></h1>
+      <p>Satellite-derived signals &middot; 255,586 villages scored &middot; 2019&ndash;2024 &middot; Kritter Software Technologies</p>
+    </div>
+    <div class="header-links">
+      <a class="btn-teal" href="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/top_100_villages.csv" download>&#11015; Download CSV</a>
+      <a class="btn-ghost" href="https://github.com/ishunteam-png/kritter-village-growth" target="_blank">GitHub &#8594;</a>
+      <a class="btn-ghost" href="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/map.html" target="_blank">Full Map &#8594;</a>
+    </div>
+  </div>
+</div>
+
+<div class="kpi-bar">
+  <div class="kpi-inner">
+    <div class="kpi"><div class="kpi-val">255K+</div><div class="kpi-lbl">Villages Scored</div></div>
+    <div class="kpi"><div class="kpi-val">100</div><div class="kpi-lbl">Top Shortlisted</div></div>
+    <div class="kpi"><div class="kpi-val">6</div><div class="kpi-lbl">Years of Data</div></div>
+    <div class="kpi"><div class="kpi-val">8</div><div class="kpi-lbl">Data Signals</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-states">16</div><div class="kpi-lbl">States</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-growth">&#8212;</div><div class="kpi-lbl">Median NTL Growth</div></div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-inner">
+    <button class="tab-btn active" onclick="showTab('overview',this)">&#128506; Overview</button>
+    <button class="tab-btn"        onclick="showTab('table',this)">&#128203; Top 100 Shortlist</button>
+    <button class="tab-btn"        onclick="showTab('charts',this)">&#128202; Charts</button>
+    <button class="tab-btn"        onclick="showTab('forecast',this)">&#128200; Trends &amp; Archetypes</button>
+    <button class="tab-btn"        onclick="showTab('validation',this)">&#9989; Validation</button>
+    <button class="tab-btn"        onclick="showTab('methodology',this)">&#128300; Methodology</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Overview -->
+  <div id="tab-overview" class="tab-pane active">
+    <div class="section-title">Interactive Map &#8212; Top 100 Villages</div>
+    <div class="card">
+      <div class="card-body" style="padding:0">
+        <iframe class="map-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/map.html"></iframe>
+      </div>
+    </div>
+    <div class="section-title">Score Breakdown by Signal &#8212; Top 20 Villages</div>
+    <div class="card">
+      <div class="card-body" style="padding:0">
+        <iframe class="chart-frame" style="height:620px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_score_breakdown.html"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top 100 Table -->
+  <div id="tab-table" class="tab-pane">
+    <div class="warn-box">
+      &#9888; <strong>Sentinel-2 NDBI and Sentinel-1 SAR signals stalled</strong> during this pipeline run (monsoon STAC gaps).
+      Effective composite used 3 of 8 signals: ML 53% &middot; NTL 27% &middot; GHSL 20% (weights auto-redistributed).
+      <br><strong>Score compression:</strong> Top ~50 villages score 85.07&ndash;85.08 (&lt;0.01 pt spread) &mdash; interpret as a <em>statistical shortlist</em>, not a strict ranking. Rank order within the top tier is not statistically meaningful.
+      <br><strong>ML label note:</strong> Self-supervised labels derived from same signals as features &mdash; AUC 0.87 measures self-consistency, not external validation accuracy.
+      <br><strong>Name note:</strong> 30 of 100 villages are unnamed OSM nodes (shown as &#8212; district). Name lookup via Overpass API is a documented next step.
+    </div>
+    <div class="section-title">Top 100 Shortlist &#8212; Satellite-Confirmed High-Growth Villages</div>
+    <div class="filter-bar">
+      <span>Filter by state:</span>
+      <button class="state-pill active" onclick="filterState(this,'')">All</button>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div id="table-loading" class="loading"><div class="spinner"></div>Loading village data&#8230;</div>
+        <div class="table-wrap" style="display:none" id="table-wrap">
+          <table id="villages-table" class="display">
+            <thead><tr>
+              <th>Rank</th><th>Village</th><th>State</th><th>District</th>
+              <th>Score</th><th>NTL Growth</th><th>ML Prob</th><th>Confirmed</th>
+            </tr></thead>
+            <tbody id="villages-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div id="tab-charts" class="tab-pane">
+    <div class="section-title">Score Component Breakdown &#8212; Top 20 Villages</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_score_breakdown.html"></iframe>
+    </div></div>
+    <div class="section-title">Top 20 &#8212; NTL Time Series 2019&ndash;2024</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" style="height:620px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_top20.html"></iframe>
+    </div></div>
+    <div class="section-title">State Distribution &#8212; Top 100 vs. India</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_state_dist.html"></iframe>
+    </div></div>
+    <div class="section-title">SHAP Feature Attribution</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_shap.html"></iframe>
+    </div></div>
+    <div class="section-title">Score vs. Signal Coverage (Scatter)</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_scatter.html"></iframe>
+    </div></div>
+    <div class="section-title">Dark-track Villages (NTL &lt; 0.1)</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_dark_track.html"></iframe>
+    </div></div>
+  </div>
+
+  <!-- Forecast / Archetypes -->
+  <div id="tab-forecast" class="tab-pane">
+    <div class="section-title">Top 20 Villages &#8212; NTL Time Series</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" style="height:620px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_top20.html"></iframe>
+    </div></div>
+    <div class="section-title">Growth Archetypes &#8212; K-means (k=6)</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" style="height:640px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_archetypes.html"></iframe>
+    </div></div>
+  </div>
+
+  <!-- Validation -->
+  <div id="tab-validation" class="tab-pane">
+    <div class="section-title">Validation &#8212; Signal Correlation &amp; Bootstrap Rank Stability</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <iframe class="chart-frame" style="height:640px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_validation.html"></iframe>
+    </div></div>
+  </div>
+
+  <!-- Methodology -->
+  <div id="tab-methodology" class="tab-pane">
+    <div class="section-title">Data Sources (8 Signals)</div>
+    <div class="card"><div class="card-body" style="padding:0">
+      <table class="method-table">
+        <thead><tr><th>#</th><th>Source</th><th>Signal</th><th>Resolution</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>NASA VIIRS VNP46A4 v2</td><td>Annual nighttime light radiance</td><td>500 m &middot; 2019&ndash;2024</td><td>&#9989; Active</td></tr>
+          <tr><td>2</td><td>ESA WorldCover</td><td>Built-up area fraction (class 50)</td><td>10 m &middot; 2020&ndash;2021</td><td>&#9989; Active</td></tr>
+          <tr><td>3</td><td>Sentinel-2 (Element84 STAC)</td><td>NDBI + NDVI annual composites</td><td>100 m &middot; 2019&ndash;2024</td><td>&#9888; Stalled (monsoon STAC gaps)</td></tr>
+          <tr><td>4</td><td>Sentinel-1 RTC (Element84 STAC)</td><td>SAR VV backscatter</td><td>100 m &middot; 2019&ndash;2024</td><td>&#9888; Stalled (monsoon STAC gaps)</td></tr>
+          <tr><td>5</td><td>EU JRC GHSL R2023A</td><td>Built-up surface fraction</td><td>100 m &middot; 2015/2020</td><td>&#9989; Active</td></tr>
+          <tr><td>6</td><td>WorldPop</td><td>Population count</td><td>100 m &middot; 2019/2020</td><td>&#9989; Supporting only</td></tr>
+          <tr><td>7</td><td>OSM + Ohsome API</td><td>Mobile tower density</td><td>Point &middot; 2019/2024</td><td>&#9989; Active</td></tr>
+          <tr><td>8</td><td>Natural Earth + OSM</td><td>Distance to nearest city/highway</td><td>Computed</td><td>&#9989; Active</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <div class="section-title">Scoring Model &#8212; 3-Stage Pipeline</div>
+    <div class="method-grid">
+      <div class="method-card">
+        <div class="method-card-top" style="background:#065A82"></div>
+        <div class="method-card-body">
+          <h3>Stage 1 &#8212; Feature Engineering</h3>
+          <p>BFAST-style piecewise regression on 6-year NTL series &rarr; breakpoint year, pre/post slope, acceleration. Spatial lag from 10 nearest neighbours. Signal agreement penalty for contradictory signals.</p>
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-card-top" style="background:#1C7293"></div>
+        <div class="method-card-body">
+          <h3>Stage 2 &#8212; Self-supervised Labelling</h3>
+          <p>Label = 1 if village is top-10% on &ge;2 primary signals simultaneously (~28K positives from 255K villages). <strong>Note:</strong> labels derived from same features as final composite &mdash; AUC 0.87 measures self-consistency, not external ground truth.</p>
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-card-top" style="background:#0D9488"></div>
+        <div class="method-card-body">
+          <h3>Stage 3 &#8212; GradientBoostingClassifier</h3>
+          <p>200 estimators &middot; max_depth=4 &middot; learning_rate=0.05 &middot; subsample=0.8. Output: ml_growth_prob (0&ndash;100). AUC &asymp; 0.87 (in-sample, self-supervised).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Composite Weights (Actual &#8212; this run)</div>
+    <div class="warn-box">
+      &#9888; Intended weights: 40% ML + 20% NTL + 15% NDBI + 15% GHSL + 10% SAR.
+      S2/SAR stalled &rarr; auto-redistributed to: <strong>53% ML &middot; 27% NTL &middot; 20% GHSL</strong>.
+      Score compression: all top-50 villages score 85.07&ndash;85.08 &mdash; treat as a shortlist, not a strict ranking.
+    </div>
+    <div class="card"><div class="card-body">
+      <div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-weight:600;width:210px;font-size:.85rem">ML Growth Probability</div>
+          <div style="flex:1;height:12px;border-radius:6px;background:#E2E8F0;overflow:hidden"><div style="width:53%;height:100%;background:#0D9488;border-radius:6px"></div></div>
+          <div style="font-weight:700;color:#0D9488;width:44px">53%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-weight:600;width:210px;font-size:.85rem">NTL Growth (log-scaled)</div>
+          <div style="flex:1;height:12px;border-radius:6px;background:#E2E8F0;overflow:hidden"><div style="width:27%;height:100%;background:#065A82;border-radius:6px"></div></div>
+          <div style="font-weight:700;color:#065A82;width:44px">27%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-weight:600;width:210px;font-size:.85rem">GHSL Built-up Change</div>
+          <div style="flex:1;height:12px;border-radius:6px;background:#E2E8F0;overflow:hidden"><div style="width:20%;height:100%;background:#1C7293;border-radius:6px"></div></div>
+          <div style="font-weight:700;color:#1C7293;width:44px">20%</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<footer>
+  <div><strong style="color:#94A3B8">India Village Economic Growth Intelligence</strong> &middot; Kritter Software Technologies Assignment &middot; May 2026</div>
+  <div style="margin-top:6px">
+    Data: NASA VIIRS &middot; ESA WorldCover &middot; EU JRC GHSL &middot; WorldPop &middot; OpenStreetMap &middot; Natural Earth &nbsp;|&nbsp;
+    <a href="https://github.com/ishunteam-png/kritter-village-growth">GitHub</a> &nbsp;|&nbsp;
+    <a href="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/top_100_villages.csv">Download CSV</a>
+  </div>
+</footer>
+
+<script>
+const S3 = "https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/";
+let allData = [], dtTable = null;
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'table') {
+    if (allData.length === 0) loadCSV();
+    else if (dtTable === null) { buildStateFilter(allData); renderTable(allData); }
+    else setTimeout(function(){ dtTable.columns.adjust().draw(); }, 10);
+  }
+}
+
+function loadCSV() {
+  Papa.parse(S3 + "top_100_villages.csv", {
+    download: true, header: true, skipEmptyLines: true,
+    complete: function(r) {
+      allData = r.data;
+      buildStateFilter(allData);
+      renderTable(allData);
+      updateKPIs(allData);
+    },
+    error: function() {
+      document.getElementById('table-loading').innerHTML =
+        '<p style="color:#DC2626;padding:20px">Failed to load data from S3. Check CORS settings.</p>';
+    }
+  });
+}
+
+function updateKPIs(data) {
+  const growths = data.map(r => parseFloat(r.ntl_growth_pct)).filter(v => !isNaN(v)).sort((a,b)=>a-b);
+  const median = growths[Math.floor(growths.length / 2)];
+  if (median) document.getElementById('kpi-growth').textContent = Math.round(median).toLocaleString() + '%';
+  const states = new Set(data.map(r => r.state_name).filter(Boolean));
+  document.getElementById('kpi-states').textContent = states.size;
+}
+
+function buildStateFilter(data) {
+  document.querySelectorAll('.state-pill:not([onclick*="\'\'"])').forEach(p => p.remove());
+  const counts = {};
+  data.forEach(r => { if (r.state_name) counts[r.state_name] = (counts[r.state_name]||0)+1; });
+  const bar = document.querySelector('.filter-bar');
+  Object.entries(counts).sort((a,b)=>b[1]-a[1]).forEach(function([state, cnt]) {
+    const btn = document.createElement('button');
+    btn.className = 'state-pill';
+    btn.textContent = state + ' (' + cnt + ')';
+    btn.onclick = function() { filterState(this, state); };
+    bar.appendChild(btn);
+  });
+}
+
+function filterState(btn, state) {
+  document.querySelectorAll('.state-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  if (dtTable) dtTable.column(2).search(state === '' ? '' : '^' + state + '$', true, false).draw();
+}
+
+function renderTable(data) {
+  if (dtTable) { dtTable.destroy(); dtTable = null; }
+  const tbody = document.getElementById('villages-body');
+  tbody.innerHTML = '';
+  data.forEach(function(r) {
+    const rank = parseInt(r.rank) || 0;
+    const score = parseFloat(r.composite_score) || 0;
+    const growth = parseFloat(r.ntl_growth_pct);
+    const ml = parseFloat(r.ml_growth_prob);
+    let bc = 'rank-badge';
+    if (rank === 1) bc += ' gold';
+    else if (rank === 2) bc += ' silver';
+    else if (rank === 3) bc += ' bronze';
+    const nameDisplay = (!r.village_name || /^Village_\d+$/.test(r.village_name))
+      ? '<em style="color:#94a3b8">&#8212; (' + (r.district_name || '?') + ')</em>'
+      : r.village_name;
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><span class="' + bc + '">' + rank + '</span></td>' +
+      '<td><strong>' + nameDisplay + '</strong></td>' +
+      '<td>' + (r.state_name || '&#8212;') + '</td>' +
+      '<td>' + (r.district_name || '&#8212;') + '</td>' +
+      '<td><div class="score-bar-wrap"><span class="score-num">' + score.toFixed(1) + '</span>' +
+        '<div class="score-bar"><div class="score-bar-fill" style="width:' + score + '%"></div></div></div></td>' +
+      '<td><span class="growth-pill">' + (isNaN(growth) ? '&#8212;' : Math.round(growth).toLocaleString() + '%') + '</span></td>' +
+      '<td>' + (isNaN(ml) ? '&#8212;' : ml.toFixed(1)) + '</td>' +
+      '<td style="text-align:center">' + ((r.multi_signal_confirmed === 'True' || r.multi_signal_confirmed === true) ? '&#9989;' : '&#8212;') + '</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('table-loading').style.display = 'none';
+  document.getElementById('table-wrap').style.display = 'block';
+  dtTable = $('#villages-table').DataTable({
+    pageLength: 25, lengthMenu: [10, 25, 50, 100],
+    order: [[0, 'asc']], autoWidth: false,
+    columnDefs: [{ orderable: false, targets: [7] }],
+    language: { search: '&#128269; Search:' }
+  });
+}
+
+window.addEventListener('load', function() {
+  Papa.parse(S3 + "top_100_villages.csv", {
+    download: true, header: true, skipEmptyLines: true,
+    complete: function(r) { allData = r.data; updateKPIs(allData); }
+  });
+});
+</script>
+
+</body>
+</html>

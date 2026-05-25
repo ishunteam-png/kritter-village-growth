@@ -1,0 +1,49 @@
+# Large data outputs
+output/village_scored.csv
+output/*.csv
+output/*.html
+output/report_cards/
+output/animation_*.html
+
+# Keep top_100 for quick reference
+!output/top_100_villages.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node (pptxgenjs was used for slide generation — JS tooling not part of this project)
+node_modules/
+package.json
+package-lock.json
+npm-debug.log*
+
+# Keys and credentials
+*.pem
+*.key
+.env
+credentials
+
+# Large data files
+*.tif
+*.h5
+*.zip
+*.gz
+*.npy
+*.pkl
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

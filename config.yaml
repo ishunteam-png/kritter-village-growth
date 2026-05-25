@@ -1,0 +1,61 @@
+# ── Pipeline Configuration ────────────────────────────────────────────────────
+# All environment-specific values live here.
+# Scripts import this with:
+#   import yaml, pathlib
+#   CFG = yaml.safe_load((pathlib.Path(__file__).parent.parent / "config.yaml").read_text())
+
+aws:
+  region:     ap-south-1
+  ec2_id:     i-0082398a16c6183ce          # t3.xlarge, ap-south-1
+  s3_bucket:  kritter-village-growth-335451551223
+
+paths:
+  data_root:        /data/satellite/kritter       # EC2 data mount
+  src_root:         /home/ubuntu/kritter/src
+  log_root:         /data/satellite/kritter/logs
+  natural_earth_shp: /tmp/ne_10m_admin_1_states_provinces.shp
+
+pipeline:
+  viirs_years:      [2019, 2020, 2021, 2022, 2023, 2024]
+  viirs_tiles:      [h24v06, h24v07, h25v06, h25v07, h26v06, h26v07,
+                     h27v06, h27v07, h28v06, h28v07, h29v06, h29v07,
+                     h30v07, h30v08, h31v07, h31v08]
+  ntl_dark_threshold:  0.1                  # nW/cm²/sr — villages below enter dark-village track
+  india_polygon_src:   natural_earth_110m
+
+external_urls:
+  gadm_india_gpkg: "https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm41_IND.gpkg"
+  natural_earth_states: "https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_admin_1_states_provinces.zip"
+
+scoring:
+  ntl_min_absolute_delta: 1.0              # nW/cm²/sr — minimum absolute NTL change required
+                                           # (guards against 0.01 → 0.30 inflating % growth)
+  composite_weights_full:
+    ml_growth_prob_score: 0.38
+    ntl_growth_log_score: 0.22
+    ndbi_growth_score:    0.15
+    ghsl_change_score:    0.12
+    s1_vv_delta_score:    0.08
+    spatial_lag_score:    0.05
+  # Note: weights auto-redistribute when signals are NaN (S2/S1 stalled this run)
+  minmax_clip_lo:   0.02                   # 2nd-percentile floor for robust min-max normalisation
+  minmax_clip_hi:   0.99                   # 99th-percentile ceiling — only top 1% of villages tie at
+                                           # score=100 per signal; was 0.98 (top 2% all tied, less spread)
+  spatial_lag_k:    10                     # nearest neighbours for cluster reinforcement
+  gbm_estimators:   200
+  gbm_max_depth:    4
+  gbm_learning_rate: 0.05
+  gbm_subsample:    0.8
+
+forecast:
+  holt_winters_phi: 0.9                   # damping factor
+  forecast_years:   3                     # 2025-2027
+
+automation:
+  eventbridge_schedule: "cron(0 2 15 1 ? *)"   # 02:00 UTC Jan 15 annually
+
+dashboard:
+  port: 8501
+
+api:
+  port: 8502

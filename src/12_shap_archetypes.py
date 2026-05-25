@@ -1,0 +1,404 @@
+"""
+Step 12: SHAP explainability + village growth archetypes.
+
+SHAP (SHapley Additive exPlanations):
+  - Loads the trained GradientBoosting model saved by 04_score_rank.py
+  - Computes SHAP values for every village in the top-100
+  - Identifies the top-3 driving signals per village
+  - Adds shap_top1_signal, shap_top2_signal to top_100_villages.csv
+  - Outputs: chart_shap.html (global importance + top-10 waterfall)
+
+Growth archetypes (K-means, k=6):
+  - Clusters all scored villages on standardised multi-signal features
+  - Assigns each cluster a descriptive name based on centroid profile
+  - Outputs: village_archetypes.csv, chart_archetypes.html
+
+Run after: 04_score_rank.py
+"""
+
+import warnings
+import importlib
+import yaml
+import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.subplots as sp
+from pathlib import Path
+
+warnings.filterwarnings("ignore")
+
+# Load config.yaml — single source of truth for paths and hyperparameters
+_CFG_PATH = Path(__file__).parent.parent / "config.yaml"
+_CFG      = yaml.safe_load(_CFG_PATH.read_text()) if _CFG_PATH.exists() else {}
+_data     = _CFG.get("paths", {}).get("data_root", "/data/satellite/kritter")
+
+OUTPUT_DIR = Path(_data) / "output"
+PROC_DIR   = Path(_data) / "processed"
+MODEL_PATH = PROC_DIR / "ml_model.pkl"
+
+TEAL  = "#0D9488"
+NAVY  = "#021B2C"
+LIGHT = "#F0F7FA"
+
+FEATURE_DISPLAY = {
+    "ntl_growth_log":     "NTL Growth (log)",
+    "ntl_trend_slope":    "NTL Trend Slope",
+    "ntl_2024":           "NTL Level 2024",
+    "ndbi_growth":        "NDBI Growth (built-up index)",
+    "ndbi_trend_slope":   "NDBI Trend Slope",
+    "ghsl_change":        "GHSL Built-up Change",
+    "s1_vv_delta":        "SAR VV Δ (Sentinel-1)",
+    "tower_growth":       "Mobile Tower Growth",
+    "pop_growth_rate":    "Population Growth Rate",
+    "builtup_change":     "WorldCover Built-up Δ",
+    "ntl_acceleration":   "NTL Acceleration",
+    "dist_city_km":       "Distance to City (km)",
+    "dist_highway_km":    "Distance to Highway (km)",
+}
+
+# Archetype definitions (assigned after clustering based on centroid profile)
+ARCHETYPE_DEFS = [
+    ("Urban Fringe Surge",   "#F97316", "High NTL + NDBI near cities — peri-urban expansion"),
+    ("Rural Electrification","#3B82F6", "High NTL growth, low built-up — power connection boom"),
+    ("Construction Boom",    "#10B981", "High NDBI + GHSL + population — new settlement"),
+    ("Industrial Corridor",  "#8B5CF6", "Near highways, high NTL + built-up — logistics/industrial"),
+    ("Agricultural Shift",   "#F59E0B", "NDVI decline + NDBI rise — cropland conversion"),
+    ("Steady Grower",        "#6B7280", "Moderate gains across all signals — organic slow growth"),
+]
+
+
+# ── SHAP ──────────────────────────────────────────────────────────────────────
+
+def run_shap(model, X: pd.DataFrame, feature_names: list) -> np.ndarray:
+    try:
+        import shap
+        explainer = shap.TreeExplainer(model["clf"])
+        X_scaled  = model["scaler"].transform(X)
+        X_df      = pd.DataFrame(X_scaled, columns=feature_names)
+        sv        = explainer.shap_values(X_df)
+        # For GBM binary, shap_values returns array of shape (n, features)
+        if isinstance(sv, list):
+            sv = sv[1]
+        return sv
+    except ImportError:
+        print("  shap not installed — run: pip install shap")
+        return None
+    except Exception as e:
+        print(f"  SHAP failed: {e}")
+        return None
+
+
+def shap_chart(shap_vals: np.ndarray, feature_names: list,
+               top100: pd.DataFrame) -> go.Figure:
+    """Global SHAP importance bar chart + per-signal waterfall for top-5."""
+    mean_abs = np.abs(shap_vals).mean(axis=0)
+    order = np.argsort(mean_abs)[::-1]
+
+    labels = [FEATURE_DISPLAY.get(feature_names[i], feature_names[i])
+              for i in order]
+    values = mean_abs[order]
+
+    fig = sp.make_subplots(
+        rows=1, cols=2,
+        subplot_titles=["Global Feature Importance (mean |SHAP|)",
+                        "Top Village — Signal Contributions"],
+        horizontal_spacing=0.12,
+    )
+
+    # Global importance
+    fig.add_trace(go.Bar(
+        y=labels[:12], x=values[:12],
+        orientation="h",
+        marker_color=[TEAL if v > np.median(values) else "#94A3B8"
+                      for v in values[:12]],
+        showlegend=False,
+    ), row=1, col=1)
+    fig.update_xaxes(title_text="Mean |SHAP value|", row=1, col=1)
+
+    # Waterfall for rank-1 village
+    sv_top = shap_vals[0]
+    top_idx = np.argsort(np.abs(sv_top))[::-1][:8]
+    wf_labels = [FEATURE_DISPLAY.get(feature_names[i], feature_names[i])
+                 for i in top_idx]
+    wf_vals = sv_top[top_idx]
+
+    fig.add_trace(go.Bar(
+        y=wf_labels, x=wf_vals,
+        orientation="h",
+        marker_color=[TEAL if v > 0 else "#EF4444" for v in wf_vals],
+        showlegend=False,
+        name="SHAP contribution",
+    ), row=1, col=2)
+    fig.add_vline(x=0, line_color="#475569", line_width=1, row=1, col=2)
+
+    vname = top100.iloc[0].get("village_name", "Rank-1 village")
+    fig.update_xaxes(title_text="SHAP contribution (→ growth probability)",
+                     row=1, col=2)
+    fig.update_layout(
+        title=f"SHAP Explainability — {vname} (Rank #1)",
+        height=450, width=1200,
+        paper_bgcolor=LIGHT, plot_bgcolor=LIGHT,
+        font_color="#1E293B",
+    )
+    return fig
+
+
+# ── Archetypes ────────────────────────────────────────────────────────────────
+
+ARCHETYPE_FEATURES = [
+    "ntl_growth_pct", "ndbi_growth", "ghsl_change",
+    "s1_vv_delta", "tower_growth", "pop_growth_rate",
+    "dist_city_km", "dist_highway_km",
+]
+
+
+def assign_archetype_names(km, feature_names: list) -> list:
+    """
+    Auto-label K-means clusters by inspecting centroid profiles.
+    Uses absolute thresholds when all key signals are available;
+    falls back to NTL-rank-based naming when signals are sparse.
+    Returns list of archetype names in cluster-index order.
+    """
+    centers = km.cluster_centers_  # shape (k, n_features), scaled units
+
+    idx = {f: (feature_names.index(f) if f in feature_names else -1)
+           for f in ["ntl_growth_pct", "ndbi_growth", "dist_city_km",
+                     "dist_highway_km", "ghsl_change", "pop_growth_rate",
+                     "tower_growth"]}
+
+    rich_signals = sum(1 for f in ["ndbi_growth", "dist_city_km", "ghsl_change"]
+                       if idx.get(f, -1) >= 0)
+    has_ndbi = idx.get("ndbi_growth", -1) >= 0
+
+    # ── Rich-signal path: absolute thresholds (scaled space) ──────────────────
+    # Requires ndbi_growth as it is the primary discriminator for semantic labels.
+    # Without it, dist_city + ghsl alone cannot reliably separate archetypes.
+    if rich_signals >= 2 and has_ndbi:
+        names = []
+        for c in centers:
+            ntl   = c[idx["ntl_growth_pct"]] if idx["ntl_growth_pct"] >= 0 else 0
+            ndbi  = c[idx["ndbi_growth"]]    if idx["ndbi_growth"] >= 0    else 0
+            dcity = c[idx["dist_city_km"]]   if idx["dist_city_km"] >= 0   else 0
+            dhw   = c[idx["dist_highway_km"]]if idx["dist_highway_km"] >= 0 else 0
+            ghsl  = c[idx["ghsl_change"]]    if idx["ghsl_change"] >= 0    else 0
+            pop   = c[idx["pop_growth_rate"]]if idx["pop_growth_rate"] >= 0 else 0
+
+            if dcity < -0.3 and ntl > 0.3 and ndbi > 0.2:
+                names.append("Urban Fringe Surge")
+            elif ntl > 0.5 and ndbi < 0 and dhw > 0.3:
+                names.append("Rural Electrification")
+            elif ndbi > 0.4 and ghsl > 0.3 and pop > 0.2:
+                names.append("Construction Boom")
+            elif dhw < -0.3 and ntl > 0.2 and ndbi > 0.1:
+                names.append("Industrial Corridor")
+            elif ndbi > 0.3 and ntl < 0:
+                names.append("Agricultural Shift")
+            else:
+                names.append("Steady Grower")
+
+    # ── Sparse-signal path: rank by primary NTL signal ────────────────────────
+    else:
+        ntl_i   = idx.get("ntl_growth_pct", -1)
+        tower_i = idx.get("tower_growth", -1)
+        pop_i   = idx.get("pop_growth_rate", -1)
+
+        ntl_vals = [c[ntl_i] if ntl_i >= 0 else 0.0 for c in centers]
+        order = sorted(range(len(centers)), key=lambda i: ntl_vals[i], reverse=True)
+
+        fallback_names = [
+            "NTL Breakout",       # highest NTL growth
+            "Active Growth",      # 2nd
+            "Emerging Growth",    # 3rd
+            "Latent Potential",   # 4th
+            "Stable Base",        # 5th
+            "Low Activity",       # 6th+
+        ]
+        names = [""] * len(centers)
+        for rank, cluster_i in enumerate(order):
+            names[cluster_i] = fallback_names[min(rank, len(fallback_names) - 1)]
+
+    # Ensure uniqueness (suffix if name repeats)
+    seen: dict = {}
+    unique = []
+    for n in names:
+        seen[n] = seen.get(n, 0) + 1
+        unique.append(f"{n} {seen[n]}" if seen[n] > 1 else n)
+    return unique
+
+
+def run_archetypes(df: pd.DataFrame) -> pd.DataFrame:
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import RobustScaler
+    from sklearn.metrics import silhouette_score
+
+    avail = [f for f in ARCHETYPE_FEATURES if f in df.columns and df[f].notna().any()]
+    if len(avail) < 3:
+        print(f"  Not enough archetype features ({avail})")
+        return pd.DataFrame()
+
+    X = df[avail].copy()
+    X = X.fillna(X.median()).fillna(0)
+
+    scaler = RobustScaler()
+    Xs = scaler.fit_transform(X)
+
+    # Find best k (4-8) by silhouette score
+    best_k, best_sil, best_km = 6, -1, None
+    for k in range(4, 8):
+        km = KMeans(n_clusters=k, random_state=42, n_init=10)
+        labels = km.fit_predict(Xs)
+        try:
+            sil = silhouette_score(Xs, labels, sample_size=min(5000, len(Xs)))
+        except Exception:
+            sil = 0
+        if sil > best_sil:
+            best_k, best_sil, best_km = k, sil, km
+
+    print(f"  Best k={best_k}  silhouette={best_sil:.3f}")
+    labels = best_km.labels_
+
+    archetype_names = assign_archetype_names(best_km, avail)
+    print(f"  Archetypes: {archetype_names}")
+
+    result = df[["pc11_village_id", "village_name", "state_name",
+                 "composite_score", "rank"] +
+                [c for c in avail if c in df.columns]].copy()
+    result["archetype_id"]   = labels
+    result["archetype_name"] = [archetype_names[l] for l in labels]
+
+    # Stats per archetype
+    for name, grp in result.groupby("archetype_name"):
+        print(f"    [{name}]: {len(grp):,} villages, "
+              f"avg score={grp['composite_score'].mean():.1f}")
+
+    return result
+
+
+def archetypes_chart(arch_df: pd.DataFrame) -> go.Figure:
+    color_map = {name: color for name, color, _ in ARCHETYPE_DEFS}
+    desc_map  = {name: desc  for name, _, desc  in ARCHETYPE_DEFS}
+
+    fig = sp.make_subplots(
+        rows=1, cols=2,
+        subplot_titles=["Village Count per Archetype",
+                        "Score Distribution by Archetype"],
+        horizontal_spacing=0.12,
+    )
+
+    counts = arch_df["archetype_name"].value_counts()
+    colors = [color_map.get(n, "#64748B") for n in counts.index]
+
+    fig.add_trace(go.Bar(
+        x=counts.index, y=counts.values,
+        marker_color=colors, showlegend=False,
+        text=counts.values, textposition="outside",
+    ), row=1, col=1)
+    fig.update_xaxes(tickangle=30, row=1, col=1)
+    fig.update_yaxes(title_text="Villages", row=1, col=1)
+
+    for arch_name, grp in arch_df.groupby("archetype_name"):
+        fig.add_trace(go.Box(
+            y=grp["composite_score"],
+            name=arch_name,
+            marker_color=color_map.get(arch_name, "#64748B"),
+            showlegend=True,
+            boxmean=True,
+        ), row=1, col=2)
+    fig.update_yaxes(title_text="Composite Score (0–100)", row=1, col=2)
+
+    fig.update_layout(
+        title="Village Growth Archetypes — K-means Clustering",
+        height=480, width=1200,
+        paper_bgcolor=LIGHT, plot_bgcolor=LIGHT,
+        font_color="#1E293B",
+        showlegend=True,
+        legend=dict(x=0.55, y=1.0, font_size=10),
+    )
+    return fig
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+
+def main():
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    top100_path  = OUTPUT_DIR / "top_100_villages.csv"
+    scored_path  = PROC_DIR  / "village_scored.csv"
+
+    if not scored_path.exists():
+        print("village_scored.csv not found — run 04_score_rank.py first")
+        return
+
+    print("Loading data...")
+    top100  = pd.read_csv(top100_path)  if top100_path.exists()  else pd.DataFrame()
+    scored  = pd.read_csv(scored_path, low_memory=False)
+    print(f"  scored: {len(scored):,}  top100: {len(top100)}")
+
+    # ── SHAP ──────────────────────────────────────────────────────────────────
+    if MODEL_PATH.exists() and not top100.empty:
+        print("\n[SHAP] Loading trained model...")
+        try:
+            import joblib
+            bundle = joblib.load(MODEL_PATH)
+            model  = bundle["model"]
+            feats  = bundle["features"]
+
+            avail = [f for f in feats if f in top100.columns]
+            if len(avail) == len(feats):
+                X = top100[feats].fillna(top100[feats].median()).fillna(0)
+                print(f"  Computing SHAP for {len(X)} villages, {len(feats)} features...")
+                sv = run_shap(model.named_steps, X, feats)
+
+                if sv is not None:
+                    # Top-3 signals per village
+                    top_idx = np.argsort(np.abs(sv), axis=1)[:, ::-1]
+                    for rank_i, col_name in enumerate(["shap_top1", "shap_top2", "shap_top3"], 1):
+                        top100[col_name] = [feats[top_idx[i, rank_i-1]]
+                                            for i in range(len(top100))]
+
+                    top100.to_csv(top100_path, index=False)
+                    print("  Updated top_100_villages.csv with SHAP columns")
+
+                    fig_shap = shap_chart(sv, feats, top100)
+                    shap_out = OUTPUT_DIR / "chart_shap.html"
+                    fig_shap.write_html(str(shap_out), include_plotlyjs="cdn")
+                    print(f"  → {shap_out}")
+            else:
+                print(f"  Feature mismatch: {set(feats) - set(top100.columns)}")
+        except Exception as e:
+            print(f"  SHAP skipped: {e}")
+    else:
+        print("\n[SHAP] Model not found or top100 empty — skipping")
+        print(f"  MODEL_PATH={MODEL_PATH}  exists={MODEL_PATH.exists()}")
+
+    # ── Archetypes ────────────────────────────────────────────────────────────
+    print("\n[Archetypes] Clustering all villages...")
+    main_df = scored[scored["ntl_2019"].notna() &
+                     (scored.get("ntl_2019", 0) >= 0.1)].copy()
+    print(f"  Main track: {len(main_df):,}")
+
+    arch_df = run_archetypes(main_df)
+    if not arch_df.empty:
+        arch_out = OUTPUT_DIR / "village_archetypes.csv"
+        arch_df.to_csv(arch_out, index=False)
+        print(f"  → {arch_out}")
+
+        fig_arch = archetypes_chart(arch_df)
+        arch_chart_out = OUTPUT_DIR / "chart_archetypes.html"
+        fig_arch.write_html(str(arch_chart_out), include_plotlyjs="cdn")
+        print(f"  → {arch_chart_out}")
+
+        # Merge archetype into top100
+        if not top100.empty:
+            arch_top = arch_df[["pc11_village_id", "archetype_name"]].copy()
+            arch_top["pc11_village_id"] = arch_top["pc11_village_id"].astype(str)
+            top100["pc11_village_id"]   = top100["pc11_village_id"].astype(str)
+            top100 = top100.merge(arch_top, on="pc11_village_id", how="left")
+            top100.to_csv(top100_path, index=False)
+            print("  Updated top_100_villages.csv with archetype_name")
+
+    print("\nStep 12 complete.")
+
+
+if __name__ == "__main__":
+    main()
