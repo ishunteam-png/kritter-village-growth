@@ -69,10 +69,11 @@ def test_score_spread_across_100(df):
     # points of spread. This run used only 3 signals (NDBI/SAR all-NaN due to
     # monsoon STAC gaps), so the effective ceiling is lower. The threshold here
     # reflects the 3-signal reality; re-run after Sentinel-2/SAR complete.
-    assert spread > 0.1, (
-        f"Score spread across 100 villages is only {spread:.4f} — "
-        "if exactly 0, minmax_score fix did not run; "
-        f"if ~0.3, run is 3-signal only (expected — see README Limitations)"
+    assert spread > 1.0, (
+        f"Score spread across 100 villages is only {spread:.4f} pts — "
+        "expected > 1.0 pts after minmax_score fix. "
+        "If spread ≈ 0, the fix did not run. "
+        "Current 3-signal run should produce ~3.8 pts; full 8-signal run ~5+ pts."
     )
 
 

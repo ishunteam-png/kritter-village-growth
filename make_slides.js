@@ -684,7 +684,7 @@ const CARD_MUTED = "CBD5E1";
     },
     {
       title: "Spatial Signal Confirmed  ·  Ranking is a Shortlist",
-      body: "Moran's I = 0.0631 (p < 0.001, 999 permutations, k=8 KNN, n=356K) — weak but significant clustering; scores are not spatially random. Bootstrap stability (n=200 Dirichlet draws): 14 villages ≥80% stable; 71 below 50%. Treat as a field-validation shortlist, not a strict ordered ranking."
+      body: "Moran's I = 0.505 (p < 0.001, 999 permutations, k=8 KNN, n=356K) — moderate spatial clustering; high-growth scores are geographically non-random. (Prior run reported I = 0.0631 due to a row-standardisation formula bug; corrected in 07_validate.py.) Bootstrap (n=200 Dirichlet draws over raw signals): 14 villages ≥80% stable; 71 below 50% — treat top-100 as shortlist for field validation."
     },
     {
       title: "Pipeline is Scalable & Repeatable",

@@ -11,6 +11,9 @@
 # After they finish, re-run with --phase-c-only to incorporate new signals.
 
 set -euo pipefail
+# NOTE: SRC, LOGS, and the Python path below mirror config.yaml → paths.src_root /
+# paths.log_root. Bash cannot parse YAML natively; if you change config.yaml paths,
+# update these three lines to match.
 PY="$(/opt/miniconda3/envs/insar/bin/python -c 'import sys; print(sys.executable)')"
 SRC="/home/ubuntu/kritter/src"
 LOGS="/data/satellite/kritter/logs"

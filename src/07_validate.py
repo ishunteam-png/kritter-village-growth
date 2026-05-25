@@ -188,7 +188,11 @@ def morans_i(df: pd.DataFrame, score_col: str = "composite_score",
     W_x_dev = x_dev[nbr_idx].mean(axis=1)         # (n,)
     num = (x_dev * W_x_dev).sum()
     denom = (x_dev ** 2).sum()
-    I = (n / (k * n)) * (num / denom) if denom > 0 else 0.0
+    # Row-standardised Moran's I: sum_W = n (each row sums to 1), so the
+    # (n / sum_W) prefactor reduces to 1. Correct formula: I = num / denom.
+    # (The prior (n/(k*n)) = 1/k factor was wrong — it applies to unstandardised
+    # binary weights where sum_W = k*n, not row-standardised where sum_W = n.)
+    I = (num / denom) if denom > 0 else 0.0
 
     # Permutation test (999 random shuffles) — inner loop now vectorised
     rng = np.random.default_rng(42)
@@ -196,7 +200,7 @@ def morans_i(df: pd.DataFrame, score_col: str = "composite_score",
     for _ in range(999):
         xp = rng.permutation(x_dev)
         Wp = xp[nbr_idx].mean(axis=1)             # vectorised — replaces O(n) Python loop
-        null.append((n / (k * n)) * ((xp * Wp).sum() / (xp ** 2).sum()))
+        null.append((xp * Wp).sum() / (xp ** 2).sum())
     null = np.array(null)
     p_value = (np.abs(null) >= abs(I)).mean()
 
@@ -204,9 +208,10 @@ def morans_i(df: pd.DataFrame, score_col: str = "composite_score",
               "p_value": round(float(p_value), 4),
               "n": n, "k": k,
               "interpretation": (
-                  "Strong spatial clustering" if I > 0.3 else
-                  "Moderate clustering" if I > 0.1 else
-                  "Weak / no clustering" if I > 0 else "Spatial dispersion"
+                  "Strong spatial clustering" if I > 0.5 else
+                  "Moderate clustering"       if I > 0.2 else
+                  "Weak clustering"           if I > 0.05 else
+                  "Negligible / no clustering" if I > 0 else "Spatial dispersion"
               )}
     print(f"\nMoran's I (k={k}, n={n:,}): I={I:.4f}  p={p_value:.4f}  → {result['interpretation']}")
     return result
