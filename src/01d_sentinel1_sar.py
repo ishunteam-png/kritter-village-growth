@@ -23,7 +23,7 @@ from rasterio.merge import merge
 from rasterio.transform import from_bounds
 from rasterio.crs import CRS
 from rasterio.enums import Resampling
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 import pystac_client
 
@@ -32,7 +32,7 @@ warnings.filterwarnings("ignore")
 PROC_DIR  = Path("/data/satalite/kritter/processed")
 YEARS     = [2019, 2020, 2021, 2022, 2023, 2024]
 STAC_URL  = "https://earth-search.aws.element84.com/v1"
-MAX_ITEMS = 60
+MAX_ITEMS = 20
 OUT_RES   = 0.0009   # ~100 m
 CELL_DEG  = 3.0
 N_WORKERS = 4
@@ -161,7 +161,7 @@ def main():
 
         print(f"\n── Year {year} ────────────────────────")
         paths = []
-        with ProcessPoolExecutor(max_workers=N_WORKERS) as ex:
+        with ThreadPoolExecutor(max_workers=N_WORKERS) as ex:
             futures = {ex.submit(process_cell, (bbox, year, str(cell_dir))): bbox
                        for bbox in grid}
             done = 0
