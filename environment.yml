@@ -554,4 +554,6 @@ dependencies:
       - tinynetrc==1.3.1
       - wrapt==2.2.1
       - yarl==1.24.2
-prefix: /opt/miniconda3/envs/insar
+# prefix is intentionally omitted — conda will install to your default envs/ directory.
+# To install: conda env create -f environment.yml
+# To activate: conda activate insar

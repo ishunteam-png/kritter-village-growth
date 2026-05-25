@@ -40,6 +40,10 @@ credentials
 *.npy
 *.pkl
 
+# Temp pipeline artifacts
+s3_top100_check.csv
+*_check.csv
+
 # OS
 .DS_Store
 Thumbs.db

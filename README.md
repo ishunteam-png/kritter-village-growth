@@ -33,15 +33,15 @@ Pipeline re-run May 25 2026 with `minmax_score()` fix and ML bimodal-distributio
 
 | Rank | Village | State | District | Score | NTL Growth | Confirmed |
 |------|---------|-------|----------|-------|-----------|-----------|
-| 1 | Village_9161180818 † | Uttar Pradesh | Maharajganj | 73.85 | +628% | ✓ 6/6 signals |
-| 2 | Village_9161247470 † | Uttar Pradesh | Maharajganj | 73.81 | +551% | ✓ 6/6 signals |
+| 1 | nr. Siswa Bazar † (OSM 9161180818) | Uttar Pradesh | Maharajganj | 73.85 | +628% | ✓ 6/6 signals |
+| 2 | nr. Siswa Bazar † (OSM 9161247470) | Uttar Pradesh | Maharajganj | 73.81 | +551% | ✓ 6/6 signals |
 | 3 | **Himmatpur Talla** | Uttarakhand | Nainital | 73.70 | +618% | ✓ 6/6 + tower growth |
-| 4 | Village_8128089577 † | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | ✓ 6/6 signals |
-| 5 | Village_9161180827 † | Uttar Pradesh | Maharajganj | 73.64 | +476% | ✓ 6/6 signals |
+| 4 | nr. Domariyaganj † (OSM 8128089577) | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | ✓ 6/6 signals |
+| 5 | nr. Siswa Bazar † (OSM 9161180827) | Uttar Pradesh | Maharajganj | 73.64 | +476% | ✓ 6/6 signals |
 | 9 | **Naveguda** | Telangana | Adilabad | 73.38 | +1,170% | ✓ multi-signal |
 | 10 | **Kallagam** | Tamil Nadu | Ariyalur | 73.35 | +702% | ✓ multi-signal |
 
-† Unnamed OSM nodes — identified by PC11 Census 2011 village ID. See `top_100_villages.csv` for full ranked list.
+† OSM hamlet/village node with no `name` tag. Nominatim reverse-geocoding confirms the nearest named settlement (Siswa Bazar = NH-28 corridor town in Maharajganj; Domariyaganj = Siddharth Nagar district HQ area). Full OSM IDs in `top_100_villages.csv`; match against SHRUG PC11 dataset for official Census names.
 
 **Validation:** Moran's I = 0.0631 (p < 0.001, 999 permutations, vectorised, n = 356,619) — weak but statistically significant spatial clustering; electrification confound risk: **0 of 100 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously).
 
@@ -69,6 +69,8 @@ Pipeline re-run May 25 2026 with `minmax_score()` fix and ML bimodal-distributio
 | 8 | **Natural Earth + OSM** | Distance to nearest city / highway | Computed | — |
 
 All data is freely available — no proprietary licenses required.
+
+> **Methodological basis:** Nighttime light radiance as an economic activity proxy is established in peer-reviewed literature: Henderson et al. (2012) "Measuring Economic Growth from Outer Space" (*American Economic Review*); Donaldson & Storeygard (2016) "The View from Above" (*Journal of Economic Perspectives*). Built-up change as a development proxy follows Pesaresi et al. (2016) GHSL methodology (*IEEE JSTARS*). This pipeline applies these proxies at village granularity rather than country/regional level.
 
 ---
 
@@ -102,7 +104,7 @@ Score normalisation: full-range min-max (clip_lo=0, clip_hi=1.0) — the ml_grow
 distribution is bimodal (99% negatives near 0, 1% positives near 100); the standard
 2nd/99th-percentile clip would collapse both groups to the same ceiling score.
 ```
-> **Limitation:** Labels are derived from the same signals used as features. AUC = 1.000 reflects perfect self-consistency — the GBM memorises its own training labels. This is expected behaviour for self-supervised classification and does **not** imply external validity. Use as a signal amplifier, not as an independent classifier. See Limitations table below.
+> **AUC = 1.000 — why this is expected, not suspicious:** The GBM is trained to predict labels that were derived from the same signals it is given as features. It is literally learning to reproduce a deterministic function of its own inputs. AUC = 1.000 confirms training succeeded; it says nothing about whether the model generalises to unseen economic ground-truth. Any AUC < 1.0 here would indicate a bug (mislabelled rows or feature leakage failure). Use this score as a calibration sanity-check only. For genuine predictive validity, run `src/13_secc_validation.py` which tests against SECC 2011 block-level electricity access as an independent label.
 
 **Stage 3 — Composite Score (weighted ensemble)**
 ```
@@ -309,7 +311,7 @@ The following Google Maps satellite-view links provide visual ground truth for t
 | 5 | Siddharth Nagar, UP | 27.1709°N, 82.4664°E | [View →](https://www.google.com/maps/@27.1709333,82.4664259,14z/data=!3m1!1e3) |
 | 24 | Nainital, Uttarakhand | 29.2181°N, 79.4815°E | [View →](https://www.google.com/maps/@29.2181122,79.4815052,14z/data=!3m1!1e3) |
 
-**Maharajganj cluster** (ranks 1–2, 5, 7–8): Located in the Gorakhpur–Maharajganj development belt of eastern UP, 55 km from Gorakhpur city. The cluster centres around 27.13°–27.17°N, 83.74°–83.79°E in Maharajganj district. NTL baseline of 0.9–1.5 nW/cm²/sr (2019) rising to 5–11 nW/cm²/sr (2024) with BFAST breakpoints in 2022–2023 is consistent with road/market construction (NH-28 expansion) rather than bare electrification (pre-existing NTL baseline rules out dark-village scenario). All are multi-signal confirmed (WorldCover built-up change 2020→2021 + NTL).
+**Maharajganj cluster** (ranks 1–2, 5, 7–8): Located in the Gorakhpur–Maharajganj development belt of eastern UP, 55 km from Gorakhpur city. Nominatim reverse-geocoding places these nodes near **Siswa Bazar** — a NH-28 corridor market town in Nichlaul sub-district, Maharajganj. NTL baseline of 0.9–1.5 nW/cm²/sr (2019) rising to 5–11 nW/cm²/sr (2024) with BFAST breakpoints in 2022–2023 is consistent with peri-urban expansion around Siswa Bazar driven by NH-28 road upgrades rather than bare electrification (pre-existing NTL baseline rules out dark-village scenario). All are multi-signal confirmed (WorldCover built-up change 2020→2021 + NTL).
 
 **Siddharth Nagar cluster** (ranks 4, 6): Near the India–Nepal border zone at 27.18°–27.19°N, 82.46°–82.48°E. Cross-border trade infrastructure and PMGSY road improvements. NTL rise from 0.7–0.9 nW/cm²/sr to 6–7 nW/cm²/sr with 2022 breakpoints.
 

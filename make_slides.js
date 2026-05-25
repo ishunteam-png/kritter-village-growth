@@ -302,7 +302,7 @@ const CARD_MUTED = "CBD5E1";
       bullets: [
         "200 estimators · max_depth=4 · learning_rate=0.05 · subsample=0.8",
         "Inputs: 14 signal rank percentiles + BFAST features + spatial lag",
-        "Output: ml_growth_prob (0–100) · AUC ≈ 0.87 (in-sample, self-supervised — not external validation)"
+        "Output: ml_growth_prob (0–100) · AUC = 1.000 (in-sample, self-supervised) — GBM memorises its own self-supervised labels; this is the mathematically expected result, not a sign of external validity"
       ]
     }
   ];
@@ -440,8 +440,8 @@ const CARD_MUTED = "CBD5E1";
     fill: { color: "EFF6FF" }, line: { color: "BFDBFE", width: 0.5 }
   });
   s.addText(
-    "Pre-filters: NTL 2019 ≥ 0.1 nW/cm²/sr + India polygon filter + Δ NTL ≥ 0.5 nW/cm²/sr absolute minimum  ·  Normalisation: rank percentile → 0–100  ·  " +
-    "⚠ Score compression: top ~50 villages score 85.07–85.08 (< 0.01 pt spread) — treat as a statistical shortlist, not a strict ranking",
+    "Pre-filters: NTL 2019 ≥ 0.1 nW/cm²/sr + India polygon filter + Δ NTL ≥ 1.0 nW/cm²/sr absolute minimum  ·  Normalisation: min-max (2nd/99th pct clip) → 0–100  ·  " +
+    "Score spread: top-100 range 73.85–70.04 (3.81 pts); rank-50 = 71.65. Spread was < 0.01 pt before minmax fix. Restoring Sentinel-2/SAR will widen it further. Treat top-100 as a statistical shortlist.",
     {
       x: 0.65, y: 5.1, w: 9.0, h: 0.3,
       fontSize: 9, color: TEXT_MID, fontFace: "Calibri", align: "left", margin: 0
@@ -461,22 +461,22 @@ const CARD_MUTED = "CBD5E1";
 
   // Top-10 table
   const hdr = [
-    { text: "#",          options: { bold: true, color: WHITE, fill: { color: MID_BLUE }, align: "center" } },
-    { text: "Village",    options: { bold: true, color: WHITE, fill: { color: MID_BLUE } } },
-    { text: "State",      options: { bold: true, color: WHITE, fill: { color: MID_BLUE } } },
-    { text: "NTL Growth", options: { bold: true, color: WHITE, fill: { color: MID_BLUE }, align: "right" } }
+    { text: "#",             options: { bold: true, color: WHITE, fill: { color: MID_BLUE }, align: "center" } },
+    { text: "Village",       options: { bold: true, color: WHITE, fill: { color: MID_BLUE } } },
+    { text: "State / Dist.", options: { bold: true, color: WHITE, fill: { color: MID_BLUE } } },
+    { text: "NTL Growth",    options: { bold: true, color: WHITE, fill: { color: MID_BLUE }, align: "right" } }
   ];
   const rows = [
-    ["1",  "Unnamed † (Maharajganj)",      "Uttar Pradesh",   "+628%"],
-    ["2",  "Unnamed † (Maharajganj)",      "Uttar Pradesh",   "+551%"],
-    ["3",  "Himmatpur Talla",              "Uttarakhand",     "+618%"],
-    ["4",  "Unnamed † (Siddharth Nagar)", "Uttar Pradesh",   "+831%"],
-    ["5",  "Unnamed † (Maharajganj)",      "Uttar Pradesh",   "+476%"],
-    ["6",  "Unnamed † (Siddharth Nagar)", "Uttar Pradesh",   "+541%"],
-    ["7",  "Unnamed † (Maharajganj)",      "Uttar Pradesh",   "+682%"],
-    ["8",  "Unnamed † (Maharajganj)",      "Uttar Pradesh",   "+511%"],
-    ["9",  "Naveguda",                     "Telangana",       "+1,170%"],
-    ["10", "Kallagam",                     "Tamil Nadu",      "+702%"]
+    ["1",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+628%"],
+    ["2",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+551%"],
+    ["3",  "Himmatpur Talla",         "Nainital, Uttarakhand", "+618%"],
+    ["4",  "nr. Domariyaganj †",      "Siddharth Nagar, UP",  "+831%"],
+    ["5",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+476%"],
+    ["6",  "nr. Domariyaganj †",      "Siddharth Nagar, UP",  "+541%"],
+    ["7",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+682%"],
+    ["8",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+511%"],
+    ["9",  "Naveguda",                "Adilabad, Telangana",  "+1,170%"],
+    ["10", "Kallagam",                "Ariyalur, Tamil Nadu", "+702%"]
   ];
   const tableData = [
     hdr,
@@ -492,7 +492,7 @@ const CARD_MUTED = "CBD5E1";
   ];
   s.addTable(tableData, {
     x: 0.5, y: 1.02, w: 5.45, h: 4.3,
-    colW: [0.38, 2.0, 1.62, 1.15],
+    colW: [0.38, 1.62, 2.0, 1.15],
     fontFace: "Calibri",
     border: { pt: 0.5, color: "E2E8F0" }
   });
@@ -523,8 +523,8 @@ const CARD_MUTED = "CBD5E1";
 
   // Footnote
   s.addText(
-    "† No OSM name tag — 30 of 100 are bare OSM nodes; identified by district.  " +
-    "Score spread across top-100: 73.85–70.04 (3.81 pts). Bootstrap median inclusion = 0% (only 3 of 8 signals active) — interpret as a statistical shortlist for field validation, not a strict rank.",
+    "† OSM hamlet/village with no name tag — Nominatim reverse-geocoded to nearest named place (Siswa Bazar or Domariyaganj). 30 of 100 are unnamed OSM nodes.  " +
+    "Score spread: 73.85–70.04 (3.81 pts). Bootstrap median inclusion = 0% (3 of 8 signals active) — treat as a statistical shortlist for field validation.",
     {
       x: 0.5, y: 5.35, w: 5.5, h: 0.28,
       fontSize: 7.5, color: TEXT_MID, italic: true, fontFace: "Calibri", align: "left", margin: 0
@@ -590,7 +590,7 @@ const CARD_MUTED = "CBD5E1";
   [
     { lbl: "Built-up Change (GHSL)", pct: 0.82 },
     { lbl: "NTL Log Growth",         pct: 0.78 },
-    { lbl: "NTL Level 2024",         pct: 0.71 }
+    { lbl: "NTL Trend Slope",         pct: 0.71 }
   ].forEach((d, i) => {
     const y = 4.52 + i * 0.28;
     s.addText(d.lbl, {
