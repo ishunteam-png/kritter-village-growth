@@ -16,14 +16,15 @@ Install:
     pip install pystac-client rioxarray
 
 Output:
-    /data/satellite/kritter/processed/sentinel2_ndbi_{year}.tif
-    /data/satellite/kritter/processed/sentinel2_ndvi_{year}.tif
+    /data/satalite/kritter/processed/sentinel2_ndbi_{year}.tif
+    /data/satalite/kritter/processed/sentinel2_ndvi_{year}.tif
 """
 
 import warnings
 import traceback
 import numpy as np
 import rasterio
+import rasterio.warp
 from rasterio.merge import merge
 from rasterio.transform import from_bounds
 from rasterio.crs import CRS
@@ -34,17 +35,14 @@ import pystac_client
 
 warnings.filterwarnings("ignore")
 
-PROC_DIR  = Path("/data/satellite/kritter/processed")
+PROC_DIR  = Path("/data/satalite/kritter/processed")
 YEARS     = [2019, 2020, 2021, 2022, 2023, 2024]
-STAC_URL   = "https://earth-search.aws.element84.com/v1"
-CLOUD_MAX  = 50      # raised from 25: India monsoon (Jun-Sep) blocks low-cloud scenes entirely
-MAX_SCENES = 120     # more scenes to compensate for cloud variance
-OUT_RES    = 0.0009  # ~100 m in degrees
-CELL_DEG   = 3.0     # 3° × 3° processing grid
-N_WORKERS  = 4       # parallel workers (= EC2 vCPUs)
-# Dry-season month filter: query Oct–May only to avoid Jun–Sep monsoon blackout.
-# This is the primary fix for the all-NaN NDBI/SAR issue from the first run.
-DRY_SEASON = [(f"{y}-10-01", f"{y+1}-05-31") for y in range(2018, 2025)]
+STAC_URL  = "https://earth-search.aws.element84.com/v1"
+CLOUD_MAX = 25      # max cloud cover % to accept a scene
+MAX_SCENES = 80     # max scenes queried per cell × year
+OUT_RES   = 0.0009  # ~100 m in degrees
+CELL_DEG  = 3.0     # 3° × 3° processing grid
+N_WORKERS = 4       # parallel workers (= EC2 vCPUs)
 
 INDIA_W, INDIA_E = 68.0, 97.5
 INDIA_S, INDIA_N = 7.5, 37.5
@@ -67,15 +65,21 @@ def make_grid():
 
 
 def _read_band_window(href: str, bbox: list, nrows: int, ncols: int) -> np.ndarray:
+    """Read COG band, reprojecting S2 UTM tiles into the WGS84 output grid."""
+    from rasterio.transform import from_bounds as _fb
+    dst_transform = _fb(*bbox, ncols, nrows)
+    dst = np.zeros((nrows, ncols), dtype="float32")
     with rasterio.open(href) as src:
-        win = rasterio.windows.from_bounds(*bbox, src.transform)
-        arr = src.read(
-            1, window=win,
-            out_shape=(nrows, ncols),
+        rasterio.warp.reproject(
+            source=rasterio.band(src, 1),
+            destination=dst,
+            dst_transform=dst_transform,
+            dst_crs="EPSG:4326",
             resampling=Resampling.bilinear,
-            fill_value=0,
-        ).astype("float32")
-    return arr
+            src_nodata=0,
+            dst_nodata=0,
+        )
+    return dst
 
 
 def process_cell(args):
@@ -91,14 +95,10 @@ def process_cell(args):
 
     try:
         catalog = pystac_client.Client.open(STAC_URL)
-        # Dry-season search: Oct(year-1)–May(year) avoids the Jun–Sep monsoon
-        # cloud blackout that produced all-NaN composites in the prior run.
-        dry_start = f"{year - 1}-10-01"
-        dry_end   = f"{year}-05-31"
         items = list(catalog.search(
             collections=["sentinel-2-l2a"],
             bbox=bbox,
-            datetime=f"{dry_start}/{dry_end}",
+            datetime=f"{year}-01-01/{year}-12-31",
             query={"eo:cloud_cover": {"lt": CLOUD_MAX}},
             max_items=MAX_SCENES,
         ).items())

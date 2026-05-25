@@ -11,13 +11,14 @@ Metric: delta_vv = median_vv_2024 - median_vv_2019  (dB, positive = more built-u
 Uses Element84 earth-search STAC (no auth required).
 Collection: sentinel-1-rtc  (Radiometric Terrain Corrected, linear power units)
 
-Output: /data/satellite/kritter/processed/s1_vv_{year}.tif  (dB scale)
+Output: /data/satalite/kritter/processed/s1_vv_{year}.tif  (dB scale)
 Runtime: ~3–5 h on t3.xlarge.
 """
 
 import warnings, traceback
 import numpy as np
 import rasterio
+import rasterio.warp
 from rasterio.merge import merge
 from rasterio.transform import from_bounds
 from rasterio.crs import CRS
@@ -28,7 +29,7 @@ import pystac_client
 
 warnings.filterwarnings("ignore")
 
-PROC_DIR  = Path("/data/satellite/kritter/processed")
+PROC_DIR  = Path("/data/satalite/kritter/processed")
 YEARS     = [2019, 2020, 2021, 2022, 2023, 2024]
 STAC_URL  = "https://earth-search.aws.element84.com/v1"
 MAX_ITEMS = 60
@@ -65,19 +66,14 @@ def process_cell(args):
 
     try:
         catalog = pystac_client.Client.open(STAC_URL)
-        # SAR penetrates clouds year-round; full-year search is correct for S1.
-        # Using two half-year windows avoids STAC pagination limits on dense tiles.
-        items = []
-        for dt_range in (f"{year}-01-01/{year}-06-30",
-                         f"{year}-07-01/{year}-12-31"):
-            items += list(catalog.search(
-                collections=["sentinel-1-rtc"],
-                bbox=bbox,
-                datetime=dt_range,
-                max_items=MAX_ITEMS // 2,
-            ).items())
+        items = list(catalog.search(
+            collections=["sentinel-1-rtc"],
+            bbox=bbox,
+            datetime=f"{year}-01-01/{year}-12-31",
+            max_items=MAX_ITEMS,
+        ).items())
 
-        # Fallback: GRD collection (older archive coverage)
+        # Try GRD collection as fallback
         if len(items) < 3:
             items = list(catalog.search(
                 collections=["sentinel-1-grd"],
@@ -100,11 +96,15 @@ def process_cell(args):
                 if not vv_key:
                     continue
                 with rasterio.open(item.assets[vv_key].href) as src:
-                    win = rasterio.windows.from_bounds(*bbox, src.transform)
-                    arr = src.read(1, window=win,
-                                   out_shape=(nrows, ncols),
-                                   resampling=Resampling.bilinear,
-                                   fill_value=0).astype("float32")
+                    arr = np.zeros((nrows, ncols), dtype="float32")
+                    rasterio.warp.reproject(
+                        source=rasterio.band(src, 1),
+                        destination=arr,
+                        dst_transform=transform,
+                        dst_crs="EPSG:4326",
+                        resampling=Resampling.bilinear,
+                        src_nodata=0, dst_nodata=0,
+                    )
                 # Convert linear power to dB
                 arr = np.where(arr > 0, 10 * np.log10(arr), np.nan)
                 # Mask ocean/invalid (VV over ocean ≈ -25 to -35 dB, land -15 to -5 dB)
