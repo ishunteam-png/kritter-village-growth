@@ -61,7 +61,12 @@ from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import Pipeline
 
-warnings.filterwarnings("ignore")
+# Suppress specific known-benign warnings; do NOT use filterwarnings("ignore") globally
+# as it would hide genuine model degradation signals (e.g. sklearn ConvergenceWarning).
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", message="Mean of empty slice")
+warnings.filterwarnings("ignore", message="Degrees of freedom <= 0 for slice")
+warnings.filterwarnings("ignore", category=UserWarning, module="geopandas")
 
 # Load config.yaml — single source of truth for hyperparameters and paths
 _CFG_PATH = Path(__file__).parent.parent / "config.yaml"
@@ -391,11 +396,14 @@ def compute_uncertainty(df: pd.DataFrame, signal_cols: list) -> pd.DataFrame:
     if not avail:
         return pd.DataFrame(index=df.index)
 
+    # Capture actual data coverage BEFORE rank transform (rank converts NaN→0,
+    # so notna() after ranking would always be True giving confidence_score=100).
+    coverage = df[avail].notna().mean(axis=1)
+
     sub = df[avail].copy()
     for col in avail:
         sub[col] = sub[col].rank(pct=True, na_option="bottom") * 100
 
-    coverage  = sub.notna().mean(axis=1)
     std_vals  = sub.std(axis=1)
     agreement = (1 - std_vals / 50).clip(0, 1)
 

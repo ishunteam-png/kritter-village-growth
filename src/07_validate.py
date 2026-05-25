@@ -40,7 +40,9 @@ from pathlib import Path
 from scipy.stats import spearmanr
 from scipy.spatial import cKDTree
 
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", message="Mean of empty slice")
+warnings.filterwarnings("ignore", category=UserWarning, module="geopandas")
 
 _CFG_PATH = Path(__file__).parent.parent / "config.yaml"
 _CFG      = yaml.safe_load(_CFG_PATH.read_text()) if _CFG_PATH.exists() else {}
