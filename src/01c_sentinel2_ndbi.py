@@ -37,10 +37,10 @@ import pystac_client
 warnings.filterwarnings("ignore")
 
 PROC_DIR  = Path("/data/satalite/kritter/processed")
-YEARS     = [2019, 2020, 2021, 2022, 2023, 2024]
+YEARS     = [2019, 2024]  # Quick 2-year run (start+end for growth)
 STAC_URL  = "https://earth-search.aws.element84.com/v1"
 CLOUD_MAX = 25      # max cloud cover % to accept a scene
-MAX_SCENES = 20     # max scenes queried per cell × year
+MAX_SCENES = 10     # max scenes queried per cell × year
 OUT_RES   = 0.0009  # ~100 m in degrees
 CELL_DEG  = 3.0     # 3° × 3° processing grid
 N_WORKERS = 4       # parallel workers (= EC2 vCPUs)

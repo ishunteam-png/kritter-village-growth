@@ -30,9 +30,9 @@ import pystac_client
 warnings.filterwarnings("ignore")
 
 PROC_DIR  = Path("/data/satalite/kritter/processed")
-YEARS     = [2019, 2020, 2021, 2022, 2023, 2024]
+YEARS     = [2019, 2024]  # Quick 2-year run (start+end for growth)
 STAC_URL  = "https://earth-search.aws.element84.com/v1"
-MAX_ITEMS = 20
+MAX_ITEMS = 10
 OUT_RES   = 0.0009   # ~100 m
 CELL_DEG  = 3.0
 N_WORKERS = 4
