@@ -5,8 +5,11 @@ output/*.html
 output/report_cards/
 output/animation_*.html
 
-# Keep top_100 for quick reference and GitHub Pages loading
+# Keep top_100 and validation outputs for reference and GitHub Pages loading
 !output/top_100_villages.csv
+!output/validation_secc_ground_truth.csv
+!output/validation_morans_i.csv
+!output/secc_analysis_summary.json
 
 # docs/ is GitHub Pages — all files there ARE committed
 !docs/

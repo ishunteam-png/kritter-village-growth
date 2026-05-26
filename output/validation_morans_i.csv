@@ -1,0 +1,2 @@
+I,p_value,n,k,scope,note,interpretation
+0.0588,0.2052,100,8,top_100_only,Full re-run on village_scored.csv (356k villages) needed on EC2,Weak clustering
