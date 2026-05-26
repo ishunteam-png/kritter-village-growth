@@ -101,9 +101,9 @@
       <p>Satellite-derived signals &middot; 255,586 villages scored &middot; 2019&ndash;2024 &middot; Kritter Software Technologies</p>
     </div>
     <div class="header-links">
-      <a class="btn-teal" href="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/top_100_villages.csv" download>&#11015; Download CSV</a>
+      <a class="btn-teal" href="https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv" download>&#11015; Download CSV</a>
       <a class="btn-ghost" href="https://github.com/ishunteam-png/kritter-village-growth" target="_blank">GitHub &#8594;</a>
-      <a class="btn-ghost" href="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/map.html" target="_blank">Full Map &#8594;</a>
+      <a class="btn-ghost" href="./map.html" target="_blank">Full Map &#8594;</a>
     </div>
   </div>
 </div>
@@ -137,13 +137,13 @@
     <div class="section-title">Interactive Map &#8212; Top 100 Villages</div>
     <div class="card">
       <div class="card-body" style="padding:0">
-        <iframe class="map-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/map.html"></iframe>
+        <iframe class="map-frame" src="./map.html"></iframe>
       </div>
     </div>
     <div class="section-title">Score Breakdown by Signal &#8212; Top 20 Villages</div>
     <div class="card">
       <div class="card-body" style="padding:0">
-        <iframe class="chart-frame" style="height:620px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_score_breakdown.html"></iframe>
+        <iframe class="chart-frame" style="height:620px" src="./chart_score_breakdown.html"></iframe>
       </div>
     </div>
   </div>
@@ -153,9 +153,9 @@
     <div class="warn-box">
       &#9888; <strong>Sentinel-2 NDBI and Sentinel-1 SAR signals stalled</strong> during this pipeline run (monsoon STAC gaps).
       Effective composite used 3 of 8 signals: ML 53% &middot; NTL 27% &middot; GHSL 20% (weights auto-redistributed).
-      <br><strong>Score compression:</strong> Top ~50 villages score 85.07&ndash;85.08 (&lt;0.01 pt spread) &mdash; interpret as a <em>statistical shortlist</em>, not a strict ranking. Rank order within the top tier is not statistically meaningful.
-      <br><strong>ML label note:</strong> Self-supervised labels derived from same signals as features &mdash; AUC 0.87 measures self-consistency, not external validation accuracy.
-      <br><strong>Name note:</strong> 30 of 100 villages are unnamed OSM nodes (shown as &#8212; district). Name lookup via Overpass API is a documented next step.
+      <br><strong>Score spread:</strong> 73.85&ndash;70.04 across top 100 (3.81 pts). Treat as a <em>statistical shortlist</em> for field validation — rank order within the top tier reflects cluster geography, not an absolute economic ranking.
+      <br><strong>ML label note:</strong> Self-supervised labels derived from same signals as features — AUC measures self-consistency, not external validation accuracy. Run <code>src/13_secc_validation.py</code> for ground-truth cross-check.
+      <br><strong>Village names:</strong> All 100 villages named — 32 resolved via Nominatim reverse-geocoding; OSM node IDs retained for SHRUG PC11 census join.
     </div>
     <div class="section-title">Top 100 Shortlist &#8212; Satellite-Confirmed High-Growth Villages</div>
     <div class="filter-bar">
@@ -182,47 +182,54 @@
   <div id="tab-charts" class="tab-pane">
     <div class="section-title">Score Component Breakdown &#8212; Top 20 Villages</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_score_breakdown.html"></iframe>
+      <iframe class="chart-frame" src="./chart_score_breakdown.html"></iframe>
     </div></div>
-    <div class="section-title">Top 20 &#8212; NTL Time Series 2019&ndash;2024</div>
+    <div class="section-title">Top 20 &#8212; NTL Growth 2019&ndash;2024</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" style="height:620px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_top20.html"></iframe>
+      <iframe class="chart-frame" style="height:620px" src="./chart_top20.html"></iframe>
     </div></div>
-    <div class="section-title">State Distribution &#8212; Top 100 vs. India</div>
+    <div class="section-title">State Distribution &#8212; Top 100</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_state_dist.html"></iframe>
+      <iframe class="chart-frame" src="./chart_state_dist.html"></iframe>
     </div></div>
-    <div class="section-title">SHAP Feature Attribution</div>
+    <div class="section-title">Score vs. NTL Growth (Scatter)</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_shap.html"></iframe>
-    </div></div>
-    <div class="section-title">Score vs. Signal Coverage (Scatter)</div>
-    <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_scatter.html"></iframe>
-    </div></div>
-    <div class="section-title">Dark-track Villages (NTL &lt; 0.1)</div>
-    <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_dark_track.html"></iframe>
+      <iframe class="chart-frame" src="./chart_scatter.html"></iframe>
     </div></div>
   </div>
 
-  <!-- Forecast / Archetypes -->
+  <!-- Forecast / Trends -->
   <div id="tab-forecast" class="tab-pane">
-    <div class="section-title">Top 20 Villages &#8212; NTL Time Series</div>
+    <div class="section-title">Top 10 Villages &#8212; NTL Radiance Time Series 2019&ndash;2024</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" style="height:620px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_top20.html"></iframe>
+      <iframe class="chart-frame" style="height:520px" src="./chart_ntl_series.html"></iframe>
     </div></div>
-    <div class="section-title">Growth Archetypes &#8212; K-means (k=6)</div>
+    <div class="section-title">Top 20 &#8212; NTL Growth Ranking</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" style="height:640px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_archetypes.html"></iframe>
+      <iframe class="chart-frame" style="height:620px" src="./chart_top20.html"></iframe>
     </div></div>
   </div>
 
   <!-- Validation -->
   <div id="tab-validation" class="tab-pane">
-    <div class="section-title">Validation &#8212; Signal Correlation &amp; Bootstrap Rank Stability</div>
+    <div class="section-title">Spatial Validation &#8212; Moran&#8217;s I = 0.505 (p &lt; 0.001, k=8 KNN, n=356K)</div>
+    <div class="card"><div class="card-body">
+      <p style="font-size:.9rem;color:#475569;line-height:1.7">
+        Moran&#8217;s I = 0.505 indicates <strong>moderate, statistically significant spatial clustering</strong>
+        (999 permutation test, p &lt; 0.001). High-scoring villages are geographically non-random —
+        they form clusters consistent with development corridors (UP highway belt, Karnataka peri-urban ring).
+        <br><br>
+        Bootstrap rank stability (n=200 Dirichlet weight draws over raw signals): <strong>14 villages ≥80% stable</strong>;
+        71 borderline. Low median inclusion reflects the narrow 3.81-pt score spread with only 3 active signals —
+        treat the top-100 as a statistical shortlist for field validation, not a strict ordered ranking.
+        <br><br>
+        Electrification confound (Saubhagya heuristic): <strong>0 of 100 villages flagged</strong> — none show
+        the low-baseline + front-loaded growth + flat built-up pattern associated with pure household electrification.
+      </p>
+    </div></div>
+    <div class="section-title">Score vs. NTL Growth &#8212; All Top 100</div>
     <div class="card"><div class="card-body" style="padding:0">
-      <iframe class="chart-frame" style="height:640px" src="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_validation.html"></iframe>
+      <iframe class="chart-frame" src="./chart_scatter.html"></iframe>
     </div></div>
   </div>
 
@@ -304,12 +311,12 @@
   <div style="margin-top:6px">
     Data: NASA VIIRS &middot; ESA WorldCover &middot; EU JRC GHSL &middot; WorldPop &middot; OpenStreetMap &middot; Natural Earth &nbsp;|&nbsp;
     <a href="https://github.com/ishunteam-png/kritter-village-growth">GitHub</a> &nbsp;|&nbsp;
-    <a href="https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/top_100_villages.csv">Download CSV</a>
+    <a href="https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv">Download CSV</a>
   </div>
 </footer>
 
 <script>
-const S3 = "https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/";
+const CSV_URL = "https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv";
 let allData = [], dtTable = null;
 
 function showTab(name, btn) {
@@ -325,7 +332,7 @@ function showTab(name, btn) {
 }
 
 function loadCSV() {
-  Papa.parse(S3 + "top_100_villages.csv", {
+  Papa.parse(CSV_URL, {
     download: true, header: true, skipEmptyLines: true,
     complete: function(r) {
       allData = r.data;
@@ -335,7 +342,7 @@ function loadCSV() {
     },
     error: function() {
       document.getElementById('table-loading').innerHTML =
-        '<p style="color:#DC2626;padding:20px">Failed to load data from S3. Check CORS settings.</p>';
+        '<p style="color:#DC2626;padding:20px">Failed to load data. Check network connection.</p>';
     }
   });
 }
@@ -408,7 +415,7 @@ function renderTable(data) {
 }
 
 window.addEventListener('load', function() {
-  Papa.parse(S3 + "top_100_villages.csv", {
+  Papa.parse(CSV_URL, {
     download: true, header: true, skipEmptyLines: true,
     complete: function(r) { allData = r.data; updateKPIs(allData); }
   });

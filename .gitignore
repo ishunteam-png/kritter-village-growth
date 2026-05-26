@@ -1,12 +1,15 @@
-# Large data outputs
+# Large data outputs (pipeline intermediates — not committed)
 output/village_scored.csv
 output/*.csv
 output/*.html
 output/report_cards/
 output/animation_*.html
 
-# Keep top_100 for quick reference
+# Keep top_100 for quick reference and GitHub Pages loading
 !output/top_100_villages.csv
+
+# docs/ is GitHub Pages — all files there ARE committed
+!docs/
 
 # Python
 __pycache__/
@@ -56,3 +59,6 @@ Thumbs.db
 .swarm/
 ruvector.db
 .claude/scheduled_tasks.lock
+
+# Local utility scripts
+generate_charts.py

@@ -1,0 +1,3413 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_9a170a309f3705a978d9d3f10ca60d2e {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_9a170a309f3705a978d9d3f10ca60d2e" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_9a170a309f3705a978d9d3f10ca60d2e = L.map(
+                "map_9a170a309f3705a978d9d3f10ca60d2e",
+                {
+                    center: [20.5, 78.9],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 5,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_2a043a4ebeb99caa5bd386f07a5142f7 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_2a043a4ebeb99caa5bd386f07a5142f7.addTo(map_9a170a309f3705a978d9d3f10ca60d2e);
+        
+    
+            var marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_d0d59249fb3884e99431a8e40161f684 = L.circleMarker(
+                [27.1656071, 83.7601948],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_e8831910023b002d507f8ead4c06c598 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_b72f89ac2b33724a0bfa0fda9f3d2832 = $(`<div id="html_b72f89ac2b33724a0bfa0fda9f3d2832" style="width: 100.0%; height: 100.0%;"><b>#1 Siswa Bazar (OSM 9161180818)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +628.2%<br>Score: 73.85</div>`)[0];
+                popup_e8831910023b002d507f8ead4c06c598.setContent(html_b72f89ac2b33724a0bfa0fda9f3d2832);
+            
+        
+
+        circle_marker_d0d59249fb3884e99431a8e40161f684.bindPopup(popup_e8831910023b002d507f8ead4c06c598)
+        ;
+
+        
+    
+    
+            circle_marker_d0d59249fb3884e99431a8e40161f684.bindTooltip(
+                `<div>
+                     #1 Siswa Bazar (OSM 9161180818)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e75de331fce5d23a959efd218488f2ea = L.circleMarker(
+                [27.1254712, 83.7440157],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_7e2cf92f900522cd4431a6ffb7aab632 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_415e3c8bbb26b08e9daede2434543dab = $(`<div id="html_415e3c8bbb26b08e9daede2434543dab" style="width: 100.0%; height: 100.0%;"><b>#2 Siswa Bazar (OSM 9161247470)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +550.9%<br>Score: 73.81</div>`)[0];
+                popup_7e2cf92f900522cd4431a6ffb7aab632.setContent(html_415e3c8bbb26b08e9daede2434543dab);
+            
+        
+
+        circle_marker_e75de331fce5d23a959efd218488f2ea.bindPopup(popup_7e2cf92f900522cd4431a6ffb7aab632)
+        ;
+
+        
+    
+    
+            circle_marker_e75de331fce5d23a959efd218488f2ea.bindTooltip(
+                `<div>
+                     #2 Siswa Bazar (OSM 9161247470)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_282f2829fa389720c6b184c58380f141 = L.circleMarker(
+                [29.2181122, 79.4815052],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b5f55240ea11c930368ab6d737757cc9 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_61d2d00267d412dd76a156692bc6987c = $(`<div id="html_61d2d00267d412dd76a156692bc6987c" style="width: 100.0%; height: 100.0%;"><b>#3 Himmatpur Talla</b><br>Uttarakhand · Nainital<br>NTL Growth: +618.2%<br>Score: 73.7</div>`)[0];
+                popup_b5f55240ea11c930368ab6d737757cc9.setContent(html_61d2d00267d412dd76a156692bc6987c);
+            
+        
+
+        circle_marker_282f2829fa389720c6b184c58380f141.bindPopup(popup_b5f55240ea11c930368ab6d737757cc9)
+        ;
+
+        
+    
+    
+            circle_marker_282f2829fa389720c6b184c58380f141.bindTooltip(
+                `<div>
+                     #3 Himmatpur Talla
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a0334baea52cdf153a6cb5168cce50e9 = L.circleMarker(
+                [27.1836845, 82.4656105],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b2412ea7e0f880548876c1919aea4668 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_1d00548f88228577cc5a180166eb1cb0 = $(`<div id="html_1d00548f88228577cc5a180166eb1cb0" style="width: 100.0%; height: 100.0%;"><b>#4 Domariyaganj (OSM 8128089577)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +831.1%<br>Score: 73.7</div>`)[0];
+                popup_b2412ea7e0f880548876c1919aea4668.setContent(html_1d00548f88228577cc5a180166eb1cb0);
+            
+        
+
+        circle_marker_a0334baea52cdf153a6cb5168cce50e9.bindPopup(popup_b2412ea7e0f880548876c1919aea4668)
+        ;
+
+        
+    
+    
+            circle_marker_a0334baea52cdf153a6cb5168cce50e9.bindTooltip(
+                `<div>
+                     #4 Domariyaganj (OSM 8128089577)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e648f6b537adc2a340ae9a4eff0c174e = L.circleMarker(
+                [27.1198946, 83.752985],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_aafe8d118fe1017c8ec3964bcb4c5f53 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_15775edb10d6e397d155a41f9c902b1a = $(`<div id="html_15775edb10d6e397d155a41f9c902b1a" style="width: 100.0%; height: 100.0%;"><b>#5 Siswa Bazar (OSM 9161180827)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +475.7%<br>Score: 73.64</div>`)[0];
+                popup_aafe8d118fe1017c8ec3964bcb4c5f53.setContent(html_15775edb10d6e397d155a41f9c902b1a);
+            
+        
+
+        circle_marker_e648f6b537adc2a340ae9a4eff0c174e.bindPopup(popup_aafe8d118fe1017c8ec3964bcb4c5f53)
+        ;
+
+        
+    
+    
+            circle_marker_e648f6b537adc2a340ae9a4eff0c174e.bindTooltip(
+                `<div>
+                     #5 Siswa Bazar (OSM 9161180827)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9ec6eb6e44168f214777dfe64688f016 = L.circleMarker(
+                [27.1949075, 82.4800729],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_1566c92a46b58def48ab6dc447699dc1 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_a76bc96b113d444518e816c4bbbe6b34 = $(`<div id="html_a76bc96b113d444518e816c4bbbe6b34" style="width: 100.0%; height: 100.0%;"><b>#6 Domariyaganj (OSM 8128089580)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +541.1%<br>Score: 73.59</div>`)[0];
+                popup_1566c92a46b58def48ab6dc447699dc1.setContent(html_a76bc96b113d444518e816c4bbbe6b34);
+            
+        
+
+        circle_marker_9ec6eb6e44168f214777dfe64688f016.bindPopup(popup_1566c92a46b58def48ab6dc447699dc1)
+        ;
+
+        
+    
+    
+            circle_marker_9ec6eb6e44168f214777dfe64688f016.bindTooltip(
+                `<div>
+                     #6 Domariyaganj (OSM 8128089580)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_89c7b1128891d05fb29e6fea1cd0c709 = L.circleMarker(
+                [27.1548012, 83.78515],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_36fb12eb603d4d1e2ca53b5ece47f108 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_2829f2789cd818add2fb8bcdfacb92e1 = $(`<div id="html_2829f2789cd818add2fb8bcdfacb92e1" style="width: 100.0%; height: 100.0%;"><b>#7 Siswa Bazar (OSM 9161180866)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +681.8%<br>Score: 73.49</div>`)[0];
+                popup_36fb12eb603d4d1e2ca53b5ece47f108.setContent(html_2829f2789cd818add2fb8bcdfacb92e1);
+            
+        
+
+        circle_marker_89c7b1128891d05fb29e6fea1cd0c709.bindPopup(popup_36fb12eb603d4d1e2ca53b5ece47f108)
+        ;
+
+        
+    
+    
+            circle_marker_89c7b1128891d05fb29e6fea1cd0c709.bindTooltip(
+                `<div>
+                     #7 Siswa Bazar (OSM 9161180866)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_787e2dc5d1d1eddcc05428ca3903619d = L.circleMarker(
+                [27.150238, 83.7804508],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_a6f8a4ffeb61d32c1c35da6ff5ff74f0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_c8cc70619c2875798d234087fc05f332 = $(`<div id="html_c8cc70619c2875798d234087fc05f332" style="width: 100.0%; height: 100.0%;"><b>#8 Siswa Bazar (OSM 9161180865)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +510.7%<br>Score: 73.43</div>`)[0];
+                popup_a6f8a4ffeb61d32c1c35da6ff5ff74f0.setContent(html_c8cc70619c2875798d234087fc05f332);
+            
+        
+
+        circle_marker_787e2dc5d1d1eddcc05428ca3903619d.bindPopup(popup_a6f8a4ffeb61d32c1c35da6ff5ff74f0)
+        ;
+
+        
+    
+    
+            circle_marker_787e2dc5d1d1eddcc05428ca3903619d.bindTooltip(
+                `<div>
+                     #8 Siswa Bazar (OSM 9161180865)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6530abca0f4d0fc8654cc1666d67e58c = L.circleMarker(
+                [19.4959651, 79.32307],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_6c0efed8a6fc9f7ad29814f636a6dcca = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_0261c602cb5b802b7319d641ea57c934 = $(`<div id="html_0261c602cb5b802b7319d641ea57c934" style="width: 100.0%; height: 100.0%;"><b>#9 Naveguda</b><br>Telangana · Adilabad<br>NTL Growth: +1170.4%<br>Score: 73.38</div>`)[0];
+                popup_6c0efed8a6fc9f7ad29814f636a6dcca.setContent(html_0261c602cb5b802b7319d641ea57c934);
+            
+        
+
+        circle_marker_6530abca0f4d0fc8654cc1666d67e58c.bindPopup(popup_6c0efed8a6fc9f7ad29814f636a6dcca)
+        ;
+
+        
+    
+    
+            circle_marker_6530abca0f4d0fc8654cc1666d67e58c.bindTooltip(
+                `<div>
+                     #9 Naveguda
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1c0737f39d2b6a07916ea58c4312f4f9 = L.circleMarker(
+                [11.0271301, 79.0000514],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_62e7e89241a0965002f643ef6bc73da7 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_fae0dd5cc1a2b18fbcb61b7d9ecc13de = $(`<div id="html_fae0dd5cc1a2b18fbcb61b7d9ecc13de" style="width: 100.0%; height: 100.0%;"><b>#10 Kallagam</b><br>Tamil Nadu · Ariyalur<br>NTL Growth: +701.8%<br>Score: 73.35</div>`)[0];
+                popup_62e7e89241a0965002f643ef6bc73da7.setContent(html_fae0dd5cc1a2b18fbcb61b7d9ecc13de);
+            
+        
+
+        circle_marker_1c0737f39d2b6a07916ea58c4312f4f9.bindPopup(popup_62e7e89241a0965002f643ef6bc73da7)
+        ;
+
+        
+    
+    
+            circle_marker_1c0737f39d2b6a07916ea58c4312f4f9.bindTooltip(
+                `<div>
+                     #10 Kallagam
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_08f73e2bebf75bbfe1157f03d7fe60f5 = L.circleMarker(
+                [27.3639925, 82.6686215],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_26f05bef9eea0d5a44331983582b04d0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_08922e19f2c584caf88fc43874f628af = $(`<div id="html_08922e19f2c584caf88fc43874f628af" style="width: 100.0%; height: 100.0%;"><b>#11 Itwa (OSM 8125936721)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +509.8%<br>Score: 73.31</div>`)[0];
+                popup_26f05bef9eea0d5a44331983582b04d0.setContent(html_08922e19f2c584caf88fc43874f628af);
+            
+        
+
+        circle_marker_08f73e2bebf75bbfe1157f03d7fe60f5.bindPopup(popup_26f05bef9eea0d5a44331983582b04d0)
+        ;
+
+        
+    
+    
+            circle_marker_08f73e2bebf75bbfe1157f03d7fe60f5.bindTooltip(
+                `<div>
+                     #11 Itwa (OSM 8125936721)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fc996cfc75652c05c5acdd67135215c9 = L.circleMarker(
+                [22.2304343, 83.4697008],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_0dfb6b2feb04c77d34a63196c5c9ac25 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_b6b2f69c31c91cd6c1eee99accfff81e = $(`<div id="html_b6b2f69c31c91cd6c1eee99accfff81e" style="width: 100.0%; height: 100.0%;"><b>#12 Gharghoda Tahsil (OSM 7961943827)</b><br>Chhattisgarh · Raigarh<br>NTL Growth: +915.5%<br>Score: 73.29</div>`)[0];
+                popup_0dfb6b2feb04c77d34a63196c5c9ac25.setContent(html_b6b2f69c31c91cd6c1eee99accfff81e);
+            
+        
+
+        circle_marker_fc996cfc75652c05c5acdd67135215c9.bindPopup(popup_0dfb6b2feb04c77d34a63196c5c9ac25)
+        ;
+
+        
+    
+    
+            circle_marker_fc996cfc75652c05c5acdd67135215c9.bindTooltip(
+                `<div>
+                     #12 Gharghoda Tahsil (OSM 7961943827)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_816e9cbdd83e0517c49ea5f91131d53b = L.circleMarker(
+                [11.2450436, 79.4777528],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_93cab2ab18193bf8446fa32851054995 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_f666105f935219b728902681da1b00d8 = $(`<div id="html_f666105f935219b728902681da1b00d8" style="width: 100.0%; height: 100.0%;"><b>#13 Vazhaikuttai</b><br>Tamil Nadu · Ariyalur<br>NTL Growth: +1111.3%<br>Score: 73.13</div>`)[0];
+                popup_93cab2ab18193bf8446fa32851054995.setContent(html_f666105f935219b728902681da1b00d8);
+            
+        
+
+        circle_marker_816e9cbdd83e0517c49ea5f91131d53b.bindPopup(popup_93cab2ab18193bf8446fa32851054995)
+        ;
+
+        
+    
+    
+            circle_marker_816e9cbdd83e0517c49ea5f91131d53b.bindTooltip(
+                `<div>
+                     #13 Vazhaikuttai
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_48a24f5472b8f029b9f1c88d6bd15c77 = L.circleMarker(
+                [27.3699189, 82.5768256],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_833358cb5b44b2aa44ee3e6484a31693 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_545862daac4d08d26e723c7c37f03e1c = $(`<div id="html_545862daac4d08d26e723c7c37f03e1c" style="width: 100.0%; height: 100.0%;"><b>#14 Itwa (OSM 8125936672)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +528.2%<br>Score: 73.03</div>`)[0];
+                popup_833358cb5b44b2aa44ee3e6484a31693.setContent(html_545862daac4d08d26e723c7c37f03e1c);
+            
+        
+
+        circle_marker_48a24f5472b8f029b9f1c88d6bd15c77.bindPopup(popup_833358cb5b44b2aa44ee3e6484a31693)
+        ;
+
+        
+    
+    
+            circle_marker_48a24f5472b8f029b9f1c88d6bd15c77.bindTooltip(
+                `<div>
+                     #14 Itwa (OSM 8125936672)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b9779101d2d1999d7d02fac2f842abaa = L.circleMarker(
+                [27.202656, 83.2137537],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b535c65eb59a41912455754a5ad03f60 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_a9f9588207758525721e71dcb16512dd = $(`<div id="html_a9f9588207758525721e71dcb16512dd" style="width: 100.0%; height: 100.0%;"><b>#15 Brijmanganj (OSM 9160643774)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +485.5%<br>Score: 73.01</div>`)[0];
+                popup_b535c65eb59a41912455754a5ad03f60.setContent(html_a9f9588207758525721e71dcb16512dd);
+            
+        
+
+        circle_marker_b9779101d2d1999d7d02fac2f842abaa.bindPopup(popup_b535c65eb59a41912455754a5ad03f60)
+        ;
+
+        
+    
+    
+            circle_marker_b9779101d2d1999d7d02fac2f842abaa.bindTooltip(
+                `<div>
+                     #15 Brijmanganj (OSM 9160643774)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e3c11bb9d4dcde20772ad7f4a49fd258 = L.circleMarker(
+                [11.0373597, 79.0128981],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_09454d18424bbf17f720979716994531 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_be2e7f0b355514f3f158b9413a793717 = $(`<div id="html_be2e7f0b355514f3f158b9413a793717" style="width: 100.0%; height: 100.0%;"><b>#16 Kanikkapuram</b><br>Tamil Nadu · Ariyalur<br>NTL Growth: +2675.0%<br>Score: 72.99</div>`)[0];
+                popup_09454d18424bbf17f720979716994531.setContent(html_be2e7f0b355514f3f158b9413a793717);
+            
+        
+
+        circle_marker_e3c11bb9d4dcde20772ad7f4a49fd258.bindPopup(popup_09454d18424bbf17f720979716994531)
+        ;
+
+        
+    
+    
+            circle_marker_e3c11bb9d4dcde20772ad7f4a49fd258.bindTooltip(
+                `<div>
+                     #16 Kanikkapuram
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_50285007886e99c3d41c4fe35d949106 = L.circleMarker(
+                [26.9903893, 82.6709175],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_5e9a159db3993a8cbcfebf2b51d187e3 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_759c45ddc86e6d786447eca545f7d0c4 = $(`<div id="html_759c45ddc86e6d786447eca545f7d0c4" style="width: 100.0%; height: 100.0%;"><b>#17 Bhanpur (OSM 9159389461)</b><br>Uttar Pradesh · Basti<br>NTL Growth: +494.1%<br>Score: 72.87</div>`)[0];
+                popup_5e9a159db3993a8cbcfebf2b51d187e3.setContent(html_759c45ddc86e6d786447eca545f7d0c4);
+            
+        
+
+        circle_marker_50285007886e99c3d41c4fe35d949106.bindPopup(popup_5e9a159db3993a8cbcfebf2b51d187e3)
+        ;
+
+        
+    
+    
+            circle_marker_50285007886e99c3d41c4fe35d949106.bindTooltip(
+                `<div>
+                     #17 Bhanpur (OSM 9159389461)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3bdd8787fa502b99b49ea491857c20bd = L.circleMarker(
+                [19.5551699, 79.3417489],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_4831bfd114e6dbe058cd499b47acf17a = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_57bc627354b0dffdaf266c611721bd4d = $(`<div id="html_57bc627354b0dffdaf266c611721bd4d" style="width: 100.0%; height: 100.0%;"><b>#18 Mahagaon</b><br>Telangana · Adilabad<br>NTL Growth: +959.6%<br>Score: 72.83</div>`)[0];
+                popup_4831bfd114e6dbe058cd499b47acf17a.setContent(html_57bc627354b0dffdaf266c611721bd4d);
+            
+        
+
+        circle_marker_3bdd8787fa502b99b49ea491857c20bd.bindPopup(popup_4831bfd114e6dbe058cd499b47acf17a)
+        ;
+
+        
+    
+    
+            circle_marker_3bdd8787fa502b99b49ea491857c20bd.bindTooltip(
+                `<div>
+                     #18 Mahagaon
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d8604e72bb63a2452323b835a3278764 = L.circleMarker(
+                [27.1923118, 82.4730348],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_94fd349f58429989a3d0459660bfb9c5 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_a2bf33b4a897c31a27507690773a02c1 = $(`<div id="html_a2bf33b4a897c31a27507690773a02c1" style="width: 100.0%; height: 100.0%;"><b>#19 Domariyaganj (OSM 8128089579)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +422.5%<br>Score: 72.82</div>`)[0];
+                popup_94fd349f58429989a3d0459660bfb9c5.setContent(html_a2bf33b4a897c31a27507690773a02c1);
+            
+        
+
+        circle_marker_d8604e72bb63a2452323b835a3278764.bindPopup(popup_94fd349f58429989a3d0459660bfb9c5)
+        ;
+
+        
+    
+    
+            circle_marker_d8604e72bb63a2452323b835a3278764.bindTooltip(
+                `<div>
+                     #19 Domariyaganj (OSM 8128089579)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ab70d0bf0933f1295cc34d4f4b56f7eb = L.circleMarker(
+                [22.2369888, 83.4288883],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_fe4363688c07d921812581909b630f0a = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_d74d849ac521144a8c200710a7a80919 = $(`<div id="html_d74d849ac521144a8c200710a7a80919" style="width: 100.0%; height: 100.0%;"><b>#20 Gharghoda Tahsil (OSM 7964818601)</b><br>Chhattisgarh · Raigarh<br>NTL Growth: +429.7%<br>Score: 72.82</div>`)[0];
+                popup_fe4363688c07d921812581909b630f0a.setContent(html_d74d849ac521144a8c200710a7a80919);
+            
+        
+
+        circle_marker_ab70d0bf0933f1295cc34d4f4b56f7eb.bindPopup(popup_fe4363688c07d921812581909b630f0a)
+        ;
+
+        
+    
+    
+            circle_marker_ab70d0bf0933f1295cc34d4f4b56f7eb.bindTooltip(
+                `<div>
+                     #20 Gharghoda Tahsil (OSM 7964818601)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b30fc8bf82dc83134d1535b976b052ab = L.circleMarker(
+                [12.8176443, 76.8682089],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_6b7be155004a21858d5b3f8c0a55a956 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_683dd7044b23bcaa46385e4c72c8648d = $(`<div id="html_683dd7044b23bcaa46385e4c72c8648d" style="width: 100.0%; height: 100.0%;"><b>#21 Devalapura</b><br>Karnataka · Mandya<br>NTL Growth: +493.6%<br>Score: 72.8</div>`)[0];
+                popup_6b7be155004a21858d5b3f8c0a55a956.setContent(html_683dd7044b23bcaa46385e4c72c8648d);
+            
+        
+
+        circle_marker_b30fc8bf82dc83134d1535b976b052ab.bindPopup(popup_6b7be155004a21858d5b3f8c0a55a956)
+        ;
+
+        
+    
+    
+            circle_marker_b30fc8bf82dc83134d1535b976b052ab.bindTooltip(
+                `<div>
+                     #21 Devalapura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fede81352563849e006389d6fb3d29a3 = L.circleMarker(
+                [13.4705803, 77.7893325],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_2490b08631174beff31a7ba37e7efd27 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_8eb3f17f69ed991ac77f6e926370d6af = $(`<div id="html_8eb3f17f69ed991ac77f6e926370d6af" style="width: 100.0%; height: 100.0%;"><b>#22 Kadadibburu</b><br>Karnataka · Chikballapura<br>NTL Growth: +541.8%<br>Score: 72.76</div>`)[0];
+                popup_2490b08631174beff31a7ba37e7efd27.setContent(html_8eb3f17f69ed991ac77f6e926370d6af);
+            
+        
+
+        circle_marker_fede81352563849e006389d6fb3d29a3.bindPopup(popup_2490b08631174beff31a7ba37e7efd27)
+        ;
+
+        
+    
+    
+            circle_marker_fede81352563849e006389d6fb3d29a3.bindTooltip(
+                `<div>
+                     #22 Kadadibburu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_052148922633a395e547f24555eb9ada = L.circleMarker(
+                [11.0125007, 78.9825492],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_e55efc6dcc5d166bca97c6d12fc93ad8 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_b4789b74438cda0aed5a40287291e33a = $(`<div id="html_b4789b74438cda0aed5a40287291e33a" style="width: 100.0%; height: 100.0%;"><b>#23 Kil Arasur</b><br>Tamil Nadu · Tiruchirappalli<br>NTL Growth: +483.3%<br>Score: 72.73</div>`)[0];
+                popup_e55efc6dcc5d166bca97c6d12fc93ad8.setContent(html_b4789b74438cda0aed5a40287291e33a);
+            
+        
+
+        circle_marker_052148922633a395e547f24555eb9ada.bindPopup(popup_e55efc6dcc5d166bca97c6d12fc93ad8)
+        ;
+
+        
+    
+    
+            circle_marker_052148922633a395e547f24555eb9ada.bindTooltip(
+                `<div>
+                     #23 Kil Arasur
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_2b2544713dd30af5803ab88aedddb007 = L.circleMarker(
+                [27.2507382, 81.5470504],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_5ce04547de1b1113d0f518685efd0095 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_6484ee9b4ae44b405eddb7f6d151385d = $(`<div id="html_6484ee9b4ae44b405eddb7f6d151385d" style="width: 100.0%; height: 100.0%;"><b>#24 Kaiserganj (OSM 9045521283)</b><br>Uttar Pradesh · Bahraich<br>NTL Growth: +503.4%<br>Score: 72.68</div>`)[0];
+                popup_5ce04547de1b1113d0f518685efd0095.setContent(html_6484ee9b4ae44b405eddb7f6d151385d);
+            
+        
+
+        circle_marker_2b2544713dd30af5803ab88aedddb007.bindPopup(popup_5ce04547de1b1113d0f518685efd0095)
+        ;
+
+        
+    
+    
+            circle_marker_2b2544713dd30af5803ab88aedddb007.bindTooltip(
+                `<div>
+                     #24 Kaiserganj (OSM 9045521283)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_362a0975fb718a12578a4a1e7d43f0d3 = L.circleMarker(
+                [13.0263894, 76.5724418],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_748e4184718ee5f976a24ef8c4bfb723 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_9cc166149fab07e2f80c51201d5ddb06 = $(`<div id="html_9cc166149fab07e2f80c51201d5ddb06" style="width: 100.0%; height: 100.0%;"><b>#25 Pura</b><br>Karnataka · Hassan<br>NTL Growth: +584.7%<br>Score: 72.64</div>`)[0];
+                popup_748e4184718ee5f976a24ef8c4bfb723.setContent(html_9cc166149fab07e2f80c51201d5ddb06);
+            
+        
+
+        circle_marker_362a0975fb718a12578a4a1e7d43f0d3.bindPopup(popup_748e4184718ee5f976a24ef8c4bfb723)
+        ;
+
+        
+    
+    
+            circle_marker_362a0975fb718a12578a4a1e7d43f0d3.bindTooltip(
+                `<div>
+                     #25 Pura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e7a7dc0b9c452914d81351801f88ab46 = L.circleMarker(
+                [13.2792692, 77.3795806],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_079222742fa8daa2c31b88ca77fe9ebb = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_62f3ccf372c8702f23f0879f1e4ba8d2 = $(`<div id="html_62f3ccf372c8702f23f0879f1e4ba8d2" style="width: 100.0%; height: 100.0%;"><b>#26 Katti Hosahalli</b><br>Karnataka · Bangalore Rural<br>NTL Growth: +1524.6%<br>Score: 72.5</div>`)[0];
+                popup_079222742fa8daa2c31b88ca77fe9ebb.setContent(html_62f3ccf372c8702f23f0879f1e4ba8d2);
+            
+        
+
+        circle_marker_e7a7dc0b9c452914d81351801f88ab46.bindPopup(popup_079222742fa8daa2c31b88ca77fe9ebb)
+        ;
+
+        
+    
+    
+            circle_marker_e7a7dc0b9c452914d81351801f88ab46.bindTooltip(
+                `<div>
+                     #26 Katti Hosahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_84a930a51b18e216f212500e4557a01a = L.circleMarker(
+                [12.7808849, 76.8084651],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_fba01c0410c0b617d854d34dbf971811 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_45837c5c5c933be73638b102eac448bd = $(`<div id="html_45837c5c5c933be73638b102eac448bd" style="width: 100.0%; height: 100.0%;"><b>#27 Dandiganahalli</b><br>Karnataka · Mandya<br>NTL Growth: +497.5%<br>Score: 72.47</div>`)[0];
+                popup_fba01c0410c0b617d854d34dbf971811.setContent(html_45837c5c5c933be73638b102eac448bd);
+            
+        
+
+        circle_marker_84a930a51b18e216f212500e4557a01a.bindPopup(popup_fba01c0410c0b617d854d34dbf971811)
+        ;
+
+        
+    
+    
+            circle_marker_84a930a51b18e216f212500e4557a01a.bindTooltip(
+                `<div>
+                     #27 Dandiganahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d3643c1de3156d929c2ece56e58b10be = L.circleMarker(
+                [12.4547225, 76.9881856],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_cce178c1ddf7eee1ea53955b7049962c = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_363fe41885991c2aef2f8e9389e308a1 = $(`<div id="html_363fe41885991c2aef2f8e9389e308a1" style="width: 100.0%; height: 100.0%;"><b>#28 Kadukottanahalli</b><br>Karnataka · Mandya<br>NTL Growth: +606.0%<br>Score: 72.45</div>`)[0];
+                popup_cce178c1ddf7eee1ea53955b7049962c.setContent(html_363fe41885991c2aef2f8e9389e308a1);
+            
+        
+
+        circle_marker_d3643c1de3156d929c2ece56e58b10be.bindPopup(popup_cce178c1ddf7eee1ea53955b7049962c)
+        ;
+
+        
+    
+    
+            circle_marker_d3643c1de3156d929c2ece56e58b10be.bindTooltip(
+                `<div>
+                     #28 Kadukottanahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1e19b09c3c93266162bad01799225461 = L.circleMarker(
+                [15.0253578, 75.2208506],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_7240193c334c62ca237f1171577a9d8e = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_343453d240fb09b18e3b4eec4ad25460 = $(`<div id="html_343453d240fb09b18e3b4eec4ad25460" style="width: 100.0%; height: 100.0%;"><b>#29 Mugali</b><br>Karnataka · Haveri<br>NTL Growth: +471.2%<br>Score: 72.41</div>`)[0];
+                popup_7240193c334c62ca237f1171577a9d8e.setContent(html_343453d240fb09b18e3b4eec4ad25460);
+            
+        
+
+        circle_marker_1e19b09c3c93266162bad01799225461.bindPopup(popup_7240193c334c62ca237f1171577a9d8e)
+        ;
+
+        
+    
+    
+            circle_marker_1e19b09c3c93266162bad01799225461.bindTooltip(
+                `<div>
+                     #29 Mugali
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3ba5f9f891f721fb69b017332c0000ff = L.circleMarker(
+                [13.0489516, 76.0470791],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_133efed730f3874ee1e7e153a0317210 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_9764d17b2e8faf7856f3aff2071982ce = $(`<div id="html_9764d17b2e8faf7856f3aff2071982ce" style="width: 100.0%; height: 100.0%;"><b>#30 Kuppalli</b><br>Karnataka · Hassan<br>NTL Growth: +789.8%<br>Score: 72.39</div>`)[0];
+                popup_133efed730f3874ee1e7e153a0317210.setContent(html_9764d17b2e8faf7856f3aff2071982ce);
+            
+        
+
+        circle_marker_3ba5f9f891f721fb69b017332c0000ff.bindPopup(popup_133efed730f3874ee1e7e153a0317210)
+        ;
+
+        
+    
+    
+            circle_marker_3ba5f9f891f721fb69b017332c0000ff.bindTooltip(
+                `<div>
+                     #30 Kuppalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e0fc12f793ca668ef08ece51f3dc6bf2 = L.circleMarker(
+                [19.7637957, 79.8098802],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_3ccb1082620f4f30e64611d2472ffa4e = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_4caa09641538c0f66ed44bbb91f9a4ac = $(`<div id="html_4caa09641538c0f66ed44bbb91f9a4ac" style="width: 100.0%; height: 100.0%;"><b>#31 Konsari</b><br>Maharashtra · Garhchiroli<br>NTL Growth: +2699.4%<br>Score: 72.36</div>`)[0];
+                popup_3ccb1082620f4f30e64611d2472ffa4e.setContent(html_4caa09641538c0f66ed44bbb91f9a4ac);
+            
+        
+
+        circle_marker_e0fc12f793ca668ef08ece51f3dc6bf2.bindPopup(popup_3ccb1082620f4f30e64611d2472ffa4e)
+        ;
+
+        
+    
+    
+            circle_marker_e0fc12f793ca668ef08ece51f3dc6bf2.bindTooltip(
+                `<div>
+                     #31 Konsari
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e4bd1315cf19a30e95cd668a31d6e3f7 = L.circleMarker(
+                [27.1232177, 83.7524056],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_7530f7fa41d203c0b7da7d4f0e6879b6 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_2ad4f79fb547b0fe585e6dfbe9c4cb03 = $(`<div id="html_2ad4f79fb547b0fe585e6dfbe9c4cb03" style="width: 100.0%; height: 100.0%;"><b>#32 Siswa Bazar (OSM 9161180826)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +383.7%<br>Score: 72.2</div>`)[0];
+                popup_7530f7fa41d203c0b7da7d4f0e6879b6.setContent(html_2ad4f79fb547b0fe585e6dfbe9c4cb03);
+            
+        
+
+        circle_marker_e4bd1315cf19a30e95cd668a31d6e3f7.bindPopup(popup_7530f7fa41d203c0b7da7d4f0e6879b6)
+        ;
+
+        
+    
+    
+            circle_marker_e4bd1315cf19a30e95cd668a31d6e3f7.bindTooltip(
+                `<div>
+                     #32 Siswa Bazar (OSM 9161180826)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_da74c40ae9357f300f870ec4183a81da = L.circleMarker(
+                [16.3773888, 81.333198],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_ee7d9ee1f9d3405750cb1b1fee0353d7 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_dd1f00e6d227a0d9b54efee734207632 = $(`<div id="html_dd1f00e6d227a0d9b54efee734207632" style="width: 100.0%; height: 100.0%;"><b>#33 Gandhinagaram</b><br>Andhra Pradesh · Krishna<br>NTL Growth: +504.2%<br>Score: 72.17</div>`)[0];
+                popup_ee7d9ee1f9d3405750cb1b1fee0353d7.setContent(html_dd1f00e6d227a0d9b54efee734207632);
+            
+        
+
+        circle_marker_da74c40ae9357f300f870ec4183a81da.bindPopup(popup_ee7d9ee1f9d3405750cb1b1fee0353d7)
+        ;
+
+        
+    
+    
+            circle_marker_da74c40ae9357f300f870ec4183a81da.bindTooltip(
+                `<div>
+                     #33 Gandhinagaram
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4b30518400569704774751679aae93dd = L.circleMarker(
+                [19.7131015, 79.7288024],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_3a361caef287ef12eaf17457ffa5d5dc = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_11329430c26f5a538994da54c11d9e18 = $(`<div id="html_11329430c26f5a538994da54c11d9e18" style="width: 100.0%; height: 100.0%;"><b>#34 Nawegaon Waghade</b><br>Maharashtra · Chandrapur<br>NTL Growth: +469.6%<br>Score: 72.14</div>`)[0];
+                popup_3a361caef287ef12eaf17457ffa5d5dc.setContent(html_11329430c26f5a538994da54c11d9e18);
+            
+        
+
+        circle_marker_4b30518400569704774751679aae93dd.bindPopup(popup_3a361caef287ef12eaf17457ffa5d5dc)
+        ;
+
+        
+    
+    
+            circle_marker_4b30518400569704774751679aae93dd.bindTooltip(
+                `<div>
+                     #34 Nawegaon Waghade
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_329ee21cb67fdcaeff771527d02c2af0 = L.circleMarker(
+                [33.4660584, 75.1829839],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_da5e3ce6afa22475bca0ef8b9ffa5edb = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_ea7a6e0b4743e7a25bfb0e363fb31c08 = $(`<div id="html_ea7a6e0b4743e7a25bfb0e363fb31c08" style="width: 100.0%; height: 100.0%;"><b>#35 Asar</b><br>Jammu and Kashmir · Ramban<br>NTL Growth: +1466.4%<br>Score: 72.11</div>`)[0];
+                popup_da5e3ce6afa22475bca0ef8b9ffa5edb.setContent(html_ea7a6e0b4743e7a25bfb0e363fb31c08);
+            
+        
+
+        circle_marker_329ee21cb67fdcaeff771527d02c2af0.bindPopup(popup_da5e3ce6afa22475bca0ef8b9ffa5edb)
+        ;
+
+        
+    
+    
+            circle_marker_329ee21cb67fdcaeff771527d02c2af0.bindTooltip(
+                `<div>
+                     #35 Asar
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_de70e6a66beeecb862ba3e7ba0f06ea2 = L.circleMarker(
+                [31.2054832, 75.8602191],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_63eb5e4dbd4978e8bb0dd4fc2b9e5d21 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_33fe4b7029ceb9428bb76026b612adee = $(`<div id="html_33fe4b7029ceb9428bb76026b612adee" style="width: 100.0%; height: 100.0%;"><b>#36 Jasso Mazara</b><br>Punjab · Shahid Bhagat Singh Nagar<br>NTL Growth: +496.8%<br>Score: 72.08</div>`)[0];
+                popup_63eb5e4dbd4978e8bb0dd4fc2b9e5d21.setContent(html_33fe4b7029ceb9428bb76026b612adee);
+            
+        
+
+        circle_marker_de70e6a66beeecb862ba3e7ba0f06ea2.bindPopup(popup_63eb5e4dbd4978e8bb0dd4fc2b9e5d21)
+        ;
+
+        
+    
+    
+            circle_marker_de70e6a66beeecb862ba3e7ba0f06ea2.bindTooltip(
+                `<div>
+                     #36 Jasso Mazara
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1a14a39a52e313835b27c1058cf54eb3 = L.circleMarker(
+                [17.2129398, 80.001135],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_3590fd8c98974f1d566312a07574eea7 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_2acf42fdda48daacaaf8ebc68ad8a411 = $(`<div id="html_2acf42fdda48daacaaf8ebc68ad8a411" style="width: 100.0%; height: 100.0%;"><b>#37 Agraharam</b><br>Telangana · Khammam<br>NTL Growth: +454.2%<br>Score: 72.07</div>`)[0];
+                popup_3590fd8c98974f1d566312a07574eea7.setContent(html_2acf42fdda48daacaaf8ebc68ad8a411);
+            
+        
+
+        circle_marker_1a14a39a52e313835b27c1058cf54eb3.bindPopup(popup_3590fd8c98974f1d566312a07574eea7)
+        ;
+
+        
+    
+    
+            circle_marker_1a14a39a52e313835b27c1058cf54eb3.bindTooltip(
+                `<div>
+                     #37 Agraharam
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3651a81c49313e2c5637727167095faf = L.circleMarker(
+                [12.872605, 76.1558266],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_39deeca5d626bcfcd51cada369c23516 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_15fe5518ddbed0575b8f08bd5673dd8e = $(`<div id="html_15fe5518ddbed0575b8f08bd5673dd8e" style="width: 100.0%; height: 100.0%;"><b>#38 Kallenahalli</b><br>Karnataka · Hassan<br>NTL Growth: +430.8%<br>Score: 72.05</div>`)[0];
+                popup_39deeca5d626bcfcd51cada369c23516.setContent(html_15fe5518ddbed0575b8f08bd5673dd8e);
+            
+        
+
+        circle_marker_3651a81c49313e2c5637727167095faf.bindPopup(popup_39deeca5d626bcfcd51cada369c23516)
+        ;
+
+        
+    
+    
+            circle_marker_3651a81c49313e2c5637727167095faf.bindTooltip(
+                `<div>
+                     #38 Kallenahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_50a82694f84828ee4aabfe83a3fe906b = L.circleMarker(
+                [16.3568329, 81.2956953],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_2be7ee8e36dca3ad132e4878d321a3ac = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_8206968d0caace1fe19843b901390bb3 = $(`<div id="html_8206968d0caace1fe19843b901390bb3" style="width: 100.0%; height: 100.0%;"><b>#39 Sitarampuram</b><br>Andhra Pradesh · Krishna<br>NTL Growth: +555.6%<br>Score: 72.04</div>`)[0];
+                popup_2be7ee8e36dca3ad132e4878d321a3ac.setContent(html_8206968d0caace1fe19843b901390bb3);
+            
+        
+
+        circle_marker_50a82694f84828ee4aabfe83a3fe906b.bindPopup(popup_2be7ee8e36dca3ad132e4878d321a3ac)
+        ;
+
+        
+    
+    
+            circle_marker_50a82694f84828ee4aabfe83a3fe906b.bindTooltip(
+                `<div>
+                     #39 Sitarampuram
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_db6d4783d6395c872e7d5da8e7bc290a = L.circleMarker(
+                [13.4440125, 76.1471113],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_03833628d1981896f1a06f064cafad49 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_6487d21711cdda36fc4d37f655677659 = $(`<div id="html_6487d21711cdda36fc4d37f655677659" style="width: 100.0%; height: 100.0%;"><b>#40 Basavanahalli</b><br>Karnataka · Hassan<br>NTL Growth: +621.7%<br>Score: 71.98</div>`)[0];
+                popup_03833628d1981896f1a06f064cafad49.setContent(html_6487d21711cdda36fc4d37f655677659);
+            
+        
+
+        circle_marker_db6d4783d6395c872e7d5da8e7bc290a.bindPopup(popup_03833628d1981896f1a06f064cafad49)
+        ;
+
+        
+    
+    
+            circle_marker_db6d4783d6395c872e7d5da8e7bc290a.bindTooltip(
+                `<div>
+                     #40 Basavanahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5db60485ec83fdf71684a46248666b2f = L.circleMarker(
+                [10.8942073, 78.7878084],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b8583646df46abe3a54746fe508ecf13 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_979391fbdcfb8b655cd8f528567ba760 = $(`<div id="html_979391fbdcfb8b655cd8f528567ba760" style="width: 100.0%; height: 100.0%;"><b>#41 Nagar</b><br>Tamil Nadu · Tiruchirappalli<br>NTL Growth: +1225.3%<br>Score: 71.94</div>`)[0];
+                popup_b8583646df46abe3a54746fe508ecf13.setContent(html_979391fbdcfb8b655cd8f528567ba760);
+            
+        
+
+        circle_marker_5db60485ec83fdf71684a46248666b2f.bindPopup(popup_b8583646df46abe3a54746fe508ecf13)
+        ;
+
+        
+    
+    
+            circle_marker_5db60485ec83fdf71684a46248666b2f.bindTooltip(
+                `<div>
+                     #41 Nagar
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_cfd2ef5430f77194688e21b368857cef = L.circleMarker(
+                [12.952501, 77.0901525],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_7331d8f862230e6cbe94f3a26b9c4dff = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_37e393bdd21748fd8d3c9d498d4d89cd = $(`<div id="html_37e393bdd21748fd8d3c9d498d4d89cd" style="width: 100.0%; height: 100.0%;"><b>#42 Nitturu</b><br>Karnataka · Tumkur<br>NTL Growth: +443.5%<br>Score: 71.93</div>`)[0];
+                popup_7331d8f862230e6cbe94f3a26b9c4dff.setContent(html_37e393bdd21748fd8d3c9d498d4d89cd);
+            
+        
+
+        circle_marker_cfd2ef5430f77194688e21b368857cef.bindPopup(popup_7331d8f862230e6cbe94f3a26b9c4dff)
+        ;
+
+        
+    
+    
+            circle_marker_cfd2ef5430f77194688e21b368857cef.bindTooltip(
+                `<div>
+                     #42 Nitturu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4ec02346f7511e5aa2f28d6806d03153 = L.circleMarker(
+                [17.6021918, 75.6034156],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_fc41f7270ffede749944c6e8efe9d179 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_0803338363729b6772b8e19aacff8c03 = $(`<div id="html_0803338363729b6772b8e19aacff8c03" style="width: 100.0%; height: 100.0%;"><b>#43 Ichgaon</b><br>Maharashtra · Solapur<br>NTL Growth: +537.5%<br>Score: 71.92</div>`)[0];
+                popup_fc41f7270ffede749944c6e8efe9d179.setContent(html_0803338363729b6772b8e19aacff8c03);
+            
+        
+
+        circle_marker_4ec02346f7511e5aa2f28d6806d03153.bindPopup(popup_fc41f7270ffede749944c6e8efe9d179)
+        ;
+
+        
+    
+    
+            circle_marker_4ec02346f7511e5aa2f28d6806d03153.bindTooltip(
+                `<div>
+                     #43 Ichgaon
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dc88da0bea8e774a88035bcacd14fc1d = L.circleMarker(
+                [22.2632833, 83.356533],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_6a1347b6d1ab6e4a2240e7ed2bf6622b = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_9b97cdfda32b4b928ff1275e9a0d4142 = $(`<div id="html_9b97cdfda32b4b928ff1275e9a0d4142" style="width: 100.0%; height: 100.0%;"><b>#44 Gharghoda Tahsil (OSM 7966413158)</b><br>Chhattisgarh · Raigarh<br>NTL Growth: +601.1%<br>Score: 71.89</div>`)[0];
+                popup_6a1347b6d1ab6e4a2240e7ed2bf6622b.setContent(html_9b97cdfda32b4b928ff1275e9a0d4142);
+            
+        
+
+        circle_marker_dc88da0bea8e774a88035bcacd14fc1d.bindPopup(popup_6a1347b6d1ab6e4a2240e7ed2bf6622b)
+        ;
+
+        
+    
+    
+            circle_marker_dc88da0bea8e774a88035bcacd14fc1d.bindTooltip(
+                `<div>
+                     #44 Gharghoda Tahsil (OSM 7966413158)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0e929b5f7ce0dfeec02c70fcc4d7475d = L.circleMarker(
+                [13.2018656, 77.7997984],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_d95cd0a46c2e5171a6c7d8ae1a190eb0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_1506bca89e6a2b54277cf06c2e685d9d = $(`<div id="html_1506bca89e6a2b54277cf06c2e685d9d" style="width: 100.0%; height: 100.0%;"><b>#45 Arasanahalli</b><br>Karnataka · Bangalore Rural<br>NTL Growth: +563.8%<br>Score: 71.87</div>`)[0];
+                popup_d95cd0a46c2e5171a6c7d8ae1a190eb0.setContent(html_1506bca89e6a2b54277cf06c2e685d9d);
+            
+        
+
+        circle_marker_0e929b5f7ce0dfeec02c70fcc4d7475d.bindPopup(popup_d95cd0a46c2e5171a6c7d8ae1a190eb0)
+        ;
+
+        
+    
+    
+            circle_marker_0e929b5f7ce0dfeec02c70fcc4d7475d.bindTooltip(
+                `<div>
+                     #45 Arasanahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_44aca3d5760e4db6b3a222fa4ab97398 = L.circleMarker(
+                [14.9313061, 75.2380008],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_5cb8b8df9f420fe68a164527c2a9bbaf = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_0b93395a02354b7403d6eefcb84ff298 = $(`<div id="html_0b93395a02354b7403d6eefcb84ff298" style="width: 100.0%; height: 100.0%;"><b>#46 Narayanapura</b><br>Karnataka · Haveri<br>NTL Growth: +408.8%<br>Score: 71.78</div>`)[0];
+                popup_5cb8b8df9f420fe68a164527c2a9bbaf.setContent(html_0b93395a02354b7403d6eefcb84ff298);
+            
+        
+
+        circle_marker_44aca3d5760e4db6b3a222fa4ab97398.bindPopup(popup_5cb8b8df9f420fe68a164527c2a9bbaf)
+        ;
+
+        
+    
+    
+            circle_marker_44aca3d5760e4db6b3a222fa4ab97398.bindTooltip(
+                `<div>
+                     #46 Narayanapura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_648b3a9b91adcf4c932727e6a5f7180c = L.circleMarker(
+                [28.1514711, 77.904635],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_5ccb990ac16ab10129d93bdcbe6f3215 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_9f7a60dd4b8d18764bd98d1c080be17b = $(`<div id="html_9f7a60dd4b8d18764bd98d1c080be17b" style="width: 100.0%; height: 100.0%;"><b>#47 Bhuda (OSM 8892986300)</b><br>Uttar Pradesh · Bulandshahr<br>NTL Growth: +1561.7%<br>Score: 71.77</div>`)[0];
+                popup_5ccb990ac16ab10129d93bdcbe6f3215.setContent(html_9f7a60dd4b8d18764bd98d1c080be17b);
+            
+        
+
+        circle_marker_648b3a9b91adcf4c932727e6a5f7180c.bindPopup(popup_5ccb990ac16ab10129d93bdcbe6f3215)
+        ;
+
+        
+    
+    
+            circle_marker_648b3a9b91adcf4c932727e6a5f7180c.bindTooltip(
+                `<div>
+                     #47 Bhuda (OSM 8892986300)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f395d0f3ce455355b36b8e7898eb0486 = L.circleMarker(
+                [24.9012097, 82.1870255],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_d0048a74e9be0c7ee328121b9fe559d1 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_8b4b1d0adf2d353fbc60f46935a34e50 = $(`<div id="html_8b4b1d0adf2d353fbc60f46935a34e50" style="width: 100.0%; height: 100.0%;"><b>#48 Drummondganj (OSM 8311583012)</b><br>Uttar Pradesh · Mirzapur<br>NTL Growth: +414.5%<br>Score: 71.73</div>`)[0];
+                popup_d0048a74e9be0c7ee328121b9fe559d1.setContent(html_8b4b1d0adf2d353fbc60f46935a34e50);
+            
+        
+
+        circle_marker_f395d0f3ce455355b36b8e7898eb0486.bindPopup(popup_d0048a74e9be0c7ee328121b9fe559d1)
+        ;
+
+        
+    
+    
+            circle_marker_f395d0f3ce455355b36b8e7898eb0486.bindTooltip(
+                `<div>
+                     #48 Drummondganj (OSM 8311583012)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b06548f9ae76db12c837d599b6b53def = L.circleMarker(
+                [19.0837766, 75.9567046],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b3165bed97747d1cf81c00259a9d95c0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_27f5fbc64cd113df7e79d800cd0407b9 = $(`<div id="html_27f5fbc64cd113df7e79d800cd0407b9" style="width: 100.0%; height: 100.0%;"><b>#49 Sandarwan</b><br>Maharashtra · Bid<br>NTL Growth: +650.3%<br>Score: 71.67</div>`)[0];
+                popup_b3165bed97747d1cf81c00259a9d95c0.setContent(html_27f5fbc64cd113df7e79d800cd0407b9);
+            
+        
+
+        circle_marker_b06548f9ae76db12c837d599b6b53def.bindPopup(popup_b3165bed97747d1cf81c00259a9d95c0)
+        ;
+
+        
+    
+    
+            circle_marker_b06548f9ae76db12c837d599b6b53def.bindTooltip(
+                `<div>
+                     #49 Sandarwan
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e509d14655119af17f09c201f794acb5 = L.circleMarker(
+                [15.7658501, 74.4899171],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_1f98414aab35d030c4691fa78052a4b4 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_8058abf266984fe5ef4da48e3aba26a8 = $(`<div id="html_8058abf266984fe5ef4da48e3aba26a8" style="width: 100.0%; height: 100.0%;"><b>#50 Jhadashahapura</b><br>Karnataka · Belgaum<br>NTL Growth: +1161.9%<br>Score: 71.65</div>`)[0];
+                popup_1f98414aab35d030c4691fa78052a4b4.setContent(html_8058abf266984fe5ef4da48e3aba26a8);
+            
+        
+
+        circle_marker_e509d14655119af17f09c201f794acb5.bindPopup(popup_1f98414aab35d030c4691fa78052a4b4)
+        ;
+
+        
+    
+    
+            circle_marker_e509d14655119af17f09c201f794acb5.bindTooltip(
+                `<div>
+                     #50 Jhadashahapura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0b40cb0be80622a40d74a71050e3366d = L.circleMarker(
+                [15.5879571, 78.2669895],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_1f18839d3ad582002054cc1fee78cb1d = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_8d98a70f22dc891d31a6d04aa9b4a22c = $(`<div id="html_8d98a70f22dc891d31a6d04aa9b4a22c" style="width: 100.0%; height: 100.0%;"><b>#51 Pinnapuram</b><br>Andhra Pradesh · Kurnool<br>NTL Growth: +460.1%<br>Score: 71.65</div>`)[0];
+                popup_1f18839d3ad582002054cc1fee78cb1d.setContent(html_8d98a70f22dc891d31a6d04aa9b4a22c);
+            
+        
+
+        circle_marker_0b40cb0be80622a40d74a71050e3366d.bindPopup(popup_1f18839d3ad582002054cc1fee78cb1d)
+        ;
+
+        
+    
+    
+            circle_marker_0b40cb0be80622a40d74a71050e3366d.bindTooltip(
+                `<div>
+                     #51 Pinnapuram
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_10789d150ba651eb82963a85cc28ac93 = L.circleMarker(
+                [22.1497088, 83.5115003],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_d2fc182d1933781df9048abb30452066 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_803f5007360227cc1d3b3142aa05cb33 = $(`<div id="html_803f5007360227cc1d3b3142aa05cb33" style="width: 100.0%; height: 100.0%;"><b>#52 Tamnar Tahsil (OSM 7966413062)</b><br>Chhattisgarh · Raigarh<br>NTL Growth: +447.4%<br>Score: 71.63</div>`)[0];
+                popup_d2fc182d1933781df9048abb30452066.setContent(html_803f5007360227cc1d3b3142aa05cb33);
+            
+        
+
+        circle_marker_10789d150ba651eb82963a85cc28ac93.bindPopup(popup_d2fc182d1933781df9048abb30452066)
+        ;
+
+        
+    
+    
+            circle_marker_10789d150ba651eb82963a85cc28ac93.bindTooltip(
+                `<div>
+                     #52 Tamnar Tahsil (OSM 7966413062)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_01e7f6d5a7eb228f88dea86299510154 = L.circleMarker(
+                [27.3748256, 75.4641974],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_83b29a2decb35b51edaa98349d0e4aab = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_db512e61a0bd9a62bc9662d596eda952 = $(`<div id="html_db512e61a0bd9a62bc9662d596eda952" style="width: 100.0%; height: 100.0%;"><b>#53 Santoshpura</b><br>Rajasthan · Sikar<br>NTL Growth: +591.0%<br>Score: 71.63</div>`)[0];
+                popup_83b29a2decb35b51edaa98349d0e4aab.setContent(html_db512e61a0bd9a62bc9662d596eda952);
+            
+        
+
+        circle_marker_01e7f6d5a7eb228f88dea86299510154.bindPopup(popup_83b29a2decb35b51edaa98349d0e4aab)
+        ;
+
+        
+    
+    
+            circle_marker_01e7f6d5a7eb228f88dea86299510154.bindTooltip(
+                `<div>
+                     #53 Santoshpura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c047bb3d63a9f960c690673f261c2b47 = L.circleMarker(
+                [27.1376548, 83.7833261],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_f66528164f9503f74eff96c2ad73fcd8 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_cfa9606910997a13b2a8a18e17053981 = $(`<div id="html_cfa9606910997a13b2a8a18e17053981" style="width: 100.0%; height: 100.0%;"><b>#54 Siswa Bazar (OSM 9161180852)</b><br>Uttar Pradesh · Maharajganj<br>NTL Growth: +379.6%<br>Score: 71.62</div>`)[0];
+                popup_f66528164f9503f74eff96c2ad73fcd8.setContent(html_cfa9606910997a13b2a8a18e17053981);
+            
+        
+
+        circle_marker_c047bb3d63a9f960c690673f261c2b47.bindPopup(popup_f66528164f9503f74eff96c2ad73fcd8)
+        ;
+
+        
+    
+    
+            circle_marker_c047bb3d63a9f960c690673f261c2b47.bindTooltip(
+                `<div>
+                     #54 Siswa Bazar (OSM 9161180852)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_33b60d7e8f417e285e02e411a1c1dffe = L.circleMarker(
+                [14.9573613, 75.2840747],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_09f9b6fc774c229e49b66e75f94927f0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_66a3edf3959763114fc010b961e122c0 = $(`<div id="html_66a3edf3959763114fc010b961e122c0" style="width: 100.0%; height: 100.0%;"><b>#55 Nandihalli</b><br>Karnataka · Haveri<br>NTL Growth: +376.2%<br>Score: 71.61</div>`)[0];
+                popup_09f9b6fc774c229e49b66e75f94927f0.setContent(html_66a3edf3959763114fc010b961e122c0);
+            
+        
+
+        circle_marker_33b60d7e8f417e285e02e411a1c1dffe.bindPopup(popup_09f9b6fc774c229e49b66e75f94927f0)
+        ;
+
+        
+    
+    
+            circle_marker_33b60d7e8f417e285e02e411a1c1dffe.bindTooltip(
+                `<div>
+                     #55 Nandihalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_79236554c4717b740c07f56390b4d6a5 = L.circleMarker(
+                [30.9764513, 78.4383369],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_4b405e30a3e9113837c7c60723a21569 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_f2f4d5072bcda277a936cf4ffa06b1b0 = $(`<div id="html_f2f4d5072bcda277a936cf4ffa06b1b0" style="width: 100.0%; height: 100.0%;"><b>#56 Janki Chatti</b><br>Uttarakhand · Uttarkashi<br>NTL Growth: +736.3%<br>Score: 71.55</div>`)[0];
+                popup_4b405e30a3e9113837c7c60723a21569.setContent(html_f2f4d5072bcda277a936cf4ffa06b1b0);
+            
+        
+
+        circle_marker_79236554c4717b740c07f56390b4d6a5.bindPopup(popup_4b405e30a3e9113837c7c60723a21569)
+        ;
+
+        
+    
+    
+            circle_marker_79236554c4717b740c07f56390b4d6a5.bindTooltip(
+                `<div>
+                     #56 Janki Chatti
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_73adc5fc7c2462decd6a9bde972a56fd = L.circleMarker(
+                [24.9951212, 82.3410058],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_a8aea03c0ac24ca9eee0c856f2494776 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_07a3691b997988ce8531b860f783a641 = $(`<div id="html_07a3691b997988ce8531b860f783a641" style="width: 100.0%; height: 100.0%;"><b>#57 Lalganj (OSM 8311016799)</b><br>Uttar Pradesh · Mirzapur<br>NTL Growth: +409.5%<br>Score: 71.5</div>`)[0];
+                popup_a8aea03c0ac24ca9eee0c856f2494776.setContent(html_07a3691b997988ce8531b860f783a641);
+            
+        
+
+        circle_marker_73adc5fc7c2462decd6a9bde972a56fd.bindPopup(popup_a8aea03c0ac24ca9eee0c856f2494776)
+        ;
+
+        
+    
+    
+            circle_marker_73adc5fc7c2462decd6a9bde972a56fd.bindTooltip(
+                `<div>
+                     #57 Lalganj (OSM 8311016799)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9d5f3c25260342ef11a740dea399fd07 = L.circleMarker(
+                [26.4273851, 71.6890311],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_63bd87b54e27955e6c55981a34f197b9 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_513b85ddfd2ea137201596203f1dbb71 = $(`<div id="html_513b85ddfd2ea137201596203f1dbb71" style="width: 100.0%; height: 100.0%;"><b>#58 Bandhewa</b><br>Rajasthan · Jaisalmer<br>NTL Growth: +778.7%<br>Score: 71.42</div>`)[0];
+                popup_63bd87b54e27955e6c55981a34f197b9.setContent(html_513b85ddfd2ea137201596203f1dbb71);
+            
+        
+
+        circle_marker_9d5f3c25260342ef11a740dea399fd07.bindPopup(popup_63bd87b54e27955e6c55981a34f197b9)
+        ;
+
+        
+    
+    
+            circle_marker_9d5f3c25260342ef11a740dea399fd07.bindTooltip(
+                `<div>
+                     #58 Bandhewa
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_44597d5df1411990516e73e60711fa99 = L.circleMarker(
+                [12.4269802, 76.8529365],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_292adc9657d0a85e0c1fb92097e0126c = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_99780080c5bdccc350109e8692436cb3 = $(`<div id="html_99780080c5bdccc350109e8692436cb3" style="width: 100.0%; height: 100.0%;"><b>#59 Bettahalli</b><br>Karnataka · Mandya<br>NTL Growth: +410.1%<br>Score: 71.41</div>`)[0];
+                popup_292adc9657d0a85e0c1fb92097e0126c.setContent(html_99780080c5bdccc350109e8692436cb3);
+            
+        
+
+        circle_marker_44597d5df1411990516e73e60711fa99.bindPopup(popup_292adc9657d0a85e0c1fb92097e0126c)
+        ;
+
+        
+    
+    
+            circle_marker_44597d5df1411990516e73e60711fa99.bindTooltip(
+                `<div>
+                     #59 Bettahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ad2dda7bd02a42abc0ff006fcbd9030c = L.circleMarker(
+                [12.5589514, 76.4688868],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_208c514bd18700b9a6173fcc1bf0ba8e = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_9137b817ffcaaef509ca68e72d9c8783 = $(`<div id="html_9137b817ffcaaef509ca68e72d9c8783" style="width: 100.0%; height: 100.0%;"><b>#60 Yagachaguppe</b><br>Karnataka · Mandya<br>NTL Growth: +383.0%<br>Score: 71.35</div>`)[0];
+                popup_208c514bd18700b9a6173fcc1bf0ba8e.setContent(html_9137b817ffcaaef509ca68e72d9c8783);
+            
+        
+
+        circle_marker_ad2dda7bd02a42abc0ff006fcbd9030c.bindPopup(popup_208c514bd18700b9a6173fcc1bf0ba8e)
+        ;
+
+        
+    
+    
+            circle_marker_ad2dda7bd02a42abc0ff006fcbd9030c.bindTooltip(
+                `<div>
+                     #60 Yagachaguppe
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_616f65a5392ac53b5e9a1564e71beb17 = L.circleMarker(
+                [14.1746945, 75.3464931],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_5f0eede2fb64ebee6054632e4a583b90 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_681babd1eb7b375a1fcc0fca5e9d814f = $(`<div id="html_681babd1eb7b375a1fcc0fca5e9d814f" style="width: 100.0%; height: 100.0%;"><b>#61 Hittala</b><br>Karnataka · Shimoga<br>NTL Growth: +415.0%<br>Score: 71.35</div>`)[0];
+                popup_5f0eede2fb64ebee6054632e4a583b90.setContent(html_681babd1eb7b375a1fcc0fca5e9d814f);
+            
+        
+
+        circle_marker_616f65a5392ac53b5e9a1564e71beb17.bindPopup(popup_5f0eede2fb64ebee6054632e4a583b90)
+        ;
+
+        
+    
+    
+            circle_marker_616f65a5392ac53b5e9a1564e71beb17.bindTooltip(
+                `<div>
+                     #61 Hittala
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_61b73a6dc4fa58ffde0a12ce9e1b1646 = L.circleMarker(
+                [15.1144541, 75.1142807],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_a17eb04aff5c9806c9160067e07974a6 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_f3d8e9a6aeb0f777ebed27d1f5f8bd23 = $(`<div id="html_f3d8e9a6aeb0f777ebed27d1f5f8bd23" style="width: 100.0%; height: 100.0%;"><b>#62 Kamalanagara</b><br>Karnataka · Dharwad<br>NTL Growth: +385.6%<br>Score: 71.26</div>`)[0];
+                popup_a17eb04aff5c9806c9160067e07974a6.setContent(html_f3d8e9a6aeb0f777ebed27d1f5f8bd23);
+            
+        
+
+        circle_marker_61b73a6dc4fa58ffde0a12ce9e1b1646.bindPopup(popup_a17eb04aff5c9806c9160067e07974a6)
+        ;
+
+        
+    
+    
+            circle_marker_61b73a6dc4fa58ffde0a12ce9e1b1646.bindTooltip(
+                `<div>
+                     #62 Kamalanagara
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_072635fb53ac05625997b8ac420ce054 = L.circleMarker(
+                [12.8330849, 77.0889367],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_3e3df7e97fd08943ff1641e15dbd1603 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_55a9efcd4c8b42475a3568d32e13d18d = $(`<div id="html_55a9efcd4c8b42475a3568d32e13d18d" style="width: 100.0%; height: 100.0%;"><b>#63 Benachakallu</b><br>Karnataka · Tumkur<br>NTL Growth: +424.3%<br>Score: 71.25</div>`)[0];
+                popup_3e3df7e97fd08943ff1641e15dbd1603.setContent(html_55a9efcd4c8b42475a3568d32e13d18d);
+            
+        
+
+        circle_marker_072635fb53ac05625997b8ac420ce054.bindPopup(popup_3e3df7e97fd08943ff1641e15dbd1603)
+        ;
+
+        
+    
+    
+            circle_marker_072635fb53ac05625997b8ac420ce054.bindTooltip(
+                `<div>
+                     #63 Benachakallu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dbcfdd5598869e0e93ab4fdc799e3599 = L.circleMarker(
+                [13.3370875, 76.8108226],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_a1f3bc26a303a682d070be4b3d9a18a9 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_d3d4b0bc4b2a46c0039f01cf47a418d4 = $(`<div id="html_d3d4b0bc4b2a46c0039f01cf47a418d4" style="width: 100.0%; height: 100.0%;"><b>#64 Sopanahalli</b><br>Karnataka · Tumkur<br>NTL Growth: +420.8%<br>Score: 71.23</div>`)[0];
+                popup_a1f3bc26a303a682d070be4b3d9a18a9.setContent(html_d3d4b0bc4b2a46c0039f01cf47a418d4);
+            
+        
+
+        circle_marker_dbcfdd5598869e0e93ab4fdc799e3599.bindPopup(popup_a1f3bc26a303a682d070be4b3d9a18a9)
+        ;
+
+        
+    
+    
+            circle_marker_dbcfdd5598869e0e93ab4fdc799e3599.bindTooltip(
+                `<div>
+                     #64 Sopanahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1ef361872f46d1740511e3e4b132e0d4 = L.circleMarker(
+                [10.1042471, 78.1818116],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_034cf275d05a21049e20b41a84e9effd = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_20b4d2dbd2bc3e71662ad712f7b8c29e = $(`<div id="html_20b4d2dbd2bc3e71662ad712f7b8c29e" style="width: 100.0%; height: 100.0%;"><b>#65 Natham (OSM 9032889824)</b><br>Tamil Nadu · Dindigul<br>NTL Growth: +395.9%<br>Score: 71.23</div>`)[0];
+                popup_034cf275d05a21049e20b41a84e9effd.setContent(html_20b4d2dbd2bc3e71662ad712f7b8c29e);
+            
+        
+
+        circle_marker_1ef361872f46d1740511e3e4b132e0d4.bindPopup(popup_034cf275d05a21049e20b41a84e9effd)
+        ;
+
+        
+    
+    
+            circle_marker_1ef361872f46d1740511e3e4b132e0d4.bindTooltip(
+                `<div>
+                     #65 Natham (OSM 9032889824)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a1b1ecb09f489acc791e16e139695ad3 = L.circleMarker(
+                [22.2764883, 83.3622301],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_062ecddb42b1486bee2ddaf59d30b4ed = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_e95c05cce5bb0673a55432bdba65a7b9 = $(`<div id="html_e95c05cce5bb0673a55432bdba65a7b9" style="width: 100.0%; height: 100.0%;"><b>#66 Gharghoda Tahsil (OSM 7964818613)</b><br>Chhattisgarh · Raigarh<br>NTL Growth: +418.5%<br>Score: 71.21</div>`)[0];
+                popup_062ecddb42b1486bee2ddaf59d30b4ed.setContent(html_e95c05cce5bb0673a55432bdba65a7b9);
+            
+        
+
+        circle_marker_a1b1ecb09f489acc791e16e139695ad3.bindPopup(popup_062ecddb42b1486bee2ddaf59d30b4ed)
+        ;
+
+        
+    
+    
+            circle_marker_a1b1ecb09f489acc791e16e139695ad3.bindTooltip(
+                `<div>
+                     #66 Gharghoda Tahsil (OSM 7964818613)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_942a143fb9eafd32fd68c90b965ead54 = L.circleMarker(
+                [26.8065318, 81.5263347],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_395f92984c59d353b219d7c4ad841656 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_122c2a6da69eb782c1a063782d23f0fb = $(`<div id="html_122c2a6da69eb782c1a063782d23f0fb" style="width: 100.0%; height: 100.0%;"><b>#67 राम स्नेही घाट</b><br>Uttar Pradesh · Barabanki<br>NTL Growth: +479.6%<br>Score: 71.17</div>`)[0];
+                popup_395f92984c59d353b219d7c4ad841656.setContent(html_122c2a6da69eb782c1a063782d23f0fb);
+            
+        
+
+        circle_marker_942a143fb9eafd32fd68c90b965ead54.bindPopup(popup_395f92984c59d353b219d7c4ad841656)
+        ;
+
+        
+    
+    
+            circle_marker_942a143fb9eafd32fd68c90b965ead54.bindTooltip(
+                `<div>
+                     #67 राम स्नेही घाट
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_cfbe5f08616732168f485eb4a8e9f1ca = L.circleMarker(
+                [12.5519259, 76.4619072],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_a829b302c48ff5ca42e492f999a60362 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_3da8e039b4f51a45efc70ce45d4e29f9 = $(`<div id="html_3da8e039b4f51a45efc70ce45d4e29f9" style="width: 100.0%; height: 100.0%;"><b>#68 Kattahalli</b><br>Karnataka · Mandya<br>NTL Growth: +389.9%<br>Score: 71.14</div>`)[0];
+                popup_a829b302c48ff5ca42e492f999a60362.setContent(html_3da8e039b4f51a45efc70ce45d4e29f9);
+            
+        
+
+        circle_marker_cfbe5f08616732168f485eb4a8e9f1ca.bindPopup(popup_a829b302c48ff5ca42e492f999a60362)
+        ;
+
+        
+    
+    
+            circle_marker_cfbe5f08616732168f485eb4a8e9f1ca.bindTooltip(
+                `<div>
+                     #68 Kattahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_094f36c4f0e779c1fe1c63f9010ffd9e = L.circleMarker(
+                [29.2263731, 79.4903651],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_82e3262ae876db266d14d73fa0854b4a = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_edfb67cdccb41cca54ad0008da1c5c48 = $(`<div id="html_edfb67cdccb41cca54ad0008da1c5c48" style="width: 100.0%; height: 100.0%;"><b>#69 Lohariasal Talla</b><br>Uttarakhand · Nainital<br>NTL Growth: +357.2%<br>Score: 71.12</div>`)[0];
+                popup_82e3262ae876db266d14d73fa0854b4a.setContent(html_edfb67cdccb41cca54ad0008da1c5c48);
+            
+        
+
+        circle_marker_094f36c4f0e779c1fe1c63f9010ffd9e.bindPopup(popup_82e3262ae876db266d14d73fa0854b4a)
+        ;
+
+        
+    
+    
+            circle_marker_094f36c4f0e779c1fe1c63f9010ffd9e.bindTooltip(
+                `<div>
+                     #69 Lohariasal Talla
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1416ae0d0f683c223995aed401629797 = L.circleMarker(
+                [15.3815195, 79.0345165],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_31c9b24482b8e080bd245f2ac3a2b775 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_f9cde6e25a4930dc3946e24709724308 = $(`<div id="html_f9cde6e25a4930dc3946e24709724308" style="width: 100.0%; height: 100.0%;"><b>#70 Taticherla - Motu Circle</b><br>Andhra Pradesh · Prakasam<br>NTL Growth: +434.5%<br>Score: 71.11</div>`)[0];
+                popup_31c9b24482b8e080bd245f2ac3a2b775.setContent(html_f9cde6e25a4930dc3946e24709724308);
+            
+        
+
+        circle_marker_1416ae0d0f683c223995aed401629797.bindPopup(popup_31c9b24482b8e080bd245f2ac3a2b775)
+        ;
+
+        
+    
+    
+            circle_marker_1416ae0d0f683c223995aed401629797.bindTooltip(
+                `<div>
+                     #70 Taticherla - Motu Circle
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d5e51cced147236bd90564176154d955 = L.circleMarker(
+                [17.4575298, 75.3324258],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_36b1193913b428abddb4d4c8e8b99a09 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_63e551cb565eaf3dcb1762451b2897e8 = $(`<div id="html_63e551cb565eaf3dcb1762451b2897e8" style="width: 100.0%; height: 100.0%;"><b>#71 Dharanwadi</b><br>Maharashtra · Solapur<br>NTL Growth: +455.1%<br>Score: 71.04</div>`)[0];
+                popup_36b1193913b428abddb4d4c8e8b99a09.setContent(html_63e551cb565eaf3dcb1762451b2897e8);
+            
+        
+
+        circle_marker_d5e51cced147236bd90564176154d955.bindPopup(popup_36b1193913b428abddb4d4c8e8b99a09)
+        ;
+
+        
+    
+    
+            circle_marker_d5e51cced147236bd90564176154d955.bindTooltip(
+                `<div>
+                     #71 Dharanwadi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_41cd27b80a2a76c3507795a3035e9aa1 = L.circleMarker(
+                [22.871035, 71.8939303],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_dc9ba7291cbcb46bdc48ef4bbbc5b778 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_0057e90324fe630831c2bc2b4b5de04a = $(`<div id="html_0057e90324fe630831c2bc2b4b5de04a" style="width: 100.0%; height: 100.0%;"><b>#72 Lakhtar Taluka (OSM 8039800306)</b><br>Gujarat · Surendranagar<br>NTL Growth: +424.9%<br>Score: 71.03</div>`)[0];
+                popup_dc9ba7291cbcb46bdc48ef4bbbc5b778.setContent(html_0057e90324fe630831c2bc2b4b5de04a);
+            
+        
+
+        circle_marker_41cd27b80a2a76c3507795a3035e9aa1.bindPopup(popup_dc9ba7291cbcb46bdc48ef4bbbc5b778)
+        ;
+
+        
+    
+    
+            circle_marker_41cd27b80a2a76c3507795a3035e9aa1.bindTooltip(
+                `<div>
+                     #72 Lakhtar Taluka (OSM 8039800306)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_09234cbf8a1f483847479385e689a167 = L.circleMarker(
+                [22.2795461, 82.2228169],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_26439886db5d493e85b9a68843338143 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_2bb88a93b15f292353b6a8f581b206b3 = $(`<div id="html_2bb88a93b15f292353b6a8f581b206b3" style="width: 100.0%; height: 100.0%;"><b>#73 Ratanpur (OSM 8016228489)</b><br>Chhattisgarh · Bilaspur<br>NTL Growth: +497.4%<br>Score: 71.02</div>`)[0];
+                popup_26439886db5d493e85b9a68843338143.setContent(html_2bb88a93b15f292353b6a8f581b206b3);
+            
+        
+
+        circle_marker_09234cbf8a1f483847479385e689a167.bindPopup(popup_26439886db5d493e85b9a68843338143)
+        ;
+
+        
+    
+    
+            circle_marker_09234cbf8a1f483847479385e689a167.bindTooltip(
+                `<div>
+                     #73 Ratanpur (OSM 8016228489)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_895fa83c71f639f3f90be15192fed1a2 = L.circleMarker(
+                [12.6838624, 76.9449554],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_6d6223eedd5ee2c5636afc6f14b3a830 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_6c8e2f62656c9af303c85de74c7ef96b = $(`<div id="html_6c8e2f62656c9af303c85de74c7ef96b" style="width: 100.0%; height: 100.0%;"><b>#74 Guluru</b><br>Karnataka · Mandya<br>NTL Growth: +385.3%<br>Score: 71.02</div>`)[0];
+                popup_6d6223eedd5ee2c5636afc6f14b3a830.setContent(html_6c8e2f62656c9af303c85de74c7ef96b);
+            
+        
+
+        circle_marker_895fa83c71f639f3f90be15192fed1a2.bindPopup(popup_6d6223eedd5ee2c5636afc6f14b3a830)
+        ;
+
+        
+    
+    
+            circle_marker_895fa83c71f639f3f90be15192fed1a2.bindTooltip(
+                `<div>
+                     #74 Guluru
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f7c69c12cde54553e6b59d7452249c4a = L.circleMarker(
+                [12.0533633, 76.6865798],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_0d71223197a729f7f907b44b8d4f0551 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_00c85d12590a08ee44e15e4a46a4d402 = $(`<div id="html_00c85d12590a08ee44e15e4a46a4d402" style="width: 100.0%; height: 100.0%;"><b>#75 Sindhuvalli</b><br>Karnataka · Mysore<br>NTL Growth: +491.3%<br>Score: 71.01</div>`)[0];
+                popup_0d71223197a729f7f907b44b8d4f0551.setContent(html_00c85d12590a08ee44e15e4a46a4d402);
+            
+        
+
+        circle_marker_f7c69c12cde54553e6b59d7452249c4a.bindPopup(popup_0d71223197a729f7f907b44b8d4f0551)
+        ;
+
+        
+    
+    
+            circle_marker_f7c69c12cde54553e6b59d7452249c4a.bindTooltip(
+                `<div>
+                     #75 Sindhuvalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b0b20c03c8b00fc90d00ad6f9e221514 = L.circleMarker(
+                [13.2842554, 77.6136524],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_5a735c61c2bf09099c28337d0da61243 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_4447a2853f4b0837b84e037517b56434 = $(`<div id="html_4447a2853f4b0837b84e037517b56434" style="width: 100.0%; height: 100.0%;"><b>#76 Birasandra</b><br>Karnataka · Bangalore Rural<br>NTL Growth: +375.2%<br>Score: 70.99</div>`)[0];
+                popup_5a735c61c2bf09099c28337d0da61243.setContent(html_4447a2853f4b0837b84e037517b56434);
+            
+        
+
+        circle_marker_b0b20c03c8b00fc90d00ad6f9e221514.bindPopup(popup_5a735c61c2bf09099c28337d0da61243)
+        ;
+
+        
+    
+    
+            circle_marker_b0b20c03c8b00fc90d00ad6f9e221514.bindTooltip(
+                `<div>
+                     #76 Birasandra
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6b3dc7ee5732c8b9c9f9bd75a9af0f22 = L.circleMarker(
+                [12.0334796, 76.8940567],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_dd5507c2d718ef4b9e3036b11c3aeaa4 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_effade778e89f1b79f16fba2ad980d6e = $(`<div id="html_effade778e89f1b79f16fba2ad980d6e" style="width: 100.0%; height: 100.0%;"><b>#77 Dasanuru</b><br>Karnataka · Mysore<br>NTL Growth: +382.8%<br>Score: 70.98</div>`)[0];
+                popup_dd5507c2d718ef4b9e3036b11c3aeaa4.setContent(html_effade778e89f1b79f16fba2ad980d6e);
+            
+        
+
+        circle_marker_6b3dc7ee5732c8b9c9f9bd75a9af0f22.bindPopup(popup_dd5507c2d718ef4b9e3036b11c3aeaa4)
+        ;
+
+        
+    
+    
+            circle_marker_6b3dc7ee5732c8b9c9f9bd75a9af0f22.bindTooltip(
+                `<div>
+                     #77 Dasanuru
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1fcb893410d59a430e93a2611e3fe23a = L.circleMarker(
+                [16.9861297, 81.486605],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_59fc3fa0dcb51929f99db35249905441 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_c9d67d2fb24d3f1ec2507cd3c6a0359a = $(`<div id="html_c9d67d2fb24d3f1ec2507cd3c6a0359a" style="width: 100.0%; height: 100.0%;"><b>#78 Suryanarayanapuram</b><br>Andhra Pradesh · West Godavari<br>NTL Growth: +645.1%<br>Score: 70.95</div>`)[0];
+                popup_59fc3fa0dcb51929f99db35249905441.setContent(html_c9d67d2fb24d3f1ec2507cd3c6a0359a);
+            
+        
+
+        circle_marker_1fcb893410d59a430e93a2611e3fe23a.bindPopup(popup_59fc3fa0dcb51929f99db35249905441)
+        ;
+
+        
+    
+    
+            circle_marker_1fcb893410d59a430e93a2611e3fe23a.bindTooltip(
+                `<div>
+                     #78 Suryanarayanapuram
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e1091b5e77e653b621fca45805a7e6c0 = L.circleMarker(
+                [9.4186756, 76.8604196],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_fcda8e32f06f12476ab1571db57e285c = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_65b451fde3ac92145ef8d11dfbf0b825 = $(`<div id="html_65b451fde3ac92145ef8d11dfbf0b825" style="width: 100.0%; height: 100.0%;"><b>#79 Mannadisala</b><br>Kerala · Pathanamthitta<br>NTL Growth: +396.5%<br>Score: 70.94</div>`)[0];
+                popup_fcda8e32f06f12476ab1571db57e285c.setContent(html_65b451fde3ac92145ef8d11dfbf0b825);
+            
+        
+
+        circle_marker_e1091b5e77e653b621fca45805a7e6c0.bindPopup(popup_fcda8e32f06f12476ab1571db57e285c)
+        ;
+
+        
+    
+    
+            circle_marker_e1091b5e77e653b621fca45805a7e6c0.bindTooltip(
+                `<div>
+                     #79 Mannadisala
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f3f9657e9d2bd215442a00e497a3542d = L.circleMarker(
+                [21.1554279, 83.4292531],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_ef252504baa92eac69526ada8594f8a0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_0402b36e223e8ce962859fe2f6486b8c = $(`<div id="html_0402b36e223e8ce962859fe2f6486b8c" style="width: 100.0%; height: 100.0%;"><b>#80 Kesaipāli</b><br>Odisha · Bargarh<br>NTL Growth: +457.4%<br>Score: 70.75</div>`)[0];
+                popup_ef252504baa92eac69526ada8594f8a0.setContent(html_0402b36e223e8ce962859fe2f6486b8c);
+            
+        
+
+        circle_marker_f3f9657e9d2bd215442a00e497a3542d.bindPopup(popup_ef252504baa92eac69526ada8594f8a0)
+        ;
+
+        
+    
+    
+            circle_marker_f3f9657e9d2bd215442a00e497a3542d.bindTooltip(
+                `<div>
+                     #80 Kesaipāli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9841698f10bca19a81a23632d0642a7f = L.circleMarker(
+                [29.4089798, 74.6531362],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_ad0016d384c9be74f73ad3eeb0c8db4e = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_c30259d46e73e19c359071017e082a9c = $(`<div id="html_c30259d46e73e19c359071017e082a9c" style="width: 100.0%; height: 100.0%;"><b>#81 Mithanpur</b><br>Haryana · Sirsa<br>NTL Growth: +428.0%<br>Score: 70.74</div>`)[0];
+                popup_ad0016d384c9be74f73ad3eeb0c8db4e.setContent(html_c30259d46e73e19c359071017e082a9c);
+            
+        
+
+        circle_marker_9841698f10bca19a81a23632d0642a7f.bindPopup(popup_ad0016d384c9be74f73ad3eeb0c8db4e)
+        ;
+
+        
+    
+    
+            circle_marker_9841698f10bca19a81a23632d0642a7f.bindTooltip(
+                `<div>
+                     #81 Mithanpur
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3796f2ed9620e5e2bf2fb86ea6beadc7 = L.circleMarker(
+                [26.5255953, 76.2490108],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_7c36c4b545833fc60aaf920049e50fb4 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_b4d87e542ef282c02c4cf681eefcad1a = $(`<div id="html_b4d87e542ef282c02c4cf681eefcad1a" style="width: 100.0%; height: 100.0%;"><b>#82 Bar Ka Para</b><br>Rajasthan · Dausa<br>NTL Growth: +1338.0%<br>Score: 70.68</div>`)[0];
+                popup_7c36c4b545833fc60aaf920049e50fb4.setContent(html_b4d87e542ef282c02c4cf681eefcad1a);
+            
+        
+
+        circle_marker_3796f2ed9620e5e2bf2fb86ea6beadc7.bindPopup(popup_7c36c4b545833fc60aaf920049e50fb4)
+        ;
+
+        
+    
+    
+            circle_marker_3796f2ed9620e5e2bf2fb86ea6beadc7.bindTooltip(
+                `<div>
+                     #82 Bar Ka Para
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_915d28e2ce08fb2c60197492ab5058a2 = L.circleMarker(
+                [27.034358, 82.6471424],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_1957357f8e9f34343d719743b8956bc0 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_f777cbce76b5d388f40700b7e9884a2b = $(`<div id="html_f777cbce76b5d388f40700b7e9884a2b" style="width: 100.0%; height: 100.0%;"><b>#83 Bhanpur (OSM 9159389472)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +333.8%<br>Score: 70.67</div>`)[0];
+                popup_1957357f8e9f34343d719743b8956bc0.setContent(html_f777cbce76b5d388f40700b7e9884a2b);
+            
+        
+
+        circle_marker_915d28e2ce08fb2c60197492ab5058a2.bindPopup(popup_1957357f8e9f34343d719743b8956bc0)
+        ;
+
+        
+    
+    
+            circle_marker_915d28e2ce08fb2c60197492ab5058a2.bindTooltip(
+                `<div>
+                     #83 Bhanpur (OSM 9159389472)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_01a5d63eb45b74b174710c07ede6d4ad = L.circleMarker(
+                [12.5693707, 76.7450726],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_7f2994b6abb0ef7440df16cb79ed242c = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_bc1515720c37b47fcb1cc8a5d14bcc3a = $(`<div id="html_bc1515720c37b47fcb1cc8a5d14bcc3a" style="width: 100.0%; height: 100.0%;"><b>#84 Kalenahalli</b><br>Karnataka · Mandya<br>NTL Growth: +379.8%<br>Score: 70.65</div>`)[0];
+                popup_7f2994b6abb0ef7440df16cb79ed242c.setContent(html_bc1515720c37b47fcb1cc8a5d14bcc3a);
+            
+        
+
+        circle_marker_01a5d63eb45b74b174710c07ede6d4ad.bindPopup(popup_7f2994b6abb0ef7440df16cb79ed242c)
+        ;
+
+        
+    
+    
+            circle_marker_01a5d63eb45b74b174710c07ede6d4ad.bindTooltip(
+                `<div>
+                     #84 Kalenahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c246d09fee72e3352f15fc0224b2626f = L.circleMarker(
+                [17.0182967, 74.8064446],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_365f74b8fbb89ffc7b9e3e698c1617e7 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_079842c18a0e9acc99c28bcc03447210 = $(`<div id="html_079842c18a0e9acc99c28bcc03447210" style="width: 100.0%; height: 100.0%;"><b>#85 Shiradhon</b><br>Maharashtra · Sangli<br>NTL Growth: +406.0%<br>Score: 70.52</div>`)[0];
+                popup_365f74b8fbb89ffc7b9e3e698c1617e7.setContent(html_079842c18a0e9acc99c28bcc03447210);
+            
+        
+
+        circle_marker_c246d09fee72e3352f15fc0224b2626f.bindPopup(popup_365f74b8fbb89ffc7b9e3e698c1617e7)
+        ;
+
+        
+    
+    
+            circle_marker_c246d09fee72e3352f15fc0224b2626f.bindTooltip(
+                `<div>
+                     #85 Shiradhon
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_14f498feb77c7060927a42c4e937c60f = L.circleMarker(
+                [19.9001053, 75.6932956],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_db9015fded0ad0edfc386914b34aa625 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_af6b0e6e0db5a554f70da771f110a692 = $(`<div id="html_af6b0e6e0db5a554f70da771f110a692" style="width: 100.0%; height: 100.0%;"><b>#86 Dudhanwadi</b><br>Maharashtra · Jalna<br>NTL Growth: +414.0%<br>Score: 70.52</div>`)[0];
+                popup_db9015fded0ad0edfc386914b34aa625.setContent(html_af6b0e6e0db5a554f70da771f110a692);
+            
+        
+
+        circle_marker_14f498feb77c7060927a42c4e937c60f.bindPopup(popup_db9015fded0ad0edfc386914b34aa625)
+        ;
+
+        
+    
+    
+            circle_marker_14f498feb77c7060927a42c4e937c60f.bindTooltip(
+                `<div>
+                     #86 Dudhanwadi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_2867a3c9254d7e614a8f1011d81f4adc = L.circleMarker(
+                [11.2230607, 79.4784483],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b397c390fabef855274ccedd34f5914e = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_c54c6817773df66872ff551278469b6d = $(`<div id="html_c54c6817773df66872ff551278469b6d" style="width: 100.0%; height: 100.0%;"><b>#87 Kailasapuram</b><br>Tamil Nadu · Ariyalur<br>NTL Growth: +354.0%<br>Score: 70.51</div>`)[0];
+                popup_b397c390fabef855274ccedd34f5914e.setContent(html_c54c6817773df66872ff551278469b6d);
+            
+        
+
+        circle_marker_2867a3c9254d7e614a8f1011d81f4adc.bindPopup(popup_b397c390fabef855274ccedd34f5914e)
+        ;
+
+        
+    
+    
+            circle_marker_2867a3c9254d7e614a8f1011d81f4adc.bindTooltip(
+                `<div>
+                     #87 Kailasapuram
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_996247c87bad7384e3db377a7519ccab = L.circleMarker(
+                [29.9007447, 79.6204948],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_4b788c4591a092cb3b3a6e1231121965 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_195a7fbcde8ec1192c3125c6563387c7 = $(`<div id="html_195a7fbcde8ec1192c3125c6563387c7" style="width: 100.0%; height: 100.0%;"><b>#88 Garaser</b><br>Uttarakhand · Bageshwar<br>NTL Growth: +373.0%<br>Score: 70.5</div>`)[0];
+                popup_4b788c4591a092cb3b3a6e1231121965.setContent(html_195a7fbcde8ec1192c3125c6563387c7);
+            
+        
+
+        circle_marker_996247c87bad7384e3db377a7519ccab.bindPopup(popup_4b788c4591a092cb3b3a6e1231121965)
+        ;
+
+        
+    
+    
+            circle_marker_996247c87bad7384e3db377a7519ccab.bindTooltip(
+                `<div>
+                     #88 Garaser
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0675f85bbd365a9666e8798933bd2b91 = L.circleMarker(
+                [34.5563178, 76.1634493],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_547a27cd84d44af319702bd8586c1f34 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_31ec181a68be382443817a17f489ddbc = $(`<div id="html_31ec181a68be382443817a17f489ddbc" style="width: 100.0%; height: 100.0%;"><b>#89 Akchamal</b><br>Ladakh · Kargil<br>NTL Growth: +348.2%<br>Score: 70.46</div>`)[0];
+                popup_547a27cd84d44af319702bd8586c1f34.setContent(html_31ec181a68be382443817a17f489ddbc);
+            
+        
+
+        circle_marker_0675f85bbd365a9666e8798933bd2b91.bindPopup(popup_547a27cd84d44af319702bd8586c1f34)
+        ;
+
+        
+    
+    
+            circle_marker_0675f85bbd365a9666e8798933bd2b91.bindTooltip(
+                `<div>
+                     #89 Akchamal
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3ee9c65afeae9784a0c1dc5b09dc034c = L.circleMarker(
+                [26.6900462, 82.0408344],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_a3339873bd836562cfa3efa9fc31d61e = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_d27b8ffc6cf401947d2094d787a99142 = $(`<div id="html_d27b8ffc6cf401947d2094d787a99142" style="width: 100.0%; height: 100.0%;"><b>#90 Sohawal (OSM 8180001762)</b><br>Uttar Pradesh · Faizabad<br>NTL Growth: +382.7%<br>Score: 70.44</div>`)[0];
+                popup_a3339873bd836562cfa3efa9fc31d61e.setContent(html_d27b8ffc6cf401947d2094d787a99142);
+            
+        
+
+        circle_marker_3ee9c65afeae9784a0c1dc5b09dc034c.bindPopup(popup_a3339873bd836562cfa3efa9fc31d61e)
+        ;
+
+        
+    
+    
+            circle_marker_3ee9c65afeae9784a0c1dc5b09dc034c.bindTooltip(
+                `<div>
+                     #90 Sohawal (OSM 8180001762)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_19abcfb4da3980835f155f087601905e = L.circleMarker(
+                [12.7449611, 76.9975074],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_8c88d995eb275aa005c9c6ec454ea4e5 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_9a6920dc1844ec9de407d7cf2f28f705 = $(`<div id="html_9a6920dc1844ec9de407d7cf2f28f705" style="width: 100.0%; height: 100.0%;"><b>#91 Byaladakere</b><br>Karnataka · Mandya<br>NTL Growth: +376.9%<br>Score: 70.43</div>`)[0];
+                popup_8c88d995eb275aa005c9c6ec454ea4e5.setContent(html_9a6920dc1844ec9de407d7cf2f28f705);
+            
+        
+
+        circle_marker_19abcfb4da3980835f155f087601905e.bindPopup(popup_8c88d995eb275aa005c9c6ec454ea4e5)
+        ;
+
+        
+    
+    
+            circle_marker_19abcfb4da3980835f155f087601905e.bindTooltip(
+                `<div>
+                     #91 Byaladakere
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_bd8133f2111db79d3626154efa67b3d8 = L.circleMarker(
+                [27.3526532, 82.6672697],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_b3a0a04370309707b3f0b13a32042382 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_1a1f41a3c5d27a6db7a3a7dfb2b6012a = $(`<div id="html_1a1f41a3c5d27a6db7a3a7dfb2b6012a" style="width: 100.0%; height: 100.0%;"><b>#92 Itwa (OSM 8125936719)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +332.0%<br>Score: 70.42</div>`)[0];
+                popup_b3a0a04370309707b3f0b13a32042382.setContent(html_1a1f41a3c5d27a6db7a3a7dfb2b6012a);
+            
+        
+
+        circle_marker_bd8133f2111db79d3626154efa67b3d8.bindPopup(popup_b3a0a04370309707b3f0b13a32042382)
+        ;
+
+        
+    
+    
+            circle_marker_bd8133f2111db79d3626154efa67b3d8.bindTooltip(
+                `<div>
+                     #92 Itwa (OSM 8125936719)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ed2fe98609e7e84f106ebf994a741dde = L.circleMarker(
+                [24.9136069, 82.2052538],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_173909c890719abe7215fdc6fde092cd = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_3e0f6159c57c70c12c38584d5e4ab198 = $(`<div id="html_3e0f6159c57c70c12c38584d5e4ab198" style="width: 100.0%; height: 100.0%;"><b>#93 Lalganj (OSM 8311432237)</b><br>Uttar Pradesh · Mirzapur<br>NTL Growth: +375.0%<br>Score: 70.36</div>`)[0];
+                popup_173909c890719abe7215fdc6fde092cd.setContent(html_3e0f6159c57c70c12c38584d5e4ab198);
+            
+        
+
+        circle_marker_ed2fe98609e7e84f106ebf994a741dde.bindPopup(popup_173909c890719abe7215fdc6fde092cd)
+        ;
+
+        
+    
+    
+            circle_marker_ed2fe98609e7e84f106ebf994a741dde.bindTooltip(
+                `<div>
+                     #93 Lalganj (OSM 8311432237)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8630f3695203a77e7492c1e1a996c162 = L.circleMarker(
+                [13.2944699, 77.6276794],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_f4473ad66fc2c2f8cf61b0091e24227a = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_5dcabce5877613b89d291c72cae82baa = $(`<div id="html_5dcabce5877613b89d291c72cae82baa" style="width: 100.0%; height: 100.0%;"><b>#94 Jyotipura</b><br>Karnataka · Bangalore Rural<br>NTL Growth: +330.0%<br>Score: 70.23</div>`)[0];
+                popup_f4473ad66fc2c2f8cf61b0091e24227a.setContent(html_5dcabce5877613b89d291c72cae82baa);
+            
+        
+
+        circle_marker_8630f3695203a77e7492c1e1a996c162.bindPopup(popup_f4473ad66fc2c2f8cf61b0091e24227a)
+        ;
+
+        
+    
+    
+            circle_marker_8630f3695203a77e7492c1e1a996c162.bindTooltip(
+                `<div>
+                     #94 Jyotipura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6e3358c52819fd4f45a517e347411185 = L.circleMarker(
+                [14.5262057, 76.4890026],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_cc466978a04dba56b8a751ad43c55d51 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_5a146d91070dd539459360bdc588263b = $(`<div id="html_5a146d91070dd539459360bdc588263b" style="width: 100.0%; height: 100.0%;"><b>#95 Kamandalagondi</b><br>Karnataka · Davanagere<br>NTL Growth: +370.1%<br>Score: 70.22</div>`)[0];
+                popup_cc466978a04dba56b8a751ad43c55d51.setContent(html_5a146d91070dd539459360bdc588263b);
+            
+        
+
+        circle_marker_6e3358c52819fd4f45a517e347411185.bindPopup(popup_cc466978a04dba56b8a751ad43c55d51)
+        ;
+
+        
+    
+    
+            circle_marker_6e3358c52819fd4f45a517e347411185.bindTooltip(
+                `<div>
+                     #95 Kamandalagondi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_cbdc76196659411cfd714ac98b12cadf = L.circleMarker(
+                [27.179447, 83.7930679],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_053e34cf532e01e0999857c7b5ea71ac = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_1046f6e5ee90e9c58ffa840a1f9f7450 = $(`<div id="html_1046f6e5ee90e9c58ffa840a1f9f7450" style="width: 100.0%; height: 100.0%;"><b>#96 Siswa Bazar (OSM 9161180877)</b><br>Uttar Pradesh · Kushinagar<br>NTL Growth: +331.3%<br>Score: 70.15</div>`)[0];
+                popup_053e34cf532e01e0999857c7b5ea71ac.setContent(html_1046f6e5ee90e9c58ffa840a1f9f7450);
+            
+        
+
+        circle_marker_cbdc76196659411cfd714ac98b12cadf.bindPopup(popup_053e34cf532e01e0999857c7b5ea71ac)
+        ;
+
+        
+    
+    
+            circle_marker_cbdc76196659411cfd714ac98b12cadf.bindTooltip(
+                `<div>
+                     #96 Siswa Bazar (OSM 9161180877)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7e2a5b875ab0ec4a962bef1912a93556 = L.circleMarker(
+                [17.9490071, 76.9654529],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_63e3287a7d55aebb3b520a7bc93e3aff = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_28e2faf62201b28cbd3331182088d176 = $(`<div id="html_28e2faf62201b28cbd3331182088d176" style="width: 100.0%; height: 100.0%;"><b>#97 Belura Tanda</b><br>Karnataka · Bidar<br>NTL Growth: +374.2%<br>Score: 70.13</div>`)[0];
+                popup_63e3287a7d55aebb3b520a7bc93e3aff.setContent(html_28e2faf62201b28cbd3331182088d176);
+            
+        
+
+        circle_marker_7e2a5b875ab0ec4a962bef1912a93556.bindPopup(popup_63e3287a7d55aebb3b520a7bc93e3aff)
+        ;
+
+        
+    
+    
+            circle_marker_7e2a5b875ab0ec4a962bef1912a93556.bindTooltip(
+                `<div>
+                     #97 Belura Tanda
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_140de29e92ae58d943de121475b54a66 = L.circleMarker(
+                [12.8309657, 76.4034327],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_1b59ac1cfdb63fc026dd0e6b102d4382 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_7ef1e3886444d19bfb9fbe9f9e6e9a6c = $(`<div id="html_7ef1e3886444d19bfb9fbe9f9e6e9a6c" style="width: 100.0%; height: 100.0%;"><b>#98 Anche Biranahalli</b><br>Karnataka · Mandya<br>NTL Growth: +364.0%<br>Score: 70.12</div>`)[0];
+                popup_1b59ac1cfdb63fc026dd0e6b102d4382.setContent(html_7ef1e3886444d19bfb9fbe9f9e6e9a6c);
+            
+        
+
+        circle_marker_140de29e92ae58d943de121475b54a66.bindPopup(popup_1b59ac1cfdb63fc026dd0e6b102d4382)
+        ;
+
+        
+    
+    
+            circle_marker_140de29e92ae58d943de121475b54a66.bindTooltip(
+                `<div>
+                     #98 Anche Biranahalli
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3b3ca6a86944675bfebcd2f574fbeb96 = L.circleMarker(
+                [27.1917392, 82.492218],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_0968b227d42debadca068f97913c821f = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_20bdba1c273699a545778dd4f30fba4d = $(`<div id="html_20bdba1c273699a545778dd4f30fba4d" style="width: 100.0%; height: 100.0%;"><b>#99 Domariyaganj (OSM 8128089583)</b><br>Uttar Pradesh · Siddharth Nagar<br>NTL Growth: +297.5%<br>Score: 70.07</div>`)[0];
+                popup_0968b227d42debadca068f97913c821f.setContent(html_20bdba1c273699a545778dd4f30fba4d);
+            
+        
+
+        circle_marker_3b3ca6a86944675bfebcd2f574fbeb96.bindPopup(popup_0968b227d42debadca068f97913c821f)
+        ;
+
+        
+    
+    
+            circle_marker_3b3ca6a86944675bfebcd2f574fbeb96.bindTooltip(
+                `<div>
+                     #99 Domariyaganj (OSM 8128089583)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b6fa6952eba4d9577f986647d4ce942e = L.circleMarker(
+                [12.3090581, 76.990956],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2);
+        
+    
+        var popup_c896880298b8a4c9b012a8270da19c31 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_12fa4b688c1ff069813cad1194252c8e = $(`<div id="html_12fa4b688c1ff069813cad1194252c8e" style="width: 100.0%; height: 100.0%;"><b>#100 Ramegaudanapura</b><br>Karnataka · Mandya<br>NTL Growth: +348.4%<br>Score: 70.04</div>`)[0];
+                popup_c896880298b8a4c9b012a8270da19c31.setContent(html_12fa4b688c1ff069813cad1194252c8e);
+            
+        
+
+        circle_marker_b6fa6952eba4d9577f986647d4ce942e.bindPopup(popup_c896880298b8a4c9b012a8270da19c31)
+        ;
+
+        
+    
+    
+            circle_marker_b6fa6952eba4d9577f986647d4ce942e.bindTooltip(
+                `<div>
+                     #100 Ramegaudanapura
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            marker_cluster_fafaef033744f8c3ec0fc6f9d40603b2.addTo(map_9a170a309f3705a978d9d3f10ca60d2e);
+        
+</script>
+</html>

@@ -11,13 +11,12 @@ Identifies a **top-100 shortlist of satellite-confirmed high-growth villages** i
 
 | Resource | URL |
 |----------|-----|
-| **Interactive Dashboard** | `http://<EC2_IP>:8501` (IP changes on restart — see below) |
-| **REST API** | `http://<EC2_IP>:8502/docs` (IP changes on restart — see below) |
-| **Top 100 CSV** | https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/top_100_villages.csv |
-| **Interactive Map** | https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/map.html |
-| **Score Breakdown** | https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_score_breakdown.html |
-| **Forecast Chart** | https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_forecast.html |
-| **Validation Report** | https://kritter-village-growth-335451551223.s3.ap-south-1.amazonaws.com/chart_validation.html |
+| **GitHub Pages** | https://ishunteam-png.github.io/kritter-village-growth/ |
+| **Interactive Map** | https://ishunteam-png.github.io/kritter-village-growth/map.html |
+| **Score Breakdown** | https://ishunteam-png.github.io/kritter-village-growth/chart_score_breakdown.html |
+| **NTL Time Series** | https://ishunteam-png.github.io/kritter-village-growth/chart_ntl_series.html |
+| **State Distribution** | https://ishunteam-png.github.io/kritter-village-growth/chart_state_dist.html |
+| **Top 100 CSV** | https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv |
 
 ---
 
