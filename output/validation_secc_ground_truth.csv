@@ -1,0 +1,101 @@
+rank,village_name,state_name,district_name,ntl_2019,ntl_2024,ntl_growth_pct,elec_access_pct_2011,secc_low_access_block,secc_high_access_block,secc_category,composite_score,multi_signal_confirmed
+1,Village_8703120607,Uttar Pradesh,Aligarh,1.3953226,5.4153986,288.11086411128144,48.4,False,False,"high-confidence: partial-access block, large NTL rise",84.19821969919735,True
+2,Village_8735721831,Uttar Pradesh,Aligarh,3.4234507,16.395496,378.9172515322041,48.4,False,False,"high-confidence: partial-access block, large NTL rise",83.28259666399617,True
+3,Village_8735721830,Uttar Pradesh,Aligarh,3.0125494,10.478089,247.81467815930256,48.4,False,False,"high-confidence: partial-access block, large NTL rise",81.20401043589092,True
+4,Venkatapuram,Telangana,Mahbubnagar,1.3800914,5.4373918,293.98780399617016,,False,False,unknown — SECC join failed,80.90410439852084,True
+5,Raghunathpur,Bihar,Katihar,2.0569668,8.067448,292.2011769951757,16.4,True,False,"high-confidence: low-access block, large NTL rise",79.02059049817771,True
+6,Kamalapur,Telangana,Adilabad,0.99742246,2.711808,171.881585662308,,False,False,unknown — SECC join failed,78.94295348485518,True
+7,Nagalapuram,Tamil Nadu,Perambalur,1.0849297,2.7877228,156.9496253996918,94.5,False,True,"high-access block, modest NTL growth — further investigation needed",77.8283588353677,True
+8,Bohar,Bihar,Katihar,0.7588605,2.996168,294.8246087390238,16.4,True,False,"high-confidence: low-access block, large NTL rise",77.67297696859104,True
+9,Bahiregaon,Maharashtra,Jalna,0.72390836,2.272693,213.94761071691448,77.8,False,False,"high-access block, modest NTL growth — further investigation needed",77.45100647223693,True
+10,Dorai,Rajasthan,Ajmer,0.7676961,3.1468315,309.9058859358541,67.9,False,False,high-access block — growth likely economic not electrification,76.62428647143093,True
+11,Bhadregaon,Maharashtra,Jalna,0.5956348,1.6334078,174.22974614646424,77.8,False,False,"high-access block, modest NTL growth — further investigation needed",76.20477554455411,True
+12,Aryambavu,Kerala,Palakkad,0.89929163,2.9938824,232.9156304946372,98.0,False,True,"high-access block, modest NTL growth — further investigation needed",76.0091096418441,True
+13,Botyanaik Thanda,Telangana,Ranga Reddy,0.6725774,1.7052917,153.5457926478053,,False,False,unknown — SECC join failed,75.68312919564475,True
+14,Gorakhpur,Bihar,Katihar,0.54984254,1.8277147,232.40692871817447,16.4,True,False,"high-confidence: low-access block, large NTL rise",75.23194455294484,True
+15,Venkatapur,Telangana,Mahbubnagar,0.57510066,1.7825398,209.95266115674423,,False,False,unknown — SECC join failed,74.66318368703729,True
+16,Pouti,West Bengal,Uttar Dinajpur,1.7846906,6.3752074,257.2163936987173,66.3,False,False,"high-access block, modest NTL growth — further investigation needed",74.10900612079747,True
+17,Rojri,Rajasthan,Ganganagar,1.4779278,5.6998296,285.6636027822198,67.9,False,False,"high-access block, modest NTL growth — further investigation needed",74.0387555554335,True
+18,Village_9161180818,Uttar Pradesh,Maharajganj,1.513106,11.018236,628.186657114571,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.8472903916363,True
+19,Village_8128089580,Uttar Pradesh,Siddharth Nagar,0.5598405,3.5892978,541.1286428902519,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.76067262353362,True
+20,Village_8128089577,Uttar Pradesh,Siddharth Nagar,0.7227827,6.729547,831.0608845507786,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.57703575993962,True
+21,Village_9161247470,Uttar Pradesh,Maharajganj,0.87973285,5.7261877,550.9007478804502,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.45366437768799,True
+22,Village_9161180866,Uttar Pradesh,Maharajganj,0.6417155,5.0171175,681.8289413299195,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.39715359220413,True
+23,Village_8125936721,Uttar Pradesh,Siddharth Nagar,0.54238796,3.307543,509.8112871089542,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.31743395110169,True
+24,Naveguda,Telangana,Adilabad,1.0466332,13.296685,1170.4245384151773,,False,False,unknown — SECC join failed,73.21531308719972,True
+25,Village_7961943827,Chhattisgarh,Raigarh,0.7019586,7.1282682,915.4827079545717,68.7,False,False,high-access block — growth likely economic not electrification,73.20208809767675,True
+26,Kallagam,Tamil Nadu,Ariyalur,2.5705917,20.610836,701.7934547909728,94.5,False,True,high-access block — growth likely economic not electrification,73.14842889927505,True
+27,Village_8125936672,Uttar Pradesh,Siddharth Nagar,0.53529775,3.3629487,528.2389006865805,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.03479443562313,True
+28,Village_9159389461,Uttar Pradesh,Basti,1.2262459,7.28569,494.1459213033861,48.4,False,False,"high-confidence: partial-access block, large NTL rise",73.01192835471664,True
+29,Village_7964818601,Chhattisgarh,Raigarh,1.2871487,6.8177676,429.67987304031,68.7,False,False,high-access block — growth likely economic not electrification,72.87536490289698,True
+30,Kanikkapuram,Tamil Nadu,Ariyalur,1.1695153,32.454006,2674.9962740974825,94.5,False,True,high-access block — growth likely economic not electrification,72.8551424905296,True
+31,Vazhaikuttai,Tamil Nadu,Ariyalur,0.825941,10.004402,1111.2732023231683,94.5,False,True,high-access block — growth likely economic not electrification,72.8394194705589,True
+32,Village_8128089579,Uttar Pradesh,Siddharth Nagar,0.6460063,3.375276,422.48344946481166,48.4,False,False,"high-confidence: partial-access block, large NTL rise",72.83602714932236,True
+33,Devalapura,Karnataka,Mandya,0.8597614,5.103386,493.581661144592,83.1,False,True,high-access block — growth likely economic not electrification,72.81558602208726,True
+34,Kadadibburu,Karnataka,Chikballapura,0.87956804,5.6447563,541.7645984499392,83.1,False,True,high-access block — growth likely economic not electrification,72.77120242680617,True
+35,Kil Arasur,Tamil Nadu,Tiruchirappalli,1.5306075,8.928739,483.3460897062114,94.5,False,True,high-access block — growth likely economic not electrification,72.74187748363528,True
+36,Village_9160643774,Uttar Pradesh,Maharajganj,0.7928677,4.6424723,485.5292503402522,48.4,False,False,"high-confidence: partial-access block, large NTL rise",72.70840803092094,True
+37,Pura,Karnataka,Hassan,0.6669526,4.5664926,584.6802306490746,83.1,False,True,high-access block — growth likely economic not electrification,72.65375176702781,True
+38,Mahagaon,Telangana,Adilabad,0.6616455,7.010564,959.5649785270208,,False,False,unknown — SECC join failed,72.61139760482527,True
+39,Village_9045521283,Uttar Pradesh,Bahraich,3.8981678,23.522743,503.4307450797782,48.4,False,False,"high-confidence: partial-access block, large NTL rise",72.5690225199684,True
+40,Katti Hosahalli,Karnataka,Bangalore Rural,1.0534242,17.114073,1524.6136171923904,83.1,False,True,high-access block — growth likely economic not electrification,72.50732802657106,True
+41,Dandiganahalli,Karnataka,Mandya,0.87253225,5.2132173,497.48133091928696,83.1,False,True,high-access block — growth likely economic not electrification,72.47852381188589,True
+42,Kadukottanahalli,Karnataka,Mandya,1.4755082,10.417449,606.024473466159,83.1,False,True,high-access block — growth likely economic not electrification,72.45975649994577,True
+43,Mugali,Karnataka,Haveri,0.74612975,4.2621756,471.2378577586539,83.1,False,True,high-access block — growth likely economic not electrification,72.42156640834942,True
+44,Kuppalli,Karnataka,Hassan,0.636253,5.661251,789.77985172565,83.1,False,True,high-access block — growth likely economic not electrification,72.4026354328919,True
+45,Konsari,Maharashtra,Garhchiroli,1.1414418,31.953651,2699.4113234682663,77.8,False,False,high-access block — growth likely economic not electrification,72.370581589674,True
+46,Nagar,Tamil Nadu,Tiruchirappalli,1.5628802,20.713072,1225.3141219653307,94.5,False,True,high-access block — growth likely economic not electrification,72.29601849257546,True
+47,Nawegaon Waghade,Maharashtra,Chandrapur,0.51702493,2.9448447,469.5749912871706,77.8,False,False,high-access block — growth likely economic not electrification,72.28723691384177,True
+48,Gandhinagaram,Andhra Pradesh,Krishna,0.756153,4.568558,504.184338354804,87.6,False,True,high-access block — growth likely economic not electrification,72.1800350331142,True
+49,Sitarampuram,Andhra Pradesh,Krishna,2.3770442,15.584907,555.6422888560508,87.6,False,True,high-access block — growth likely economic not electrification,72.14312437363769,True
+50,Asar,Jammu and Kashmir,Ramban,0.5310981,8.319178,1466.4108005658466,,False,False,unknown — SECC join failed,72.12306113831244,True
+51,Kallenahalli,Karnataka,Hassan,0.53569794,2.843596,430.82078307039967,83.1,False,True,high-access block — growth likely economic not electrification,72.10390246560141,True
+52,Jasso Mazara,Punjab,Shahid Bhagat Singh Nagar,1.8851055,11.250981,496.83561477063216,97.0,False,True,high-access block — growth likely economic not electrification,72.08696619604297,True
+53,Agraharam,Telangana,Khammam,0.66762245,3.7000067,454.2064530634043,,False,False,unknown — SECC join failed,72.00596546894403,True
+54,Basavanahalli,Karnataka,Hassan,0.62184155,4.487881,621.7081264511836,83.1,False,True,high-access block — growth likely economic not electrification,71.99049075894158,True
+55,Nitturu,Karnataka,Tumkur,1.2676264,6.8892474,443.4761693192884,83.1,False,True,high-access block — growth likely economic not electrification,71.98681761986721,True
+56,Village_9161180826,Uttar Pradesh,Maharajganj,1.4574817,7.0504293,383.7405025394144,48.4,False,False,"high-confidence: partial-access block, large NTL rise",71.94300493383676,True
+57,Ichgaon,Maharashtra,Solapur,2.8030405,17.86923,537.4945349523135,77.8,False,False,high-access block — growth likely economic not electrification,71.93138895180462,True
+58,Narayanapura,Karnataka,Haveri,1.6180835,8.23218,408.7611362454409,83.1,False,True,high-access block — growth likely economic not electrification,71.83634979609118,True
+59,Bickatty,Tamil Nadu,The Nilgiris,1.1545119,2.2315953,93.2933995743136,94.5,False,True,"high-access block, modest NTL growth — further investigation needed",71.80839683384195,True
+60,Village_8892986300,Uttar Pradesh,Bulandshahr,1.5742775,26.159685,1561.6946504031214,48.4,False,False,"high-confidence: partial-access block, large NTL rise",71.77776682966167,True
+61,Village_7966413158,Chhattisgarh,Raigarh,1.477612,10.360261,601.1489484384263,68.7,False,False,high-access block — growth likely economic not electrification,71.74919195119416,True
+62,Arasanahalli,Karnataka,Bangalore Rural,2.2595437,14.9999275,563.8476387953905,83.1,False,True,high-access block — growth likely economic not electrification,71.69950014639282,True
+63,Sandarwan,Maharashtra,Bid,0.6655945,4.993878,650.2883512408831,77.8,False,False,high-access block — growth likely economic not electrification,71.68278159467111,True
+64,Nandihalli,Karnataka,Haveri,0.5702454,2.7155683,376.2104700888424,83.1,False,True,high-access block — growth likely economic not electrification,71.66741711336003,True
+65,Jhadashahapura,Karnataka,Belgaum,1.0594072,13.369047,1161.9365811370735,83.1,False,True,high-access block — growth likely economic not electrification,71.66679003886316,True
+66,Pinnapuram,Andhra Pradesh,Kurnool,0.54376644,3.0456998,460.1117641610982,87.6,False,True,high-access block — growth likely economic not electrification,71.66004171987595,True
+67,Santoshpura,Rajasthan,Sikar,1.0388241,7.1784916,591.0208956453744,67.9,False,False,high-access block — growth likely economic not electrification,71.64289830235558,True
+68,Village_8311016799,Uttar Pradesh,Mirzapur,1.083274,5.519421,409.5129210153663,48.4,False,False,"high-confidence: partial-access block, large NTL rise",71.60935078110842,True
+69,Village_9161180852,Uttar Pradesh,Maharajganj,1.6812674,8.063243,379.59313313277823,48.4,False,False,"high-confidence: partial-access block, large NTL rise",71.60633052616234,True
+70,Bettahalli,Karnataka,Mandya,0.6975451,3.5583534,410.1252091083429,83.1,False,True,high-access block — growth likely economic not electrification,71.46687817399233,True
+71,Village_7966413062,Chhattisgarh,Raigarh,1.6107239,8.816441,447.35892352500633,68.7,False,False,high-access block — growth likely economic not electrification,71.46514467771165,True
+72,Bandhewa,Rajasthan,Jaisalmer,1.0401641,9.139692,778.6778932285781,67.9,False,False,high-access block — growth likely economic not electrification,71.43562635715088,True
+73,Yagachaguppe,Karnataka,Mandya,0.87051547,4.2046127,383.0026398037476,83.1,False,True,high-access block — growth likely economic not electrification,71.42803925706569,True
+74,Kattahalli,Karnataka,Mandya,0.6554881,3.2113116,389.9115025886816,83.1,False,True,high-access block — growth likely economic not electrification,71.41245880873836,True
+75,Hittala,Karnataka,Shimoga,0.5204818,2.6805708,415.0172013699615,83.1,False,True,high-access block — growth likely economic not electrification,71.41152213386987,True
+76,राम स्नेही घाट,Uttar Pradesh,Barabanki,2.9792476,17.267107,479.5794548932421,48.4,False,False,"high-confidence: partial-access block, large NTL rise",71.3999329670643,True
+77,Janki Chatti,Uttarakhand,Uttarkashi,0.53593737,4.4821563,736.3209119005827,85.7,False,True,high-access block — growth likely economic not electrification,71.37382759874912,True
+78,Kamalanagara,Karnataka,Dharwad,0.62647,3.0419676,385.5727488946,83.1,False,True,high-access block — growth likely economic not electrification,71.32310463124807,True
+79,Lohariasal Talla,Uttarakhand,Nainital,5.2234893,23.88418,357.2456958990995,85.7,False,True,high-access block — growth likely economic not electrification,71.3178563062561,True
+80,Benachakallu,Karnataka,Tumkur,0.6172883,3.2366812,424.3386599098023,83.1,False,True,high-access block — growth likely economic not electrification,71.30889311198644,True
+81,Pimpalkhuti,Maharashtra,Yavatmal,1.0665097,2.125363,99.28210685753729,77.8,False,False,"high-access block, modest NTL growth — further investigation needed",71.3029855970915,True
+82,Sopanahalli,Karnataka,Tumkur,1.4119132,7.352658,420.7584998851205,83.1,False,True,high-access block — growth likely economic not electrification,71.29434015578484,True
+83,Taticherla - Motu Circle,Andhra Pradesh,Prakasam,1.0948896,5.8517747,434.4625339394949,87.6,False,True,high-access block — growth likely economic not electrification,71.16610392525034,True
+84,Village_8016228489,Chhattisgarh,Bilaspur,3.544252,21.173615,497.4071538931205,68.7,False,False,high-access block — growth likely economic not electrification,71.16256596061324,True
+85,Dharanwadi,Maharashtra,Solapur,1.4554752,8.079738,455.1271502255759,77.8,False,False,high-access block — growth likely economic not electrification,71.09914909954287,True
+86,Village_8039800306,Gujarat,Surendranagar,0.59788036,3.1385105,424.9395547965482,84.3,False,True,high-access block — growth likely economic not electrification,71.08990264319428,True
+87,Guluru,Karnataka,Mandya,0.7712112,3.742983,385.33825753567896,83.1,False,True,high-access block — growth likely economic not electrification,71.07597309561649,True
+88,Birasandra,Karnataka,Bangalore Rural,2.8299031,13.446378,375.15330118547166,83.1,False,True,high-access block — growth likely economic not electrification,71.04444845001768,True
+89,Sindhuvalli,Karnataka,Mysore,1.3793068,8.156197,491.32580220731177,83.1,False,True,high-access block — growth likely economic not electrification,71.02733297568298,True
+90,Village_7964818613,Chhattisgarh,Raigarh,0.5768998,2.991502,418.5479350140181,68.7,False,False,high-access block — growth likely economic not electrification,71.01315674615678,True
+91,Suryanarayanapuram,Andhra Pradesh,West Godavari,1.0054607,7.491235,645.0549782801057,87.6,False,True,high-access block — growth likely economic not electrification,70.96775773647546,True
+92,Mannadisala,Kerala,Pathanamthitta,0.53417397,2.652273,396.51857802056514,98.0,False,True,high-access block — growth likely economic not electrification,70.95291395621156,True
+93,Mithanpur,Haryana,Sirsa,1.2140043,6.4097443,427.9836570595343,91.3,False,True,high-access block — growth likely economic not electrification,70.7965889157029,True
+94,Kesaipāli,Odisha,Bargarh,0.52022916,2.8995674,457.363489582168,60.5,False,False,high-access block — growth likely economic not electrification,70.79462805676515,True
+95,Village_9159389472,Uttar Pradesh,Siddharth Nagar,0.7077261,3.0703003,333.826066327072,48.4,False,False,"high-confidence: partial-access block, large NTL rise",70.72337918812428,True
+96,Dasanuru,Karnataka,Mysore,1.1035459,5.328196,382.8250460628778,83.1,False,True,high-access block — growth likely economic not electrification,70.70779442536383,True
+97,Kalenahalli,Karnataka,Mandya,0.8112711,3.892354,379.7846243999078,83.1,False,True,high-access block — growth likely economic not electrification,70.70691362295094,True
+98,Bar Ka Para,Rajasthan,Dausa,2.7044618,38.89123,1338.0395389574371,67.9,False,False,high-access block — growth likely economic not electrification,70.6993451098853,True
+99,Village_8311432237,Uttar Pradesh,Mirzapur,1.4034911,6.66603,374.96061784787946,48.4,False,False,"high-confidence: partial-access block, large NTL rise",70.66868410317534,True
+100,Dudhanwadi,Maharashtra,Jalna,0.88169795,4.5320573,414.0147257912985,77.8,False,False,high-access block — growth likely economic not electrification,70.58494746195599,True

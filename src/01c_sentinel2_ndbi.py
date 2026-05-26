@@ -9,19 +9,25 @@ annual GeoTIFFs matching the VIIRS pipeline convention.
   NDBI = (B11 - B08) / (B11 + B08)   built-up proxy (SWIR vs NIR)
   NDVI = (B08 - B04) / (B08 + B04)   vegetation / agricultural proxy
 
+DRY-SEASON FILTER (fix for monsoon-era NaN):
+  India's monsoon (June–September) blocks >90% of Sentinel-2 scenes even
+  with CLOUD_MAX=25.  We query two windows per calendar year:
+    • Jan–May   (post-winter dry season)
+    • Oct–Dec   (post-monsoon dry season)
+  Combined, this gives 7 cloud-free months per year and produces valid
+  composites for cells that had all-NaN output in full-year queries.
+
 Output resolution: ~100 m (0.0009°) — good trade-off for India-wide mosaic.
 Runtime: ~6–10 h on t3.xlarge (4 vCPU).
 
-Install:
-    pip install pystac-client rioxarray
-
 Output:
-    /data/satalite/kritter/processed/sentinel2_ndbi_{year}.tif
-    /data/satalite/kritter/processed/sentinel2_ndvi_{year}.tif
+    <data_root>/processed/sentinel2_ndbi_{year}.tif
+    <data_root>/processed/sentinel2_ndvi_{year}.tif
 """
 
 import warnings
 import traceback
+import yaml
 import numpy as np
 import rasterio
 import rasterio.warp
@@ -30,23 +36,35 @@ from rasterio.transform import from_bounds
 from rasterio.crs import CRS
 from rasterio.enums import Resampling
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import multiprocessing
 from pathlib import Path
 import pystac_client
 
 warnings.filterwarnings("ignore")
 
-PROC_DIR  = Path("/data/satalite/kritter/processed")
-YEARS     = [2019, 2024]  # Quick 2-year run (start+end for growth)
+# ── Config ────────────────────────────────────────────────────────────────────
+_CFG_PATH = Path(__file__).parent.parent / "config.yaml"
+_CFG      = yaml.safe_load(_CFG_PATH.read_text()) if _CFG_PATH.exists() else {}
+_data     = _CFG.get("paths", {}).get("data_root", "/data/satellite/kritter")
+
+PROC_DIR  = Path(_data) / "processed"          # was hardcoded with typo "satalite"
+YEARS     = [2019, 2024]
 STAC_URL  = "https://earth-search.aws.element84.com/v1"
 CLOUD_MAX = 25      # max cloud cover % to accept a scene
-MAX_SCENES = 10     # max scenes queried per cell × year
+MAX_SCENES = 15     # raised from 10 — more candidates before filtering
+MIN_SCENES = 2      # lowered from 3 — accepts cells with 2 valid dry-season scenes
 OUT_RES   = 0.0009  # ~100 m in degrees
 CELL_DEG  = 3.0     # 3° × 3° processing grid
 N_WORKERS = 4       # parallel workers (= EC2 vCPUs)
 
 INDIA_W, INDIA_E = 68.0, 97.5
-INDIA_S, INDIA_N = 7.5, 37.5
+INDIA_S, INDIA_N =  7.5, 37.5
+
+# Dry-season date windows: Jan–May + Oct–Dec for each year.
+# Avoids the June–Sep monsoon that blocks >90% of S2 scenes over India.
+DRY_WINDOWS = [
+    ("{year}-01-01", "{year}-05-31"),   # Jan → May
+    ("{year}-10-01", "{year}-12-31"),   # Oct → Dec
+]
 
 
 def make_grid():
@@ -63,6 +81,32 @@ def make_grid():
             lon += CELL_DEG
         lat += CELL_DEG
     return cells
+
+
+def search_dry_season(catalog, bbox, year):
+    """
+    Query STAC across two dry-season windows and deduplicate by item id.
+    Returns a list of STAC items (may span Jan-May and Oct-Dec of `year`).
+    """
+    seen, items = set(), []
+    for start_tmpl, end_tmpl in DRY_WINDOWS:
+        start = start_tmpl.format(year=year)
+        end   = end_tmpl.format(year=year)
+        try:
+            results = list(catalog.search(
+                collections=["sentinel-2-l2a"],
+                bbox=bbox,
+                datetime=f"{start}/{end}",
+                query={"eo:cloud_cover": {"lt": CLOUD_MAX}},
+                max_items=MAX_SCENES,
+            ).items())
+            for item in results:
+                if item.id not in seen:
+                    seen.add(item.id)
+                    items.append(item)
+        except Exception as e:
+            print(f"    STAC search error ({start}/{end}): {e}")
+    return items
 
 
 def _read_band_window(href: str, bbox: list, nrows: int, ncols: int) -> np.ndarray:
@@ -96,15 +140,9 @@ def process_cell(args):
 
     try:
         catalog = pystac_client.Client.open(STAC_URL)
-        items = list(catalog.search(
-            collections=["sentinel-2-l2a"],
-            bbox=bbox,
-            datetime=f"{year}-01-01/{year}-12-31",
-            query={"eo:cloud_cover": {"lt": CLOUD_MAX}},
-            max_items=MAX_SCENES,
-        ).items())
+        items   = search_dry_season(catalog, bbox, year)
 
-        if len(items) < 3:
+        if len(items) < MIN_SCENES:
             return (None, None)
 
         nrows = max(2, round((bbox[3] - bbox[1]) / OUT_RES))
@@ -116,7 +154,6 @@ def process_cell(args):
         for item in items:
             try:
                 assets = item.assets
-                # Band asset names vary between element84 versions
                 b04_key = next((k for k in ("B04", "red")    if k in assets), None)
                 b08_key = next((k for k in ("B08", "nir")    if k in assets), None)
                 b11_key = next((k for k in ("B11", "swir16") if k in assets), None)
@@ -164,6 +201,7 @@ def process_cell(args):
 def mosaic_and_save(cell_paths, out_path):
     valid = [p for p in cell_paths if p and Path(p).exists()]
     if not valid:
+        print(f"  ⚠  No valid cells for {out_path.name} — mosaic skipped")
         return
     srcs = [rasterio.open(p) for p in valid]
     mosaic, transform = merge(srcs, nodata=-9999.0)
@@ -184,6 +222,8 @@ def main():
 
     grid = make_grid()
     print(f"Grid: {len(grid)} cells  |  cloud < {CLOUD_MAX}%  |  {OUT_RES*111000:.0f} m resolution")
+    print(f"Dry-season filter: Jan–May + Oct–Dec (skipping Jun–Sep monsoon)")
+    print(f"Output dir: {PROC_DIR}")
 
     for year in YEARS:
         ndbi_mosaic = PROC_DIR / f"sentinel2_ndbi_{year}.tif"
@@ -192,7 +232,7 @@ def main():
             print(f"{year}: already complete, skipping")
             continue
 
-        print(f"\n── Year {year} ──────────────────────────")
+        print(f"\n── Year {year} ──────────────────────────────────────────────")
         ndbi_paths, ndvi_paths = [], []
 
         with ThreadPoolExecutor(max_workers=N_WORKERS) as ex:
@@ -200,18 +240,23 @@ def main():
                 ex.submit(process_cell, (bbox, year, str(cell_dir))): bbox
                 for bbox in grid
             }
-            done = 0
+            done, succeeded = 0, 0
             for fut in as_completed(futures):
                 bbox = futures[fut]
                 nb, nv = fut.result()
                 ndbi_paths.append(nb)
                 ndvi_paths.append(nv)
                 done += 1
+                if nb:
+                    succeeded += 1
                 status = "✓" if nb else "✗"
-                print(f"  {status} {bbox[1]:.0f}°N {bbox[0]:.0f}°E  [{done}/{len(grid)}]")
+                print(f"  {status} {bbox[1]:.0f}°N {bbox[0]:.0f}°E  [{done}/{len(grid)}]  "
+                      f"({succeeded} ok so far)")
 
         good = sum(1 for p in ndbi_paths if p)
-        print(f"  {good}/{len(grid)} cells succeeded")
+        print(f"\n  {good}/{len(grid)} cells succeeded")
+        if good == 0:
+            print(f"  ⚠  All cells failed for {year} — check STAC connectivity and PROC_DIR path")
         mosaic_and_save(ndbi_paths, ndbi_mosaic)
         mosaic_and_save(ndvi_paths, ndvi_mosaic)
 

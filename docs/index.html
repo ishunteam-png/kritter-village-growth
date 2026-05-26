@@ -101,7 +101,7 @@
       <p>Satellite-derived signals &middot; 255,586 villages scored &middot; 2019&ndash;2024 &middot; Kritter Software Technologies</p>
     </div>
     <div class="header-links">
-      <a class="btn-teal" href="https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv" download>&#11015; Download CSV</a>
+      <a class="btn-teal" href="#" onclick="downloadCSV();return false;">&#11015; Download CSV</a>
       <a class="btn-ghost" href="https://github.com/ishunteam-png/kritter-village-growth" target="_blank">GitHub &#8594;</a>
       <a class="btn-ghost" href="./map.html" target="_blank">Full Map &#8594;</a>
     </div>
@@ -311,13 +311,40 @@
   <div style="margin-top:6px">
     Data: NASA VIIRS &middot; ESA WorldCover &middot; EU JRC GHSL &middot; WorldPop &middot; OpenStreetMap &middot; Natural Earth &nbsp;|&nbsp;
     <a href="https://github.com/ishunteam-png/kritter-village-growth">GitHub</a> &nbsp;|&nbsp;
-    <a href="https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv">Download CSV</a>
+    <a href="#" onclick="downloadCSV();return false;">Download CSV</a>
   </div>
 </footer>
 
 <script>
 const CSV_URL = "https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv";
+// Same-origin copy (served from GitHub Pages docs/) — used for downloads.
+// The download attribute on <a> is silently ignored for cross-origin URLs,
+// so we fetch the local copy and trigger a Blob download instead.
+const CSV_LOCAL = "./top_100_villages.csv";
 let allData = [], dtTable = null;
+
+function downloadCSV() {
+  fetch(CSV_LOCAL)
+    .then(function(r) {
+      if (!r.ok) throw new Error("fetch failed: " + r.status);
+      return r.blob();
+    })
+    .then(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var a   = document.createElement("a");
+      a.href     = url;
+      a.download = "top_100_villages.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    })
+    .catch(function(err) {
+      // Fallback: open raw GitHub URL in new tab if blob download fails
+      console.warn("Blob download failed, opening raw URL:", err);
+      window.open(CSV_URL, "_blank");
+    });
+}
 
 function showTab(name, btn) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
