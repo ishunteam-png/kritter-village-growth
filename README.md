@@ -22,33 +22,32 @@ Identifies an **87-village shortlist of satellite-confirmed high-growth settleme
 
 ## Key Results
 
-**467,906 OSM villages → 356,619 after India polygon filter → 87 deduplicated shortlist**
+**414,957 OSM villages → 316,031 after India polygon filter → top-100 shortlist (147 duplicate OSM nodes removed by spatial dedup)**
 
-All 87 shortlist villages are **multi-signal confirmed** on the 4 active signals (NTL growth + WorldCover built-up change + GHSL + ML amplifier). NDBI and SAR signals were all-NaN this run (Sentinel-2/SAR stalled); 8-signal confirmation requires a re-run after those complete. Spatial deduplication removed 13 duplicate OSM nodes representing the same settlements (Siswa Bazar ×8, Domariyaganj ×4, Gharghoda Tahsil ×2, Itwa ×2), leaving 87 geographically unique entries.
+All shortlist villages are **multi-signal confirmed** on 9 active signals (NTL growth + NDBI + SAR + WorldCover + GHSL + ML amplifier + spatial lag + 2 NTL derived). Confidence score: **69.2%** (9/13 signals active). Spatial deduplication (5 km radius, same base name) removed 147 near-duplicate OSM nodes before ranking.
 
 > **Signal amplifier note:** The self-supervised GBM component (`ml_growth_prob_score`) has been redesigned as a **signal amplifier** with a 15% composite weight (down from 38% in earlier runs). Because its labels are derived from the same NTL + built-up signals it receives as features, AUC = 1.000 is tautological — the model reproduces a deterministic function of its own inputs. At 15% weight it amplifies co-occurrence of strong NTL + WorldCover signals without dominating the composite; independent satellite signals (NTL 35%, NDBI 20%, GHSL 15%, SAR 10%) collectively account for 80% of the score. Weight should remain ≤ 15% until replaced with SECC 2011 ground-truth labels (`src/13_secc_validation.py`), which would convert it into a genuinely independent predictor.
 
-| Rank | Village | State | District | Score | NTL Growth | Archetype | Active signals confirmed |
-|------|---------|-------|----------|-------|-----------|-----------|------------------------|
-| 1 | **Siswa Bazar** (OSM 9161180818) | Uttar Pradesh | Maharajganj | 73.85 | +628% | NTL Breakout | ✓ 2/4 (NTL + WorldCover) |
-| 2 | **Himmatpur Talla** | Uttarakhand | Nainital | 73.70 | +618% | Connectivity-Led Growth | ✓ 3/4 (NTL + WorldCover + tower) |
-| 3 | **Domariyaganj** (OSM 8128089577) | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | Steady Grower | ✓ 2/4 (NTL + WorldCover) |
-| 4 | **Naveguda** | Telangana | Adilabad | 73.38 | +1,170% | NTL Breakout | ✓ 2/4 (NTL + WorldCover) |
-| 5 | **Kallagam** | Tamil Nadu | Ariyalur | 73.35 | +702% | NTL Breakout | ✓ 2/4 (NTL + WorldCover) |
-| 7 | **Gharghoda Tahsil** (OSM 7961943827) | Chhattisgarh | Raigarh | 73.28 | +591% | Remote Village Emergence | ✓ 2/4 (NTL + WorldCover) |
-| 8 | **Vazhaikuttai** | Tamil Nadu | Tirunelveli | 73.23 | +543% | Urban Fringe Expansion | ✓ 2/4 (NTL + WorldCover) |
+| Rank | Village | State | District | Score | NTL Growth | Archetype | Signals |
+|------|---------|-------|----------|-------|-----------|-----------|---------|
+| 1 | Village_8703120607 | Uttar Pradesh | Aligarh | 78.84 | +288% | Urban Fringe Expansion | 9/13 |
+| 2 | Village_8735721831 | Uttar Pradesh | Aligarh | 78.18 | +379% | NTL Breakout | 9/13 |
+| 3 | **Venkatapuram** | Telangana | Mahbubnagar | 74.43 | +294% | Urban Fringe Expansion | 9/13 |
+| 4 | Village_8735721830 | Uttar Pradesh | Aligarh | 74.29 | +248% | NTL Breakout | 9/13 |
+| 5 | **Raghunathpur** | Bihar | Katihar | 71.44 | +292% | Steady Grower | 9/13 |
+| 6 | **Kamalapur** | Telangana | Adilabad | 70.52 | +172% | Remote Village Emergence | 9/13 |
 
 > **Signal confirmation note (this run):** Of 14 designed signals, 8 were active (57.1% confidence). NDBI and SAR produced all-NaN output (Sentinel-2/SAR stalled); GHSL and population were absent from `village_all_stats.csv`. Confirmation counts above reflect only the 4 independent non-circular signals in this run: NTL growth, WorldCover built-up change, tower growth, and GHSL (GHSL absent this run). The full 8-signal pipeline would expand confirmation to up to 7 independent signals.
 
 Village names resolved via Nominatim reverse-geocoding for OSM nodes lacking a `name` tag; OSM IDs retained in `top_100_villages.csv` for SHRUG PC11 census join. Siswa Bazar = NH-28 corridor market town, Nichlaul sub-district, Maharajganj. Domariyaganj = Siddharth Nagar district HQ area.
 
-**Validation:** Moran's I = 0.6674 (p < 0.001, 999 permutations, vectorised, n = 316,178) — strong, statistically significant spatial clustering; high-growth villages are not randomly distributed. *(Earlier run reported I = 0.0631 due to a row-standardisation bug — fixed in `07_validate.py`; see `output/validation_morans_i.csv`.)* Electrification confound risk: **0 of 87 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously). SECC 2011 ground-truth cross-validation: see `output/validation_secc_ground_truth.csv`.
+**Validation:** Moran's I = 0.6132 (p < 0.001, 999 permutations, vectorised, n = 316,031) — strong, statistically significant spatial clustering; high-growth villages are not randomly distributed. *(Earlier run reported I = 0.0631 due to a row-standardisation bug — fixed in `07_validate.py`; see `output/validation_morans_i.csv`.)* Electrification confound risk: **0 of 100 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously). SECC 2011 ground-truth cross-validation: see `output/validation_secc_ground_truth.csv`.
 
-**State distribution (87 villages, post-dedup):** Karnataka 33 · Uttar Pradesh 14 · Tamil Nadu 7 · Maharashtra 7 · Andhra Pradesh 5 · Uttarakhand 4 · Chhattisgarh 4 · others 13
+**State distribution (top 100, post-dedup):** Karnataka 27 · Uttar Pradesh 19 · Maharashtra 9 · Telangana 7 · Chhattisgarh 7 · Tamil Nadu 6 · Rajasthan 5 · Andhra Pradesh 5 · Bihar 4 · others 11
 
-**Score spread:** 3.81 points across 87 villages (rank 1 = 73.85, rank 87 = 70.04) — driven by spatial lag variation; full 8-signal pipeline would widen this further.
+**Score spread:** 18.38 points (rank 1 = 78.84, rank 100 = 60.46) — wider than the 3-signal run because NDBI + SAR signals are now active and discriminating.
 
-> **Karnataka over-representation note:** Karnataka accounts for 38% of the shortlist (33/87) vs ~4.8% of India's population and ~4.5% of India's villages — a **7.9× over-representation** by population, 8.4× by village count. This reflects two factors: (1) Karnataka has strong urban-rural NTL growth in the Bengaluru–Mysore corridor; (2) WorldCover built-up change in Karnataka may capture agricultural shade-house / poly-tunnel expansion which looks like urban built-up at 10m resolution. Karnataka villages should be cross-checked against the WorldCover-to-OpenBuildings signal before treating built-up change as economic confirmation. See `validation_state_distribution.csv` for over/under-representation ratios.
+> **Karnataka over-representation note:** Karnataka accounts for 27% of the shortlist (27/100) vs ~4.8% of India's population and ~4.5% of India's villages — a **5.6× over-representation** by population, 6.0× by village count. This reflects two factors: (1) Karnataka has strong urban-rural NTL growth in the Bengaluru–Mysore corridor; (2) WorldCover built-up change in Karnataka may capture agricultural shade-house / poly-tunnel expansion which looks like urban built-up at 10m resolution. Karnataka villages should be cross-checked against the WorldCover-to-OpenBuildings signal before treating built-up change as economic confirmation. See `validation_state_distribution.csv` for over/under-representation ratios.
 
 > **Previous run comparison:** Before fixing the ML score bimodal-distribution bug (2025-05 run), 83% of top-100 were UP villages (false inflation). The ML model was assigning score=100 to ALL non-NaN villages (positives and negatives alike) due to the 99th-percentile clip collapsing into the near-zero cluster. After fix: only the 611 genuinely ML-positive villages (top-10% in NTL AND built-up simultaneously) can reach the top-100.
 

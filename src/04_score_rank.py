@@ -509,11 +509,10 @@ def compute_uncertainty(df: pd.DataFrame, signal_cols: list) -> pd.DataFrame:
     n_active   = len(truly_active)
     n_total    = len(avail)   # total attempted (includes stalled/absent signals)
 
-    # Per-row coverage: fraction of truly-active signals that are non-NaN for that row.
-    if truly_active:
-        coverage = df[truly_active].notna().mean(axis=1)
-    else:
-        coverage = pd.Series(0.0, index=df.index)
+    # Pipeline-level confidence: fraction of designed signals that are truly active.
+    # This is a scalar (same for all rows) — reflects what % of the intended signal
+    # set actually produced data in this run. NOT per-village data completeness.
+    confidence_score_val = round((n_active / n_total) * 100, 1) if n_total > 0 else 0.0
 
     sub = df[avail].copy()
     for col in avail:
@@ -523,7 +522,7 @@ def compute_uncertainty(df: pd.DataFrame, signal_cols: list) -> pd.DataFrame:
     agreement = (1 - std_vals / 50).clip(0, 1)
 
     result = pd.DataFrame({
-        "confidence_score":        (coverage * 100).round(1),
+        "confidence_score":        confidence_score_val,
         "signals_active":          n_active,
         "signals_attempted":       n_total,
         "inter_signal_agreement":  (agreement * 100).round(1),

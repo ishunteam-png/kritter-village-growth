@@ -489,6 +489,15 @@ def main():
         elif "archetype_name" in arch_df.columns:
             top100["archetype_name"] = arch_df["archetype_name"].values
 
+        # Diversity guard: if the top-100 all land in a single K-means cluster
+        # (common when the top-N are dominated by one signal type), override with
+        # rule_based_archetype() which uses NTL + geometric signals to discriminate.
+        n_unique = top100["archetype_name"].nunique(dropna=True)
+        if n_unique < 3:
+            print(f"  ⚠ Only {n_unique} distinct archetype(s) in top-100 "
+                  f"— K-means not discriminating; applying rule-based fallback")
+            top100["archetype_name"] = top100.apply(rule_based_archetype, axis=1)
+
         top100.to_csv(top100_path, index=False)
         print(f"  Updated {top100_path.name} with archetype_name")
         print(f"  Distribution: {top100['archetype_name'].value_counts().to_dict()}")

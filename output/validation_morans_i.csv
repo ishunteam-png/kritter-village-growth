@@ -1,7 +1,7 @@
 metric,value,notes
-moran_i,0.6674,Moran's I spatial autocorrelation statistic (range: -1 to +1)
+moran_i,0.6132,Moran's I spatial autocorrelation statistic (range: -1 to +1)
 p_value,0.0,permutation test p-value (999 permutations; exact p < 0.001)
-n_villages,316178,main-track villages in weight matrix (after India polygon filter)
+n_villages,316031,main-track villages in weight matrix (after India polygon filter)
 k_neighbours,8,KNN spatial weight matrix
 permutations,999,Monte Carlo permutations for pseudo p-value
 interpretation,strong_clustered,I > 0.5 indicates strong positive spatial autocorrelation

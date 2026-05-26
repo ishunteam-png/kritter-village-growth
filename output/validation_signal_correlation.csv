@@ -1,0 +1,8 @@
+,ntl_growth_pct,ntl_trend_slope,ndbi_growth,ndbi_trend_slope,ndvi_trend_slope,builtup_change,pop_growth_rate
+ntl_growth_pct,1.0,0.795,-0.212,,,-0.001,
+ntl_trend_slope,0.795,1.0,-0.139,,,-0.009,
+ndbi_growth,-0.212,-0.139,1.0,,,0.012,
+ndbi_trend_slope,,,,1.0,,,
+ndvi_trend_slope,,,,,1.0,,
+builtup_change,-0.001,-0.009,0.012,,,1.0,
+pop_growth_rate,,,,,,,1.0

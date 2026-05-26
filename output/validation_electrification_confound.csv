@@ -1,9 +1,2 @@
-check,value,threshold,result,notes
-villages_tested,87,87,pass,all shortlist villages tested
-saubhagya_flagged,0,<5,pass,0 villages match the Saubhagya electrification pattern
-low_ntl_baseline_count,0,n/a,pass,no shortlist village has NTL_2019 < 0.3 nW/cm2/sr (dark-village track excludes these)
-front_loaded_growth_count,0,n/a,pass,no shortlist village has >80% of NTL growth concentrated in 2019-2021
-flat_builtup_with_high_ntl,0,n/a,pass,no village with NTL growth > 200% also has WorldCover built-up delta < 0.01
-saubhagya_flag_criteria,"ntl_2019 < 0.5 AND ntl_growth_front_pct > 0.8 AND wc_builtup_delta < 0.01",n/a,all_clear,three-condition heuristic — all three must be true to flag
-interpretation,clean,n/a,pass,shortlist growth is not explained by household electrification rollout alone
-run_script,src/07_validate.py,n/a,n/a,regenerate on EC2; requires village_scored.csv
+total,low_baseline_count,growth_frontloaded_count,flat_builtup_count,electrification_only_risk_count,electrification_only_risk_pct
+100,0,4,5,0,0.0
