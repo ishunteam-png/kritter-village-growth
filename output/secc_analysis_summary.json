@@ -1,10 +1,10 @@
 {
   "total_top100": 100,
-  "secc_matched": 98,
-  "low_access_block_count": 0,
-  "high_access_block_count": 56,
-  "high_confidence_growth_count": 25,
-  "high_confidence_growth_pct": 25.0,
-  "data_source": "Census 2011 H-12 state-level (fallback)",
-  "interpretation": "25 of 100 top villages are in areas with <30% electricity access in 2011 and large NTL growth \u2014 high confidence of genuine development. 56 villages are in already-electrified states, requiring non-electrification explanation (economic, industrial activity)."
+  "secc_matched": 92,
+  "low_access_block_count": 3,
+  "high_access_block_count": 46,
+  "high_confidence_growth_count": 24,
+  "high_confidence_growth_pct": 24.0,
+  "interpretation": "24 of 100 top villages are in low-electricity-access areas with large NTL growth \u2014 strong signal of genuine development, not noise. 46 villages are in already-electrified areas, requiring non-electrification explanation (economic, industrial).",
+  "data_source": "Census 2011 H-12 state-level (fallback)"
 }
