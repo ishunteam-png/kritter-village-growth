@@ -28,14 +28,20 @@ external_urls:
   natural_earth_states: "https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_admin_1_states_provinces.zip"
 
 scoring:
+  dedup_radius_km: 5.0                     # haversine radius for same-name OSM node deduplication
   ntl_min_absolute_delta: 1.0              # nW/cm²/sr — minimum absolute NTL change required
                                            # (guards against 0.01 → 0.30 inflating % growth)
   composite_weights_full:
-    ml_growth_prob_score: 0.38
-    ntl_growth_log_score: 0.22
-    ndbi_growth_score:    0.15
-    ghsl_change_score:    0.12
-    s1_vv_delta_score:    0.08
+    # ml_growth_prob_score is a self-supervised SIGNAL AMPLIFIER — its labels are derived
+    # from the same signals it receives as features, so AUC=1.000 is tautological.
+    # Weight capped at 15% (was 38%) so independent signals (NTL, NDBI, GHSL, SAR)
+    # collectively dominate the composite. Raise to ≥30% only when replaced with
+    # ground-truth labels (e.g. SECC 2011 block electricity access).
+    ml_growth_prob_score: 0.15
+    ntl_growth_log_score: 0.35
+    ndbi_growth_score:    0.20
+    ghsl_change_score:    0.15
+    s1_vv_delta_score:    0.10
     spatial_lag_score:    0.05
   # Note: weights auto-redistribute when signals are NaN (S2/S1 stalled this run)
   minmax_clip_lo:   0.02                   # 2nd-percentile floor for robust min-max normalisation

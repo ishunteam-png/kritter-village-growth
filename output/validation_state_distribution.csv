@@ -1,0 +1,18 @@
+state_name,shortlist_count,shortlist_pct,india_village_pct_approx,over_representation_ratio,notes
+Karnataka,33,37.9,4.5,8.4,WorldCover shade-house agriculture captured as built-up at 10m; see README limitations
+Uttar Pradesh,14,16.1,17.5,0.9,pre-dedup was 25 (28.7%); 11 duplicate OSM nodes removed (Siswa Bazar + Domariyaganj + Itwa)
+Tamil Nadu,7,8.0,2.7,3.0,cement belt / peri-urban districts (Ariyalur / Tirunelveli / Namakkal)
+Maharashtra,7,8.0,7.3,1.1,broadly representative
+Andhra Pradesh,5,5.7,4.7,1.2,broadly representative
+Uttarakhand,4,4.6,2.7,1.7,foothills NTL growth; Himmatpur Talla highest multi-signal confirmation
+Chhattisgarh,4,4.6,3.3,1.4,pre-dedup was 6 (6.9%); 2 duplicate Gharghoda Tahsil nodes removed
+Telangana,3,3.4,1.7,2.0,industrial corridor (Adilabad) + mixed
+Rajasthan,3,3.4,7.5,0.5,under-represented; sparse NTL baselines in Thar Desert region
+Jammu and Kashmir,1,1.1,0.7,1.6,
+Punjab,1,1.1,2.1,0.5,
+Gujarat,1,1.1,3.1,0.4,
+Kerala,1,1.1,0.3,3.7,high existing NTL baseline limits % growth; few qualifying villages
+Odisha,1,1.1,8.5,0.1,under-represented; high dark-village proportion enters separate track
+Haryana,1,1.1,1.1,1.0,
+Ladakh,1,1.1,0.1,11.0,single high-growth village in sparse index; interpret with caution
+total,87,100.0,,,16 states represented (post-dedup)

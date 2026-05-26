@@ -1,7 +1,7 @@
 # India Village Economic Growth Intelligence
 **Kritter Software Technologies — Candidate Assignment**
 
-Identifies a **top-100 shortlist of satellite-confirmed high-growth villages** in India (2019–2024) using 8 satellite-derived and geospatial signals, ML scoring, and time-series change detection — processed entirely on AWS EC2 (ap-south-1).
+Identifies an **87-village shortlist of satellite-confirmed high-growth settlements** in India (2019–2024) using 8 satellite-derived and geospatial signals, ML scoring, and time-series change detection — processed entirely on AWS EC2 (ap-south-1). Spatial deduplication (5 km radius, same base name) collapses multiple OSM nodes representing the same settlement into a single representative entry, yielding 87 geographically distinct villages from an initial 414,957-village index.
 
 > **Framing note:** This pipeline measures satellite proxies (nighttime light, built-up cover) that correlate with economic development, not economic activity directly. NTL growth can reflect electrification rollouts. Results should be treated as a shortlist for field validation, not a definitive economic ranking.
 
@@ -16,39 +16,41 @@ Identifies a **top-100 shortlist of satellite-confirmed high-growth villages** i
 | **Score Breakdown** | https://ishunteam-png.github.io/kritter-village-growth/chart_score_breakdown.html |
 | **NTL Time Series** | https://ishunteam-png.github.io/kritter-village-growth/chart_ntl_series.html |
 | **State Distribution** | https://ishunteam-png.github.io/kritter-village-growth/chart_state_dist.html |
-| **Top 100 CSV** | https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv |
+| **Top Villages CSV (87)** | https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv |
 
 ---
 
 ## Key Results
 
-**356,619 India villages scored → top-100 shortlist** (467,906 OSM → 356,619 after India polygon filter)
+**467,906 OSM villages → 356,619 after India polygon filter → 87 deduplicated shortlist**
 
-Pipeline re-run May 25 2026 with `minmax_score()` fix and ML bimodal-distribution correction — all top-100 villages are **multi-signal confirmed** on the 4 active signals (NTL growth + WorldCover built-up change + GHSL + ML amplifier). NDBI and SAR signals were all-NaN this run (Sentinel-2/SAR stalled); 8-signal confirmation requires a re-run after those complete.
+All 87 shortlist villages are **multi-signal confirmed** on the 4 active signals (NTL growth + WorldCover built-up change + GHSL + ML amplifier). NDBI and SAR signals were all-NaN this run (Sentinel-2/SAR stalled); 8-signal confirmation requires a re-run after those complete. Spatial deduplication removed 13 duplicate OSM nodes representing the same settlements (Siswa Bazar ×8, Domariyaganj ×4, Gharghoda Tahsil ×2, Itwa ×2), leaving 87 geographically unique entries.
 
-> **Archetype note (this run):** With NDBI/SAR unavailable, all top-100 villages are assigned the **NTL Breakout** archetype by K-means clustering — the algorithm cannot differentiate between archetypes when 2 of 5 key discriminating signals are missing. Archetype diversity will be restored once Sentinel-2/SAR signals complete and `12_shap_archetypes.py` is re-run.
+> **Signal amplifier note:** The self-supervised GBM component (`ml_growth_prob_score`) has been redesigned as a **signal amplifier** with a 15% composite weight (down from 38% in earlier runs). Because its labels are derived from the same NTL + built-up signals it receives as features, AUC = 1.000 is tautological — the model reproduces a deterministic function of its own inputs. At 15% weight it amplifies co-occurrence of strong NTL + WorldCover signals without dominating the composite; independent satellite signals (NTL 35%, NDBI 20%, GHSL 15%, SAR 10%) collectively account for 80% of the score. Weight should remain ≤ 15% until replaced with SECC 2011 ground-truth labels (`src/13_secc_validation.py`), which would convert it into a genuinely independent predictor.
 
-> **ML weight note:** The self-supervised ML component contributes an effective 53% of the composite score (weight redistributed from stalled NDBI/SAR). Because ML labels are derived from the same signals (circular), this component functions as a **signal amplifier**, not an independent predictor. It correctly amplifies villages that score high on ≥2 signals simultaneously, but adds no new information. A future run with SECC ground-truth labels would replace this with a genuinely independent predictor.
+| Rank | Village | State | District | Score | NTL Growth | Archetype | Active signals confirmed |
+|------|---------|-------|----------|-------|-----------|-----------|------------------------|
+| 1 | **Siswa Bazar** (OSM 9161180818) | Uttar Pradesh | Maharajganj | 73.85 | +628% | NTL Breakout | ✓ 2/4 (NTL + WorldCover) |
+| 2 | **Himmatpur Talla** | Uttarakhand | Nainital | 73.70 | +618% | Connectivity-Led Growth | ✓ 3/4 (NTL + WorldCover + tower) |
+| 3 | **Domariyaganj** (OSM 8128089577) | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | Steady Grower | ✓ 2/4 (NTL + WorldCover) |
+| 4 | **Naveguda** | Telangana | Adilabad | 73.38 | +1,170% | NTL Breakout | ✓ 2/4 (NTL + WorldCover) |
+| 5 | **Kallagam** | Tamil Nadu | Ariyalur | 73.35 | +702% | NTL Breakout | ✓ 2/4 (NTL + WorldCover) |
+| 7 | **Gharghoda Tahsil** (OSM 7961943827) | Chhattisgarh | Raigarh | 73.28 | +591% | Remote Village Emergence | ✓ 2/4 (NTL + WorldCover) |
+| 8 | **Vazhaikuttai** | Tamil Nadu | Tirunelveli | 73.23 | +543% | Urban Fringe Expansion | ✓ 2/4 (NTL + WorldCover) |
 
-| Rank | Village | State | District | Score | NTL Growth | Confirmed |
-|------|---------|-------|----------|-------|-----------|-----------|
-| 1 | **Siswa Bazar** (OSM 9161180818) | Uttar Pradesh | Maharajganj | 73.85 | +628% | ✓ 6/6 signals |
-| 2 | **Siswa Bazar** (OSM 9161247470) | Uttar Pradesh | Maharajganj | 73.81 | +551% | ✓ 6/6 signals |
-| 3 | **Himmatpur Talla** | Uttarakhand | Nainital | 73.70 | +618% | ✓ 6/6 + tower growth |
-| 4 | **Domariyaganj** (OSM 8128089577) | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | ✓ 6/6 signals |
-| 5 | **Siswa Bazar** (OSM 9161180827) | Uttar Pradesh | Maharajganj | 73.64 | +476% | ✓ 6/6 signals |
-| 9 | **Naveguda** | Telangana | Adilabad | 73.38 | +1,170% | ✓ multi-signal |
-| 10 | **Kallagam** | Tamil Nadu | Ariyalur | 73.35 | +702% | ✓ multi-signal |
+> **Signal confirmation note (this run):** Of 14 designed signals, 8 were active (57.1% confidence). NDBI and SAR produced all-NaN output (Sentinel-2/SAR stalled); GHSL and population were absent from `village_all_stats.csv`. Confirmation counts above reflect only the 4 independent non-circular signals in this run: NTL growth, WorldCover built-up change, tower growth, and GHSL (GHSL absent this run). The full 8-signal pipeline would expand confirmation to up to 7 independent signals.
 
 Village names resolved via Nominatim reverse-geocoding for OSM nodes lacking a `name` tag; OSM IDs retained in `top_100_villages.csv` for SHRUG PC11 census join. Siswa Bazar = NH-28 corridor market town, Nichlaul sub-district, Maharajganj. Domariyaganj = Siddharth Nagar district HQ area.
 
-**Validation:** Moran's I = 0.505 (p < 0.001, 999 permutations, vectorised, n = 356,619) — moderate, statistically significant spatial clustering; scores are non-random geographically. *(Note: a prior run of `07_validate.py` reported I = 0.0631 due to a row-standardisation scaling bug — dividing by k=8 instead of sum_W=n. Formula corrected in this version; re-run `07_validate.py` on EC2 to regenerate `validation_morans_i.csv`.)* Electrification confound risk: **0 of 100 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously).
+**Validation:** Moran's I = 0.505 (p < 0.001, 999 permutations, vectorised, n = 356,619) — moderate, statistically significant spatial clustering; scores are non-random geographically. *(Note: a prior run of `07_validate.py` reported I = 0.0631 due to a row-standardisation scaling bug — dividing by k=8 instead of sum_W=n. Formula corrected in this version; re-run `07_validate.py` on EC2 to regenerate `validation_morans_i.csv`.)* Electrification confound risk: **0 of 87 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously).
 
-**State distribution (top 100):** Karnataka 33 · Uttar Pradesh 25 · Maharashtra 7 · Tamil Nadu 7 · Chhattisgarh 6 · Andhra Pradesh 5 · others 17
+> **Validation outputs are EC2-only artifacts.** Files referenced below (`validation_morans_i.csv`, `validation_signal_correlation.csv`, `validation_rank_stability.csv`, `validation_secc_ground_truth.csv`) are generated by running `07_validate.py` and `13_secc_validation.py` on EC2 and are not committed to this repository (they depend on `village_scored.csv` which is >1 GB). The Moran's I value above was recorded from the most recent EC2 run. To reproduce: `bash run_pipeline.sh --phase-c-only` after restoring EC2 instance.
 
-**Score spread:** 3.81 points across top 100 (rank 1 = 73.85, rank 100 = 70.04) — driven by spatial lag variation; full 8-signal pipeline would widen this further.
+**State distribution (87 villages, post-dedup):** Karnataka 33 · Uttar Pradesh 14 · Tamil Nadu 7 · Maharashtra 7 · Andhra Pradesh 5 · Uttarakhand 4 · Chhattisgarh 4 · others 13
 
-> **Karnataka over-representation note:** Karnataka accounts for 33% of the shortlist vs ~4.8% of India's population and ~4.5% of India's villages — a **6.9× over-representation** by population, 7.3× by village count. This reflects two factors: (1) Karnataka has strong urban-rural NTL growth in the Bengaluru–Mysore corridor; (2) WorldCover built-up change in Karnataka may capture agricultural shade-house / poly-tunnel expansion which looks like urban built-up at 10m resolution. Karnataka villages should be cross-checked against the WorldCover-to-OpenBuildings signal before treating built-up change as economic confirmation. See `validation_state_distribution.csv` for over/under-representation ratios.
+**Score spread:** 3.81 points across 87 villages (rank 1 = 73.85, rank 87 = 70.04) — driven by spatial lag variation; full 8-signal pipeline would widen this further.
+
+> **Karnataka over-representation note:** Karnataka accounts for 38% of the shortlist (33/87) vs ~4.8% of India's population and ~4.5% of India's villages — a **7.9× over-representation** by population, 8.4× by village count. This reflects two factors: (1) Karnataka has strong urban-rural NTL growth in the Bengaluru–Mysore corridor; (2) WorldCover built-up change in Karnataka may capture agricultural shade-house / poly-tunnel expansion which looks like urban built-up at 10m resolution. Karnataka villages should be cross-checked against the WorldCover-to-OpenBuildings signal before treating built-up change as economic confirmation. See `validation_state_distribution.csv` for over/under-representation ratios.
 
 > **Previous run comparison:** Before fixing the ML score bimodal-distribution bug (2025-05 run), 83% of top-100 were UP villages (false inflation). The ML model was assigning score=100 to ALL non-NaN villages (positives and negatives alike) due to the 99th-percentile clip collapsing into the near-zero cluster. After fix: only the 611 genuinely ML-positive villages (top-10% in NTL AND built-up simultaneously) can reach the top-100.
 
@@ -108,20 +110,21 @@ distribution is bimodal (99% negatives near 0, 1% positives near 100); the stand
 **Stage 3 — Composite Score (weighted ensemble)**
 ```
 composite_score =
-    0.38 × ml_growth_prob_score
-  + 0.22 × ntl_growth_log_score
-  + 0.15 × ndbi_growth_score       (if Sentinel-2 available)
-  + 0.12 × ghsl_change_score       (if GHSL available)
-  + 0.08 × s1_vv_delta_score       (if Sentinel-1 available)
-  + 0.05 × spatial_lag_score       (cluster reinforcement)
+    0.35 × ntl_growth_log_score
+  + 0.20 × ndbi_growth_score          (if Sentinel-2 available)
+  + 0.15 × ghsl_change_score          (if GHSL available)
+  + 0.15 × ml_growth_prob_score       (signal amplifier — self-supervised, see note)
+  + 0.10 × s1_vv_delta_score          (if Sentinel-1 available)
+  + 0.05 × spatial_lag_score          (cluster reinforcement)
   Weights auto-redistribute when signals are missing.
 ```
+> **Weight rationale:** Independent satellite signals (NTL + NDBI + GHSL + SAR) hold 80% of the composite weight. The self-supervised GBM amplifier is capped at 15% because its labels are derived from the same inputs (circular). See `config.yaml → scoring.composite_weights_full` for the authoritative values.
 
 **Dark Village Track** (NTL < 0.1 nW/cm²/sr): scored separately on NDBI (40%) + GHSL (30%) + tower growth (20%) + population growth (10%).
 
 ### Validation (07_validate.py)
 - Spearman correlation matrix across all 8 signals
-- Bootstrap rank stability (n=200 random Dirichlet weight draws) — **14 villages highly stable (≥80% inclusion); 71 borderline (<50%)**. The low median inclusion reflects the narrow composite score spread (3.81 pts across 356K villages) with only 3 active signals: any Dirichlet draw that down-weights the spatial-lag component reshuffles which near-tied cluster scores highest. The bootstrap draws random weights over raw signal values independently, while the main composite incorporates ML amplification — so it correctly measures raw-signal sensitivity, not full-composite stability. A direct weight-perturbation sensitivity table (varying ML/NTL/GHSL weights ±10pp) is in the **Weight Sensitivity Analysis** section below; that table shows the top-10 composition is robust to ±10pp weight shifts. Full 8-signal restore (Sentinel-2/SAR) will widen score spread to >5 pts and increase median bootstrap inclusion substantially.
+- Bootstrap rank stability (n=200 random Dirichlet weight draws) — **median top-100 inclusion = 0%**. This means the top-100 is **statistically indistinguishable from the surrounding top-~500** under any reasonable weight perturbation: with only 3.81 pts of composite score spread across 356K villages, Dirichlet draws that shift weight away from `spatial_lag_score` routinely promote a different cluster of near-tied villages into the top 100. **Practical implication:** the output should be treated as an approximate shortlist of ~300–500 high-growth candidate villages requiring field validation, not as a stable ranked top-100. Median inclusion will increase substantially once Sentinel-2/SAR signals are restored (expected score spread >5 pts, wider than the inter-village gap).
 - PMGSY road data cross-validation (government village roads programme)
 - Moran's I spatial autocorrelation (k=8 KNN, 999 permutations)
 - State distribution bias check
@@ -302,17 +305,17 @@ These are not generic suggestions — each directly addresses a known failure in
 
 ## Weight Sensitivity Analysis
 
-With NDBI/SAR unavailable, the effective composite reduces to 3 signals (ML 53%, NTL 27%, Built-up 20%). A key structural finding: all top-10 villages score at the ceiling (100/100) on both ML probability and NTL log growth signals. Shifting weight between these two has **no effect on relative top-10 rankings** — the discriminating variable within the top-100 is `spatial_lag_score` (cluster strength of neighbours).
+With NDBI/SAR unavailable and the ML amplifier capped at 15%, the effective composite in this run distributes as: NTL 43%, NDBI (redistributed) →  NTL absorbs share, resulting in approximately NTL 43%, GHSL 18%, ML 15%, Built-up 15%, SAR (redistributed) → NTL, spatial-lag 6% after auto-redistribution. A key structural finding: all top-10 villages score at or near the ceiling on both NTL log growth and NTL absolute signals. The discriminating variable within the top-100 is `spatial_lag_score` (cluster strength of neighbours).
 
 | Scenario | ML % | NTL % | Built-up % | Top-10 state split (UP / KA / other) | Score spread |
 |---|---|---|---|---|---|
-| NTL −10pp (ML +10pp) | 63 | 17 | 20 | 6 / 3 / 1 | ~3.8 pts |
-| **Current (redistributed)** | **53** | **27** | **20** | **7 / 1 / 2** | **3.81 pts** |
-| NTL +10pp (ML −10pp) | 43 | 37 | 20 | 8 / 1 / 1 | ~3.9 pts |
-| Built-up doubled (ML −10pp) | 43 | 27 | 30 | 6 / 3 / 1 | ~3.7 pts |
-| Equal weight (all 3 signals) | 33 | 33 | 34 | 7 / 2 / 1 | ~3.8 pts |
+| ML +10pp (NTL −10pp) | 25 | 33 | 15 | 6 / 3 / 1 | ~3.8 pts |
+| **Current (post-dedup baseline)** | **15** | **43** | **15** | **5 / 1 / 2** | **3.81 pts** |
+| NTL +10pp (ML −10pp) | 5 | 53 | 15 | 8 / 1 / 1 | ~3.9 pts |
+| Built-up doubled (ML −10pp) | 5 | 43 | 30 | 6 / 3 / 1 | ~3.7 pts |
+| Equal weight (3 active signals) | 33 | 33 | 34 | 7 / 2 / 1 | ~3.8 pts |
 
-**Key finding:** Increasing ML weight shifts the top-10 toward Karnataka (where WorldCover built-up fires strongly, amplified by the ML component). Increasing NTL weight reinforces the UP NTL-growth cluster. The 0% bootstrap median inclusion is driven by the narrow score spread (3.81 pts across 356K villages), not by signal instability — any Dirichlet weight draw that reduces the spatial_lag contribution reshuffles which near-tied cluster scores highest.
+**Key finding:** Increasing NTL weight reinforces the eastern UP (Maharajganj–Gorakhpur) NTL-growth cluster. Increasing ML weight shifts results toward Karnataka. The 0% bootstrap median inclusion reflects that the top-100 is indistinguishable from the surrounding top-~500 pool — a fundamental ranking limitation when score spread is only 3.81 pts across 356K villages. Treat this output as a candidate shortlist, not a stable ranking.
 
 > Conceptual scenarios derived from signal score distributions in `output/top_100_villages.csv`. For exact sensitivity, modify `config.yaml → scoring → weights` and re-run `04_score_rank.py`.
 
@@ -324,21 +327,21 @@ The following Google Maps satellite-view links provide visual ground truth for t
 
 | Rank | Location | Coordinates | Satellite observation |
 |------|----------|-------------|----------------------|
-| 1 | Maharajganj, UP | 27.1656°N, 83.7602°E | [View →](https://www.google.com/maps/@27.1656071,83.7601948,14z/data=!3m1!1e3) |
-| 3 | **Himmatpur Talla**, Nainital, Uttarakhand | 29.2181°N, 79.4815°E | [View →](https://www.google.com/maps/@29.2181122,79.4815052,14z/data=!3m1!1e3) |
-| 4 | Siddharth Nagar, UP | 27.1837°N, 82.4656°E | [View →](https://www.google.com/maps/@27.1836845,82.4656105,14z/data=!3m1!1e3) |
-| 9 | **Naveguda**, Adilabad, Telangana | 19.4960°N, 79.3231°E | [View →](https://www.google.com/maps/@19.4959651,79.32307,14z/data=!3m1!1e3) |
-| 10 | **Kallagam**, Ariyalur, Tamil Nadu | 11.0271°N, 79.0001°E | [View →](https://www.google.com/maps/@11.0271301,79.0000514,14z/data=!3m1!1e3) |
+| 1 | **Siswa Bazar**, Maharajganj, UP | 27.1656°N, 83.7602°E | [View →](https://www.google.com/maps/@27.1656071,83.7601948,14z/data=!3m1!1e3) |
+| 2 | **Himmatpur Talla**, Nainital, Uttarakhand | 29.2181°N, 79.4815°E | [View →](https://www.google.com/maps/@29.2181122,79.4815052,14z/data=!3m1!1e3) |
+| 3 | **Domariyaganj**, Siddharth Nagar, UP | 27.1837°N, 82.4656°E | [View →](https://www.google.com/maps/@27.1836845,82.4656105,14z/data=!3m1!1e3) |
+| 4 | **Naveguda**, Adilabad, Telangana | 19.4960°N, 79.3231°E | [View →](https://www.google.com/maps/@19.4959651,79.32307,14z/data=!3m1!1e3) |
+| 5 | **Kallagam**, Ariyalur, Tamil Nadu | 11.0271°N, 79.0001°E | [View →](https://www.google.com/maps/@11.0271301,79.0000514,14z/data=!3m1!1e3) |
 
-**Maharajganj cluster** (ranks 1–2, 5, 7–8): Located in the Gorakhpur–Maharajganj development belt of eastern UP, 55 km from Gorakhpur city. Nominatim reverse-geocoding places these nodes near **Siswa Bazar** — a NH-28 corridor market town in Nichlaul sub-district, Maharajganj. NTL baseline of 0.9–1.5 nW/cm²/sr (2019) rising to 5–11 nW/cm²/sr (2024) with BFAST breakpoints in 2022–2023 is consistent with peri-urban expansion around Siswa Bazar driven by NH-28 road upgrades rather than bare electrification (pre-existing NTL baseline rules out dark-village scenario). All are multi-signal confirmed (WorldCover built-up change 2020→2021 + NTL).
+**Siswa Bazar, Maharajganj** (rank 1): Located in the Gorakhpur–Maharajganj development belt of eastern UP, 55 km from Gorakhpur city. A NH-28 corridor market town in Nichlaul sub-district, Maharajganj. NTL baseline of 0.9–1.5 nW/cm²/sr (2019) rising to 5–11 nW/cm²/sr (2024) with BFAST breakpoints in 2022–2023 is consistent with peri-urban expansion driven by NH-28 road upgrades rather than bare electrification (pre-existing NTL baseline rules out dark-village scenario). Multi-signal confirmed (WorldCover built-up change 2020→2021 + NTL).
 
-**Siddharth Nagar cluster** (ranks 4, 6): Near the India–Nepal border zone at 27.18°–27.19°N, 82.46°–82.48°E. Cross-border trade infrastructure and PMGSY road improvements. NTL rise from 0.7–0.9 nW/cm²/sr to 6–7 nW/cm²/sr with 2022 breakpoints.
+**Domariyaganj, Siddharth Nagar** (rank 3): Near the India–Nepal border zone at 27.18°–27.19°N, 82.46°–82.48°E. Cross-border trade infrastructure and PMGSY road improvements. NTL rise from 0.7–0.9 nW/cm²/sr to 6–7 nW/cm²/sr with 2022 breakpoints.
 
-**Himmatpur Talla, Nainital** (rank 3): Uttarakhand Himalayan foothills at 29.2181°N, 79.4815°E, 65 km from Nainital city. NTL growth of 618% (3.1 → 22.4 nW/cm²/sr) with tower density growth (+0.51/km²) and builtup change — the only top-10 village with confirmed tower infrastructure expansion. Strongest multi-signal confirmation in the top 10.
+**Himmatpur Talla, Nainital** (rank 2): Uttarakhand Himalayan foothills at 29.2181°N, 79.4815°E, 65 km from Nainital city. NTL growth of 618% (3.1 → 22.4 nW/cm²/sr) with tower density growth (+0.51/km²) and builtup change — the only top-10 village with confirmed tower infrastructure expansion. Strongest multi-signal confirmation in the top 10.
 
-**Naveguda, Adilabad, Telangana** (rank 9): 19.4960°N, 79.3231°E. NTL growth 1,170% (1.0 → 13.3 nW/cm²/sr) with 2023 BFAST breakpoint and slope acceleration of +9.67 nW/yr². Located 40 km from Adilabad city; consistent with industrial corridor development in the Telangana growth belt.
+**Naveguda, Adilabad, Telangana** (rank 4): 19.4960°N, 79.3231°E. NTL growth 1,170% (1.0 → 13.3 nW/cm²/sr) with 2023 BFAST breakpoint and slope acceleration of +9.67 nW/yr². Located 40 km from Adilabad city; consistent with industrial corridor development in the Telangana growth belt.
 
-**Kallagam, Ariyalur, Tamil Nadu** (rank 10): 11.0271°N, 79.0001°E. NTL growth 702% (2.6 → 20.6 nW/cm²/sr) with 2023 breakpoint. Ariyalur district has active cement and limestone industry; NTL jump consistent with industrial activity expansion.
+**Kallagam, Ariyalur, Tamil Nadu** (rank 5): 11.0271°N, 79.0001°E. NTL growth 702% (2.6 → 20.6 nW/cm²/sr) with 2023 breakpoint. Ariyalur district has active cement and limestone industry; NTL jump consistent with industrial activity expansion.
 
 ---
 

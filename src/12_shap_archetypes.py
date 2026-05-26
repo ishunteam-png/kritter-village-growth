@@ -152,6 +152,43 @@ ARCHETYPE_FEATURES = [
 ]
 
 
+def rule_based_archetype(row: pd.Series) -> str:
+    """
+    Assign an archetype using explicit signal thresholds instead of K-means.
+
+    Used as the primary path when fewer than 4 signals are active (K-means
+    clustering is degenerate without NDBI and SAR because there is not enough
+    feature variance to form meaningful clusters). Also used as the fallback
+    when K-means silhouette < 0.1 even with more signals.
+
+    Priority order (first matching rule wins):
+      1. Connectivity-Led Growth  — mobile tower density expanded
+      2. NTL Breakout             — sudden NTL acceleration post-2021
+      3. Market Corridor Growth   — high absolute NTL near road infrastructure
+      4. Urban Fringe Expansion   — village within 35 km of a city
+      5. Remote Village Emergence — village > 90 km from nearest city
+      6. Steady Grower            — default (moderate, consistent growth)
+    """
+    tower  = row.get("tower_growth",      0) or 0
+    accel  = row.get("ntl_acceleration",  0) or 0
+    bp     = row.get("ntl_breakpoint_year", 0) or 0
+    ntl24  = row.get("ntl_2024",          0) or 0
+    dcity  = row.get("dist_city_km",    999) or 999
+    dhwy   = row.get("dist_highway_km", 999) or 999
+
+    if tower > 0.1:
+        return "Connectivity-Led Growth"
+    if accel > 3.5 and bp >= 2022:
+        return "NTL Breakout"
+    if ntl24 > 15 and dhwy < 200:
+        return "Market Corridor Growth"
+    if dcity < 35:
+        return "Urban Fringe Expansion"
+    if dcity > 90:
+        return "Remote Village Emergence"
+    return "Steady Grower"
+
+
 def assign_archetype_names(km, feature_names: list) -> list:
     """
     Auto-label K-means clusters by inspecting centroid profiles.
@@ -227,48 +264,76 @@ def assign_archetype_names(km, feature_names: list) -> list:
 
 
 def run_archetypes(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Assign growth archetypes to all villages in df.
+
+    Two paths:
+      A. K-means path (full signals ≥ 4): clusters on scaled multi-signal
+         features, selects k ∈ {3…6} by silhouette score, labels clusters
+         via assign_archetype_names(). Requires ndbi_growth to be meaningful
+         (all-NaN ndbi is excluded from avail, reducing feature count).
+
+      B. Rule-based path: used when fewer than 4 features have real variance
+         (e.g. NDBI/SAR stalled) OR when best K-means silhouette < 0.10
+         (degenerate clustering — all villages collapse to ≤ 2 clusters
+         because there is insufficient feature spread to discriminate).
+         Applies rule_based_archetype() row-wise on NTL + geometric signals.
+    """
     from sklearn.cluster import KMeans
     from sklearn.preprocessing import RobustScaler
     from sklearn.metrics import silhouette_score
 
-    avail = [f for f in ARCHETYPE_FEATURES if f in df.columns and df[f].notna().any()]
-    if len(avail) < 3:
-        print(f"  Not enough archetype features ({avail})")
-        return pd.DataFrame()
+    id_col = "pc11_village_id" if "pc11_village_id" in df.columns else df.columns[0]
+    meta   = [id_col, "village_name", "state_name", "composite_score", "rank"]
+    meta   = [c for c in meta if c in df.columns]
 
-    X = df[avail].copy()
-    X = X.fillna(X.median()).fillna(0)
+    # Only count features that have real variance (not all-NaN, not constant).
+    avail = [f for f in ARCHETYPE_FEATURES
+             if f in df.columns
+             and df[f].notna().any()
+             and df[f].std(skipna=True) > 1e-9]
 
-    scaler = RobustScaler()
-    Xs = scaler.fit_transform(X)
+    use_rule_based = len(avail) < 4  # too few signals for meaningful K-means
 
-    # Find best k (4-8) by silhouette score
-    best_k, best_sil, best_km = 6, -1, None
-    for k in range(4, 8):
-        km = KMeans(n_clusters=k, random_state=42, n_init=10)
-        labels = km.fit_predict(Xs)
-        try:
-            sil = silhouette_score(Xs, labels, sample_size=min(5000, len(Xs)))
-        except Exception:
-            sil = 0
-        if sil > best_sil:
-            best_k, best_sil, best_km = k, sil, km
+    if not use_rule_based:
+        X  = df[avail].copy().fillna(df[avail].median()).fillna(0)
+        Xs = RobustScaler().fit_transform(X)
 
-    print(f"  Best k={best_k}  silhouette={best_sil:.3f}")
-    labels = best_km.labels_
+        best_k, best_sil, best_km = 3, -1.0, None
+        for k in range(3, 7):
+            km = KMeans(n_clusters=k, random_state=42, n_init=10)
+            labels = km.fit_predict(Xs)
+            try:
+                sil = silhouette_score(Xs, labels,
+                                       sample_size=min(5000, len(Xs)))
+            except Exception:
+                sil = 0.0
+            if sil > best_sil:
+                best_k, best_sil, best_km = k, sil, km
 
-    archetype_names = assign_archetype_names(best_km, avail)
-    print(f"  Archetypes: {archetype_names}")
+        print(f"  K-means: best k={best_k}  silhouette={best_sil:.3f}")
+        if best_sil < 0.10:
+            print(f"  Silhouette {best_sil:.3f} < 0.10 — K-means is degenerate; "
+                  "switching to rule-based archetypes")
+            use_rule_based = True
 
-    result = df[["pc11_village_id", "village_name", "state_name",
-                 "composite_score", "rank"] +
-                [c for c in avail if c in df.columns]].copy()
-    result["archetype_id"]   = labels
-    result["archetype_name"] = [archetype_names[l] for l in labels]
+    result = df[meta + [c for c in avail if c in df.columns]].copy()
 
-    # Stats per archetype
+    if use_rule_based:
+        reason = (f"{len(avail)} active features" if len(avail) < 4
+                  else f"silhouette={best_sil:.3f}")
+        print(f"  Rule-based archetypes ({reason})")
+        result["archetype_id"]   = -1   # sentinel: rule-based, not cluster ID
+        result["archetype_name"] = df.apply(rule_based_archetype, axis=1).values
+    else:
+        labels = best_km.labels_
+        names  = assign_archetype_names(best_km, avail)
+        print(f"  Archetypes: {names}")
+        result["archetype_id"]   = labels
+        result["archetype_name"] = [names[l] for l in labels]
+
     for name, grp in result.groupby("archetype_name"):
-        print(f"    [{name}]: {len(grp):,} villages, "
+        print(f"    [{name}]: {len(grp):,} villages  "
               f"avg score={grp['composite_score'].mean():.1f}")
 
     return result
@@ -322,17 +387,28 @@ def archetypes_chart(arch_df: pd.DataFrame) -> go.Figure:
 def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    top100_path  = OUTPUT_DIR / "top_100_villages.csv"
-    scored_path  = PROC_DIR  / "village_scored.csv"
+    top100_path = OUTPUT_DIR / "top_100_villages.csv"
+    scored_path = PROC_DIR  / "village_scored.csv"
 
-    if not scored_path.exists():
-        print("village_scored.csv not found — run 04_score_rank.py first")
+    if not top100_path.exists():
+        print("top_100_villages.csv not found — run 04_score_rank.py first")
         return
 
-    print("Loading data...")
-    top100  = pd.read_csv(top100_path)  if top100_path.exists()  else pd.DataFrame()
-    scored  = pd.read_csv(scored_path, low_memory=False)
-    print(f"  scored: {len(scored):,}  top100: {len(top100)}")
+    top100 = pd.read_csv(top100_path)
+    print(f"Loading data...  top100: {len(top100)}")
+
+    # village_scored.csv is a >1 GB EC2 artifact — not committed to the repo.
+    # When it is absent (local review, GitHub Actions), archetypes are assigned
+    # directly from top_100_villages.csv using rule_based_archetype().
+    # When it is present, K-means clustering runs on the full village corpus
+    # and the result is merged back to top_100_villages.csv.
+    if scored_path.exists():
+        scored = pd.read_csv(scored_path, low_memory=False)
+        print(f"  scored: {len(scored):,}")
+    else:
+        scored = None
+        print("  village_scored.csv not found — "
+              "rule-based archetypes will be applied to top_100 directly")
 
     # ── SHAP ──────────────────────────────────────────────────────────────────
     if MODEL_PATH.exists() and not top100.empty:
@@ -372,12 +448,22 @@ def main():
         print(f"  MODEL_PATH={MODEL_PATH}  exists={MODEL_PATH.exists()}")
 
     # ── Archetypes ────────────────────────────────────────────────────────────
-    print("\n[Archetypes] Clustering all villages...")
-    main_df = scored[scored["ntl_2019"].notna() &
-                     (scored.get("ntl_2019", 0) >= 0.1)].copy()
-    print(f"  Main track: {len(main_df):,}")
+    print("\n[Archetypes]")
 
-    arch_df = run_archetypes(main_df)
+    if scored is not None:
+        # Full K-means path: cluster on all scored main-track villages then
+        # merge the result back to top100.
+        main_df = scored[scored["ntl_2019"].notna() &
+                         (scored["ntl_2019"] >= 0.1)].copy()
+        print(f"  Main track from village_scored.csv: {len(main_df):,}")
+        arch_df = run_archetypes(main_df)
+    else:
+        # Fallback: run directly on the top_100 DataFrame.
+        # rule_based_archetype() only needs NTL + geometric columns which
+        # are always present in top_100_villages.csv.
+        print("  Running archetypes on top_100_villages.csv (rule-based)")
+        arch_df = run_archetypes(top100)
+
     if not arch_df.empty:
         arch_out = OUTPUT_DIR / "village_archetypes.csv"
         arch_df.to_csv(arch_out, index=False)
@@ -388,14 +474,24 @@ def main():
         fig_arch.write_html(str(arch_chart_out), include_plotlyjs="cdn")
         print(f"  → {arch_chart_out}")
 
-        # Merge archetype into top100
-        if not top100.empty:
-            arch_top = arch_df[["pc11_village_id", "archetype_name"]].copy()
-            arch_top["pc11_village_id"] = arch_top["pc11_village_id"].astype(str)
-            top100["pc11_village_id"]   = top100["pc11_village_id"].astype(str)
-            top100 = top100.merge(arch_top, on="pc11_village_id", how="left")
-            top100.to_csv(top100_path, index=False)
-            print("  Updated top_100_villages.csv with archetype_name")
+        # Merge archetype_name into top100_villages.csv.
+        # If archetypes were run on top100 directly, arch_df already has the
+        # same index — use direct assignment.  If run on full scored CSV, join
+        # on pc11_village_id.
+        id_col = "pc11_village_id"
+        if id_col in arch_df.columns and id_col in top100.columns:
+            arch_top = arch_df[[id_col, "archetype_name"]].copy()
+            arch_top[id_col] = arch_top[id_col].astype(str)
+            top100[id_col]   = top100[id_col].astype(str)
+            # Drop stale archetype_name column if present before merge
+            top100 = top100.drop(columns=["archetype_name"], errors="ignore")
+            top100 = top100.merge(arch_top, on=id_col, how="left")
+        elif "archetype_name" in arch_df.columns:
+            top100["archetype_name"] = arch_df["archetype_name"].values
+
+        top100.to_csv(top100_path, index=False)
+        print(f"  Updated {top100_path.name} with archetype_name")
+        print(f"  Distribution: {top100['archetype_name'].value_counts().to_dict()}")
 
     print("\nStep 12 complete.")
 

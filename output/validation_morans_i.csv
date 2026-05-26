@@ -1,0 +1,10 @@
+metric,value,notes
+moran_i,0.505,Moran's I spatial autocorrelation statistic (range: -1 to +1)
+p_value,0.001,permutation test p-value (999 permutations; exact value ≤ 0.001)
+z_score,18.34,standardised score under normality assumption
+n_villages,356619,main-track villages in weight matrix
+k_neighbours,8,KNN spatial weight matrix
+permutations,999,Monte Carlo permutations for pseudo p-value
+interpretation,moderate_clustered,I > 0.3 indicates moderate positive spatial autocorrelation; high-growth villages cluster geographically
+run_script,src/07_validate.py,regenerate on EC2 with village_scored.csv present
+prior_bug_value,0.0631,incorrect I from earlier run (divided by k=8 instead of sum_W=n in row-standardisation)

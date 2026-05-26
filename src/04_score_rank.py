@@ -15,17 +15,19 @@ Scoring model:
     - Tower growth (mobile tower density change, connectivity proxy)
     - District outperformance: score relative to district mean
 
-  Stage 2 — ML scoring (GradientBoostingClassifier)
-    - Self-supervised label: top 10% on ≥2 of the primary signals
+  Stage 2 — Signal amplifier (GradientBoostingClassifier, self-supervised)
+    - Self-supervised label: top 10% on ≥2 of the primary signals simultaneously
     - Features: all available signal rank scores
-    - Output: ml_growth_prob (0–1)
+    - Output: ml_growth_prob (0–1) — amplifies NTL/built-up co-occurrence signal
+    - AUC = 1.000 is EXPECTED (labels derived from same features); not a validity claim
+    - Weight capped at 15% to prevent this circular component from dominating composite
 
-  Stage 3 — composite (weighted ensemble of ML + key signals)
-    composite_score = 0.38 × ml_growth_prob_score
-                    + 0.22 × ntl_growth_log_score
-                    + 0.15 × ndbi_growth_score    (if available)
-                    + 0.12 × ghsl_change_score    (if available)
-                    + 0.08 × s1_vv_delta_score    (if available)
+  Stage 3 — composite (weighted ensemble of independent signals + amplifier)
+    composite_score = 0.35 × ntl_growth_log_score
+                    + 0.20 × ndbi_growth_score    (if available)
+                    + 0.15 × ghsl_change_score    (if available)
+                    + 0.15 × ml_growth_prob_score (signal amplifier, self-supervised)
+                    + 0.10 × s1_vv_delta_score    (if available)
                     + 0.05 × spatial_lag_score
     Weights auto-redistribute if signals missing.
 
@@ -97,11 +99,14 @@ SPATIAL_LAG_K = _SCORING.get("spatial_lag_k", 10)
 # Composite weights read from config.yaml → scoring.composite_weights_full.
 # Changing weights in config.yaml now takes effect without touching this file.
 _DEFAULT_WEIGHTS = {
-    "ml_growth_prob_score": 0.38,
-    "ntl_growth_log_score": 0.22,
-    "ndbi_growth_score":    0.15,
-    "ghsl_change_score":    0.12,
-    "s1_vv_delta_score":    0.08,
+    # ml_growth_prob_score is a self-supervised signal amplifier (labels derived from
+    # the same inputs → AUC=1.000 is expected, not evidence of predictive power).
+    # Weight is capped at 15% so independent signals dominate the composite.
+    "ml_growth_prob_score": 0.15,
+    "ntl_growth_log_score": 0.35,
+    "ndbi_growth_score":    0.20,
+    "ghsl_change_score":    0.15,
+    "s1_vv_delta_score":    0.10,
     "spatial_lag_score":    0.05,
 }
 COMPOSITE_WEIGHTS = _SCORING.get("composite_weights_full", _DEFAULT_WEIGHTS)
@@ -318,6 +323,93 @@ def bfast_features(df: pd.DataFrame) -> pd.DataFrame:
     }, index=df.index)
 
 
+# ── Spatial deduplication ────────────────────────────────────────────────────
+
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    R = 6371.0
+    phi1, phi2 = np.radians(lat1), np.radians(lat2)
+    dphi, dlam = phi2 - phi1, np.radians(lon2 - lon1)
+    a = np.sin(dphi / 2) ** 2 + np.cos(phi1) * np.cos(phi2) * np.sin(dlam / 2) ** 2
+    return 2 * R * np.arcsin(np.sqrt(a))
+
+
+def spatial_dedup_villages(df: pd.DataFrame, radius_km: float = 5.0) -> pd.DataFrame:
+    """
+    Remove duplicate OSM nodes that represent the same settlement.
+
+    OSM sometimes contains several point nodes for a single village (e.g. five
+    nodes all named 'Siswa Bazar' within a 5 km radius). These inflate rankings
+    by letting one settlement occupy multiple top-N slots.
+
+    Algorithm:
+      1. Strip '(OSM XXXXXXXXX)' suffix from village_name → base_name.
+      2. Within each base_name group, build a connectivity graph where two nodes
+         are connected when haversine distance < radius_km.
+      3. Find connected components (transitively merged clusters).
+      4. In each multi-node component keep the highest composite_score
+         representative; mark the rest for removal.
+
+    Returns the deduplicated DataFrame. Rankings are NOT updated here — the
+    caller should re-sort and reassign rank after calling this function.
+    """
+    import re
+    from collections import defaultdict
+
+    if "village_name" not in df.columns or len(df) == 0:
+        return df
+
+    def _base(name: str) -> str:
+        return re.sub(r"\s*\(OSM\s*\d+\)\s*$", "", str(name)).strip().lower()
+
+    df = df.copy()
+    df["_base_name"] = df["village_name"].apply(_base)
+    df["_keep"] = True
+
+    for base, grp in df[df["_base_name"] != ""].groupby("_base_name"):
+        if len(grp) <= 1:
+            continue
+
+        idxs = list(grp.index)
+        graph: dict = defaultdict(set)
+        for i in range(len(idxs)):
+            for j in range(i + 1, len(idxs)):
+                ri, rj = idxs[i], idxs[j]
+                d = _haversine_km(
+                    df.loc[ri, "latitude"], df.loc[ri, "longitude"],
+                    df.loc[rj, "latitude"], df.loc[rj, "longitude"],
+                )
+                if d < radius_km:
+                    graph[i].add(j)
+                    graph[j].add(i)
+
+        visited: set = set()
+        for start in range(len(idxs)):
+            if start in visited:
+                continue
+            comp: set = set()
+            stack = [start]
+            while stack:
+                n = stack.pop()
+                if n in visited:
+                    continue
+                visited.add(n)
+                comp.add(n)
+                stack.extend(graph[n] - visited)
+            if len(comp) > 1:
+                comp_idxs = [idxs[i] for i in comp]
+                best = df.loc[comp_idxs, "composite_score"].idxmax()
+                for ci in comp_idxs:
+                    if ci != best:
+                        df.loc[ci, "_keep"] = False
+
+    n_removed = int((~df["_keep"]).sum())
+    if n_removed:
+        print(f"  Spatial dedup: removed {n_removed} duplicate OSM nodes "
+              f"(same settlement, radius ≤ {radius_km} km)")
+
+    return df[df["_keep"]].drop(columns=["_base_name", "_keep"]).copy()
+
+
 # ── Spatial lag ───────────────────────────────────────────────────────────────
 
 def add_spatial_lag(df: pd.DataFrame, score_col: str, k: int = 10) -> pd.Series:
@@ -334,15 +426,19 @@ def add_spatial_lag(df: pd.DataFrame, score_col: str, k: int = 10) -> pd.Series:
 
 def ml_score(df: pd.DataFrame, feature_cols: list) -> pd.Series:
     """
-    Self-supervised growth classifier.
+    Self-supervised signal amplifier (NOT an independent predictor).
 
-    Label = 1 if village is top-10% on ≥2 of the primary raw signals.
-    Features = rank-percentile scores of all available signals (rank_score, not
-    minmax_score, so the label and feature scales are consistent).
+    Label = 1 if village is top-10% on ≥2 of the primary raw signals simultaneously.
+    Because labels are derived from the same signals provided as features, the model
+    learns to reproduce a deterministic function of its own inputs. AUC = 1.000 is
+    the expected outcome — it confirms training succeeded, not that the model
+    generalises to unseen economic ground-truth.
 
-    Limitation: labels derived from input signals → AUC measures self-consistency,
-    not ground-truth predictive performance. Use AUC as a calibration sanity-check
-    only, not as a claim of external validity.
+    This component amplifies co-occurrence of strong NTL + built-up signals. It adds
+    no new information beyond those signals. Weight is capped at 15% in the composite
+    (config.yaml → scoring.composite_weights_full.ml_growth_prob_score) so independent
+    satellite signals collectively dominate. Replace with SECC 2011 ground-truth labels
+    (src/13_secc_validation.py) to convert this into a genuine independent predictor.
     """
     sig_cols = [c for c in ["ntl_growth_pct", "ndbi_growth", "ghsl_change",
                              "s1_vv_delta", "builtup_change"]
@@ -388,17 +484,36 @@ def ml_score(df: pd.DataFrame, feature_cols: list) -> pd.Series:
 
 def compute_uncertainty(df: pd.DataFrame, signal_cols: list) -> pd.DataFrame:
     """
-    confidence_score: fraction of signals with non-NaN data × 100.
+    confidence_score: fraction of *truly active* signals × 100.
+    signals_active:   count of signals with non-NaN data AND non-zero variance.
     inter_signal_agreement: 1 − (std of signal rank percentiles / 50).
     Values near 100 = signals agree; values near 0 = signals contradict.
+
+    A signal is "truly active" only if it has (a) at least one non-NaN value in this
+    dataframe AND (b) non-zero variance. All-NaN columns (e.g. Sentinel-2/SAR when
+    those pipelines stall) and all-identical columns (degenerate) are excluded from
+    the coverage count so confidence_score correctly reflects signal availability
+    rather than always returning 100 when missing signals are NaN-filled to zero.
     """
     avail = [c for c in signal_cols if c in df.columns]
     if not avail:
         return pd.DataFrame(index=df.index)
 
-    # Capture actual data coverage BEFORE rank transform (rank converts NaN→0,
-    # so notna() after ranking would always be True giving confidence_score=100).
-    coverage = df[avail].notna().mean(axis=1)
+    # "Truly active" = has at least one non-NaN value AND non-zero variance.
+    # This correctly excludes all-NaN signals (stalled Sentinel-2/SAR → all NaN)
+    # and degenerate all-constant signals that carry no information.
+    truly_active = [
+        c for c in avail
+        if df[c].notna().any() and df[c].std(skipna=True) > 1e-9
+    ]
+    n_active   = len(truly_active)
+    n_total    = len(avail)   # total attempted (includes stalled/absent signals)
+
+    # Per-row coverage: fraction of truly-active signals that are non-NaN for that row.
+    if truly_active:
+        coverage = df[truly_active].notna().mean(axis=1)
+    else:
+        coverage = pd.Series(0.0, index=df.index)
 
     sub = df[avail].copy()
     for col in avail:
@@ -407,10 +522,16 @@ def compute_uncertainty(df: pd.DataFrame, signal_cols: list) -> pd.DataFrame:
     std_vals  = sub.std(axis=1)
     agreement = (1 - std_vals / 50).clip(0, 1)
 
-    return pd.DataFrame({
+    result = pd.DataFrame({
         "confidence_score":        (coverage * 100).round(1),
+        "signals_active":          n_active,
+        "signals_attempted":       n_total,
         "inter_signal_agreement":  (agreement * 100).round(1),
     }, index=df.index)
+
+    print(f"  Signal coverage: {n_active}/{n_total} signals active "
+          f"({', '.join(truly_active[:4])}{'...' if n_active > 4 else ''})")
+    return result
 
 
 # ── District normalization ────────────────────────────────────────────────────
@@ -587,6 +708,15 @@ def main():
     unc = compute_uncertainty(main_df, ALL_SIGNAL_COLS)
     main_df = pd.concat([main_df, unc], axis=1)
 
+    main_df = main_df.sort_values("composite_score", ascending=False).reset_index(drop=True)
+
+    # Deduplicate OSM multi-nodes for the same settlement before ranking.
+    # Without this, a single market town (e.g. Siswa Bazar) with many OSM
+    # point nodes can occupy 5+ consecutive top-N slots, crowding out genuine
+    # other-village candidates. Dedup preserves the highest-scoring node per
+    # settlement and drops the rest. Radius from config (default 5 km).
+    dedup_radius = _CFG.get("scoring", {}).get("dedup_radius_km", 5.0)
+    main_df = spatial_dedup_villages(main_df, radius_km=dedup_radius)
     main_df = main_df.sort_values("composite_score", ascending=False).reset_index(drop=True)
     main_df["rank"] = range(1, len(main_df) + 1)
 

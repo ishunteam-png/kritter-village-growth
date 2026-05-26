@@ -8,6 +8,9 @@ output/animation_*.html
 # Keep top_100 for quick reference and GitHub Pages loading
 !output/top_100_villages.csv
 
+# Committed validation artefacts (small CSV summaries — no large intermediates)
+!output/validation_*.csv
+
 # docs/ is GitHub Pages — all files there ARE committed
 !docs/
 
@@ -62,3 +65,15 @@ ruvector.db
 
 # Local utility scripts
 generate_charts.py
+
+# Ad-hoc pipeline scripts generated during iterative runs — not part of submission
+check_ec2.py
+dedup_villages.py
+finish_deploy.log
+finish_deploy.ps1
+finish_deploy_err.log
+full_rerun.sh
+make_slides.js
+rerun_after_dedup.sh
+resume_from_ghsl.sh
+run_signals_pipeline.sh
