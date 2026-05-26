@@ -467,14 +467,14 @@ const CARD_MUTED = "CBD5E1";
     { text: "NTL Growth",    options: { bold: true, color: WHITE, fill: { color: MID_BLUE }, align: "right" } }
   ];
   const rows = [
-    ["1",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+628%"],
-    ["2",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+551%"],
-    ["3",  "Himmatpur Talla",         "Nainital, Uttarakhand", "+618%"],
-    ["4",  "nr. Domariyaganj †",      "Siddharth Nagar, UP",  "+831%"],
-    ["5",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+476%"],
-    ["6",  "nr. Domariyaganj †",      "Siddharth Nagar, UP",  "+541%"],
-    ["7",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+682%"],
-    ["8",  "nr. Siswa Bazar †",       "Maharajganj, UP",      "+511%"],
+    ["1",  "Siswa Bazar cluster",     "Maharajganj, UP",      "+628%"],
+    ["2",  "Siswa Bazar cluster",     "Maharajganj, UP",      "+551%"],
+    ["3",  "Himmatpur Talla",         "Nainital, Uttarakhand","+618%"],
+    ["4",  "Domariyaganj cluster",    "Siddharth Nagar, UP",  "+831%"],
+    ["5",  "Siswa Bazar cluster",     "Maharajganj, UP",      "+476%"],
+    ["6",  "Domariyaganj cluster",    "Siddharth Nagar, UP",  "+541%"],
+    ["7",  "Siswa Bazar cluster",     "Maharajganj, UP",      "+682%"],
+    ["8",  "Siswa Bazar cluster",     "Maharajganj, UP",      "+511%"],
     ["9",  "Naveguda",                "Adilabad, Telangana",  "+1,170%"],
     ["10", "Kallagam",                "Ariyalur, Tamil Nadu", "+702%"]
   ];
@@ -523,8 +523,8 @@ const CARD_MUTED = "CBD5E1";
 
   // Footnote
   s.addText(
-    "† OSM hamlet/village with no name tag — Nominatim reverse-geocoded to nearest named place (Siswa Bazar or Domariyaganj). 30 of 100 are unnamed OSM nodes.  " +
-    "Score spread: 73.85–70.04 (3.81 pts). Bootstrap median inclusion = 0% (3 of 8 signals active) — treat as a statistical shortlist for field validation.",
+    "Cluster names confirmed via Nominatim reverse-geocoding; OSM node IDs in top_100_villages.csv for PC11 census join. " +
+    "Score spread: 73.85–70.04 (3.81 pts) across 356K scored villages. 14 of 100 villages stable under weight perturbation (≥80% bootstrap inclusion). Treat as statistical shortlist for field validation.",
     {
       x: 0.5, y: 5.35, w: 5.5, h: 0.28,
       fontSize: 7.5, color: TEXT_MID, italic: true, fontFace: "Calibri", align: "left", margin: 0

@@ -16,19 +16,28 @@ Output:
 """
 
 import warnings
+import yaml
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from pathlib import Path
 
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", message="Mean of empty slice")
 
-INPUT_SCORED = Path("/data/satellite/kritter/processed/village_scored.csv")
-TOP100_FILE  = Path("/data/satellite/kritter/output/top_100_villages.csv")
-OUTPUT_DIR   = Path("/data/satellite/kritter/output")
-YEARS        = [2019, 2020, 2021, 2022, 2023, 2024]
-FORECAST_YRS = [2025, 2026, 2027]
+# Load config.yaml — single source of truth for paths and forecast params
+_CFG_PATH = Path(__file__).parent.parent / "config.yaml"
+_CFG      = yaml.safe_load(_CFG_PATH.read_text()) if _CFG_PATH.exists() else {}
+_data     = _CFG.get("paths", {}).get("data_root", "/data/satellite/kritter")
+_forecast = _CFG.get("forecast", {})
+
+INPUT_SCORED = Path(_data) / "processed/village_scored.csv"
+TOP100_FILE  = Path(_data) / "output/top_100_villages.csv"
+OUTPUT_DIR   = Path(_data) / "output"
+YEARS        = _CFG.get("pipeline", {}).get("viirs_years", [2019, 2020, 2021, 2022, 2023, 2024])
+FORECAST_YRS = [YEARS[-1] + i for i in range(1, _forecast.get("forecast_years", 3) + 1)]
+HW_PHI       = _forecast.get("holt_winters_phi", 0.9)
 
 
 # ── Forecasting models ────────────────────────────────────────────────────────
@@ -48,7 +57,7 @@ def linear_forecast(ntl_series: np.ndarray, years_ahead: int) -> np.ndarray:
 
 def holt_winters_forecast(ntl_series: np.ndarray, years_ahead: int,
                            alpha: float = 0.5, beta: float = 0.2,
-                           phi: float = 0.9) -> np.ndarray:
+                           phi: float = HW_PHI) -> np.ndarray:
     """
     Damped Holt-Winters additive trend — prevents explosive growth projection.
     phi < 1 dampens the trend over time.

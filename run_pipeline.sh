@@ -95,7 +95,10 @@ $PY - <<'PYEOF'
 import pathlib, sys
 import pandas as pd
 
-stats_csv = pathlib.Path("/data/satellite/kritter/village_all_stats.csv")
+import yaml
+_cfg = yaml.safe_load(pathlib.Path("/home/ubuntu/kritter/config.yaml").read_text()) if pathlib.Path("/home/ubuntu/kritter/config.yaml").exists() else {}
+_data = _cfg.get("paths", {}).get("data_root", "/data/satellite/kritter")
+stats_csv = pathlib.Path(_data) / "processed/village_all_stats.csv"
 if not stats_csv.exists():
     print("  [SKIP] village_all_stats.csv not found yet", flush=True)
     sys.exit(0)
@@ -103,12 +106,12 @@ if not stats_csv.exists():
 df = pd.read_csv(stats_csv, nrows=5000)
 signals = {
     "VIIRS NTL 2024":      "ntl_2024",
-    "WorldCover built-up": "worldcover_builtup_frac",
-    "GHSL built-up":       "ghsl_builtup_frac_2020",
-    "Sentinel-2 NDBI":     "ndbi_mean",
-    "Sentinel-1 SAR VV":   "s1_vv_mean",
-    "WorldPop pop 2020":   "worldpop_2020",
-    "Tower density":       "tower_density",
+    "WorldCover built-up": "builtup_change",
+    "GHSL built-up":       "ghsl_change",
+    "Sentinel-2 NDBI":     "ndbi_2019",
+    "Sentinel-1 SAR VV":   "s1_vv_2019",
+    "WorldPop pop 2019":   "pop_2019",
+    "Tower density":       "tower_density_2024",
 }
 ok, warn = [], []
 for name, col in signals.items():

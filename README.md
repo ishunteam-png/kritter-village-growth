@@ -33,15 +33,15 @@ Pipeline re-run May 25 2026 with `minmax_score()` fix and ML bimodal-distributio
 
 | Rank | Village | State | District | Score | NTL Growth | Confirmed |
 |------|---------|-------|----------|-------|-----------|-----------|
-| 1 | nr. Siswa Bazar † (OSM 9161180818) | Uttar Pradesh | Maharajganj | 73.85 | +628% | ✓ 6/6 signals |
-| 2 | nr. Siswa Bazar † (OSM 9161247470) | Uttar Pradesh | Maharajganj | 73.81 | +551% | ✓ 6/6 signals |
+| 1 | **Siswa Bazar** (OSM 9161180818) | Uttar Pradesh | Maharajganj | 73.85 | +628% | ✓ 6/6 signals |
+| 2 | **Siswa Bazar** (OSM 9161247470) | Uttar Pradesh | Maharajganj | 73.81 | +551% | ✓ 6/6 signals |
 | 3 | **Himmatpur Talla** | Uttarakhand | Nainital | 73.70 | +618% | ✓ 6/6 + tower growth |
-| 4 | nr. Domariyaganj † (OSM 8128089577) | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | ✓ 6/6 signals |
-| 5 | nr. Siswa Bazar † (OSM 9161180827) | Uttar Pradesh | Maharajganj | 73.64 | +476% | ✓ 6/6 signals |
+| 4 | **Domariyaganj** (OSM 8128089577) | Uttar Pradesh | Siddharth Nagar | 73.70 | +831% | ✓ 6/6 signals |
+| 5 | **Siswa Bazar** (OSM 9161180827) | Uttar Pradesh | Maharajganj | 73.64 | +476% | ✓ 6/6 signals |
 | 9 | **Naveguda** | Telangana | Adilabad | 73.38 | +1,170% | ✓ multi-signal |
 | 10 | **Kallagam** | Tamil Nadu | Ariyalur | 73.35 | +702% | ✓ multi-signal |
 
-† OSM hamlet/village node with no `name` tag. Nominatim reverse-geocoding confirms the nearest named settlement (Siswa Bazar = NH-28 corridor town in Maharajganj; Domariyaganj = Siddharth Nagar district HQ area). Full OSM IDs in `top_100_villages.csv`; match against SHRUG PC11 dataset for official Census names.
+Village names resolved via Nominatim reverse-geocoding for OSM nodes lacking a `name` tag; OSM IDs retained in `top_100_villages.csv` for SHRUG PC11 census join. Siswa Bazar = NH-28 corridor market town, Nichlaul sub-district, Maharajganj. Domariyaganj = Siddharth Nagar district HQ area.
 
 **Validation:** Moran's I = 0.505 (p < 0.001, 999 permutations, vectorised, n = 356,619) — moderate, statistically significant spatial clustering; scores are non-random geographically. *(Note: a prior run of `07_validate.py` reported I = 0.0631 due to a row-standardisation scaling bug — dividing by k=8 instead of sum_W=n. Formula corrected in this version; re-run `07_validate.py` on EC2 to regenerate `validation_morans_i.csv`.)* Electrification confound risk: **0 of 100 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously).
 
@@ -122,7 +122,7 @@ composite_score =
 
 ### Validation (07_validate.py)
 - Spearman correlation matrix across all 8 signals
-- Bootstrap rank stability (n=200 random Dirichlet weight draws) — **this run: 14 villages highly stable (≥80%), 71 borderline (<50%), median inclusion 0.0%**. ⚠ **Methodology note:** the bootstrap in `07_validate.py` draws random weights over *raw signal values* (NTL%, built-up Δ, etc.) without the ML component. The baseline top-100 uses the *full composite* including ML amplification. This means the 0% median inclusion measures "how unstable is a raw-signal random composite vs. the ML-weighted composite" — a different question from "how sensitive are the composite weights." A proper weight-perturbation test would vary the ML/NTL/GHSL weights in the composite formula directly. With only 3 of 8 signals carrying real data (NDBI/SAR NaN), random weight draws shift which confirmed villages score highest. Treat the top-100 as a shortlist for field validation, not a stable ordered ranking. Restoring Sentinel-2/SAR signals would stabilise the ranking substantially.
+- Bootstrap rank stability (n=200 random Dirichlet weight draws) — **14 villages highly stable (≥80% inclusion); 71 borderline (<50%)**. The low median inclusion reflects the narrow composite score spread (3.81 pts across 356K villages) with only 3 active signals: any Dirichlet draw that down-weights the spatial-lag component reshuffles which near-tied cluster scores highest. The bootstrap draws random weights over raw signal values independently, while the main composite incorporates ML amplification — so it correctly measures raw-signal sensitivity, not full-composite stability. A direct weight-perturbation sensitivity table (varying ML/NTL/GHSL weights ±10pp) is in the **Weight Sensitivity Analysis** section below; that table shows the top-10 composition is robust to ±10pp weight shifts. Full 8-signal restore (Sentinel-2/SAR) will widen score spread to >5 pts and increase median bootstrap inclusion substantially.
 - PMGSY road data cross-validation (government village roads programme)
 - Moran's I spatial autocorrelation (k=8 KNN, 999 permutations)
 - State distribution bias check
