@@ -47,6 +47,8 @@ scoring:
   minmax_clip_lo:   0.02                   # 2nd-percentile floor for robust min-max normalisation
   minmax_clip_hi:   0.99                   # 99th-percentile ceiling — only top 1% of villages tie at
                                            # score=100 per signal; was 0.98 (top 2% all tied, less spread)
+  state_cap_pct:    0.40                   # max fraction of top-N from any single state
+                                           # guards against TIF geographic concentration bias
   spatial_lag_k:    10                     # nearest neighbours for cluster reinforcement
   gbm_estimators:   200
   gbm_max_depth:    4

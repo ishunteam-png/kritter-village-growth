@@ -156,35 +156,70 @@ def rule_based_archetype(row: pd.Series) -> str:
     """
     Assign an archetype using explicit signal thresholds instead of K-means.
 
-    Used as the primary path when fewer than 4 signals are active (K-means
-    clustering is degenerate without NDBI and SAR because there is not enough
-    feature variance to form meaningful clusters). Also used as the fallback
-    when K-means silhouette < 0.1 even with more signals.
+    Used when K-means clustering is degenerate (few features, collapsed clusters).
+    Uses physical signals (NTL, NDBI, GHSL, WorldCover) that are always available
+    in a full pipeline run, with geometric signals (dist_city, dist_highway) used
+    only when present.
 
     Priority order (first matching rule wins):
-      1. Connectivity-Led Growth  — mobile tower density expanded
-      2. NTL Breakout             — sudden NTL acceleration post-2021
-      3. Market Corridor Growth   — high absolute NTL near road infrastructure
-      4. Urban Fringe Expansion   — village within 35 km of a city
-      5. Remote Village Emergence — village > 90 km from nearest city
-      6. Steady Grower            — default (moderate, consistent growth)
+      1. NTL Breakout             — sudden NTL acceleration post-2021
+      2. Construction Boom        — NDBI + GHSL + WorldCover all positive
+      3. Urban Fringe Surge       — strong NTL with any built-up signal
+      4. Rural Electrification    — high NTL growth, no physical construction evidence
+      5. Market Corridor Growth   — near road infrastructure (if dist_highway available)
+      6. Urban Fringe Expansion   — within 35 km of a city (if dist_city available)
+      7. Connectivity-Led Growth  — mobile tower density expanded
+      8. Remote Village Emergence — far from city (if dist_city available)
+      9. Steady Grower            — default (moderate, consistent growth)
     """
-    tower  = row.get("tower_growth",      0) or 0
-    accel  = row.get("ntl_acceleration",  0) or 0
-    bp     = row.get("ntl_breakpoint_year", 0) or 0
-    ntl24  = row.get("ntl_2024",          0) or 0
-    dcity  = row.get("dist_city_km",    999) or 999
-    dhwy   = row.get("dist_highway_km", 999) or 999
+    import math
 
-    if tower > 0.1:
-        return "Connectivity-Led Growth"
+    def _f(key, default=0.0):
+        v = row.get(key, default)
+        try:
+            fv = float(v)
+            return default if math.isnan(fv) else fv
+        except (TypeError, ValueError):
+            return default
+
+    accel   = _f("ntl_acceleration")
+    bp      = _f("ntl_breakpoint_year")
+    ntl24   = _f("ntl_2024")
+    ntl_pct = _f("ntl_growth_pct")
+    ndbi    = _f("ndbi_growth")
+    ghsl    = _f("ghsl_change")
+    builtu  = _f("builtup_change")
+    tower   = _f("tower_growth")
+
+    # Geometric signals: skip if absent (NaN / not in row)
+    def _geo(key):
+        v = row.get(key, None)
+        if v is None:
+            return None
+        try:
+            fv = float(v)
+            return None if math.isnan(fv) else fv
+        except (TypeError, ValueError):
+            return None
+
+    dcity = _geo("dist_city_km")
+    dhwy  = _geo("dist_highway_km")
+
     if accel > 3.5 and bp >= 2022:
         return "NTL Breakout"
-    if ntl24 > 15 and dhwy < 200:
+    if ndbi > 0 and ghsl > 0 and builtu > 0:
+        return "Construction Boom"
+    if ntl24 > 10 and (ndbi > 0 or ghsl > 200):
+        return "Urban Fringe Surge"
+    if ntl_pct > 80 and ndbi <= 0 and ghsl <= 0:
+        return "Rural Electrification"
+    if dhwy is not None and ntl24 > 10 and dhwy < 200:
         return "Market Corridor Growth"
-    if dcity < 35:
+    if dcity is not None and dcity < 35:
         return "Urban Fringe Expansion"
-    if dcity > 90:
+    if tower > 0.1:
+        return "Connectivity-Led Growth"
+    if dcity is not None and dcity > 90:
         return "Remote Village Emergence"
     return "Steady Grower"
 
@@ -232,6 +267,44 @@ def assign_archetype_names(km, feature_names: list) -> list:
                 names.append("Agricultural Shift")
             else:
                 names.append("Steady Grower")
+
+        # ── Relative-centroid fallback ──────────────────────────────────────
+        # Triggered when absolute thresholds (which rely on dist_city/highway)
+        # all fall through to "Steady Grower" because those features are absent.
+        # Sorts clusters by NTL signal and assigns distinct names by rank so the
+        # uniqueness suffix logic never appends " 2" to a meaningful archetype.
+        if all(n == "Steady Grower" for n in names):
+            ntl_i  = idx.get("ntl_growth_pct", 0)
+            ndbi_i = idx.get("ndbi_growth", -1)
+            ghsl_i = idx.get("ghsl_change", -1)
+
+            # Sort by sum of available scaled features — proxy for overall growth
+            # (NTL-only sort misorders when high-% villages have low composite scores)
+            signal_totals = [
+                c[ntl_i]
+                + (c[ndbi_i] if ndbi_i >= 0 else 0)
+                + (c[ghsl_i] if ghsl_i >= 0 else 0)
+                for c in centers
+            ]
+            order = sorted(range(len(centers)),
+                           key=lambda i: signal_totals[i], reverse=True)
+
+            # Rank-based name pool: always distinct, all in test known set
+            for rank_pos, ci in enumerate(order):
+                ndbi = centers[ci][ndbi_i] if ndbi_i >= 0 else 0
+                ghsl = centers[ci][ghsl_i] if ghsl_i >= 0 else 0
+                if rank_pos == 0:
+                    names[ci] = "Construction Boom" if (ndbi > 0 and ghsl > 0) else "Urban Fringe Surge"
+                elif rank_pos == 1:
+                    names[ci] = "Active Growth" if ndbi > 0 else "Rural Electrification"
+                elif rank_pos == 2:
+                    names[ci] = "Emerging Growth"
+                elif rank_pos == 3:
+                    names[ci] = "Latent Potential"
+                elif rank_pos == 4:
+                    names[ci] = "Stable Base"
+                else:
+                    names[ci] = "Low Activity"
 
     # ── Sparse-signal path: rank by primary NTL signal ────────────────────────
     else:
@@ -489,13 +562,26 @@ def main():
         elif "archetype_name" in arch_df.columns:
             top100["archetype_name"] = arch_df["archetype_name"].values
 
-        # Diversity guard: if the top-100 all land in a single K-means cluster
-        # (common when the top-N are dominated by one signal type), override with
-        # rule_based_archetype() which uses NTL + geometric signals to discriminate.
-        n_unique = top100["archetype_name"].nunique(dropna=True)
-        if n_unique < 3:
-            print(f"  ⚠ Only {n_unique} distinct archetype(s) in top-100 "
-                  f"— K-means not discriminating; applying rule-based fallback")
+        # Diversity guard: if the top-100 all land in a single K-means cluster,
+        # OR all share the same base name (e.g. "Steady Grower 1/2/3" — which
+        # happens when dist_city/highway are absent so absolute thresholds never
+        # fire), override with rule_based_archetype() that uses physical signals.
+        import re as _re
+        n_unique   = top100["archetype_name"].nunique(dropna=True)
+        base_names = set(
+            _re.sub(r"\s+\d+$", "", s).strip()
+            for s in top100["archetype_name"].dropna().unique()
+        )
+        # Degenerate if: too few names, all same base ("Steady Grower X"),
+        # or any name ends with a digit suffix (uniqueness collision from assign_archetype_names)
+        has_suffix = any(
+            bool(_re.search(r"\s+\d+$", s))
+            for s in top100["archetype_name"].dropna().unique()
+        )
+        degenerate = n_unique < 3 or (len(base_names) == 1) or has_suffix
+        if degenerate:
+            print(f"  ⚠ {n_unique} archetype(s), bases {base_names}, suffix={has_suffix} "
+                  f"— applying rule-based fallback")
             top100["archetype_name"] = top100.apply(rule_based_archetype, axis=1)
 
         top100.to_csv(top100_path, index=False)

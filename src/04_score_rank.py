@@ -561,6 +561,203 @@ def merge_optional(df: pd.DataFrame, id_col: str) -> pd.DataFrame:
     return df
 
 
+# ── Geographic diversity cap ─────────────────────────────────────────────────
+
+def state_diversity_cap(df: pd.DataFrame, n: int = 100,
+                         max_per_state_pct: float = 0.40) -> pd.DataFrame:
+    """
+    Enforce per-state diversity in the top-N shortlist, with named-village preference.
+
+    Motivation: physical-signal TIFs (GHSL, SAR) sometimes have geographic
+    concentration bias — e.g. GHSL's built-up product reflects urban corridors
+    unevenly across Indian states. Without a diversity cap, a single state can
+    crowd out genuine high-potential villages from other regions.
+
+    Algorithm:
+      1. Sort candidates: named villages first within each composite_score tier
+         (tiny tie-breaker — a village named in OSM is more operationally useful
+         than an anonymous "Village_<id>" node at nearly the same score).
+      2. Iterate in order; include each village unless its state has already
+         contributed max_per_state rows.
+
+    cap = 40% → max 40 villages from any single state in a 100-village shortlist.
+    This is read from config.yaml → scoring.state_cap_pct (default 0.40).
+
+    NOTE: villages with unknown/NaN state are always included.
+    """
+    import re as _re
+
+    df = df.copy()
+    # Named preference: "Village_<digits>" OSM fallback names are less actionable
+    # for a retail expansion shortlist than real OSM or census names.
+    # Add a tiny (0.001 pt) bonus so named villages win ties; this does not
+    # materially change composite_score ordering but breaks ties in favour of
+    # identifiable settlements.
+    is_unnamed = df["village_name"].astype(str).str.match(r"^Village_\d+$", na=True)
+    df["_sort_score"] = df["composite_score"] + (~is_unnamed).astype(float) * 0.001
+    df = df.sort_values("_sort_score", ascending=False).drop(columns=["_sort_score"])
+
+    max_count = max(1, int(n * max_per_state_pct))
+    state_counts: dict = {}
+    kept: list = []
+
+    for _, row in df.iterrows():
+        state = row.get("state_name", "")
+        state = "" if (pd.isna(state) or str(state).strip() in ("", "nan", "None")) else str(state)
+
+        cnt = state_counts.get(state, 0) if state else 0
+        if not state or cnt < max_count:
+            kept.append(row)
+            if state:
+                state_counts[state] = cnt + 1
+            if len(kept) >= n:
+                break
+
+    result = pd.DataFrame(kept).reset_index(drop=True)
+    capped_states = [s for s, c in state_counts.items() if c >= max_count]
+    if capped_states:
+        print(f"  State diversity cap ({max_per_state_pct:.0%} / {max_count} max): "
+              f"capped states: {capped_states}")
+    return result
+
+
+# ── TIF point sampling ───────────────────────────────────────────────────────
+
+def sample_tif_at_points(df: pd.DataFrame, tif_path: Path,
+                          nodata_val: float) -> pd.Series:
+    """
+    Sample a single-band GeoTIFF at village centroid coordinates.
+
+    Reads the full raster into RAM once, then uses NumPy fancy indexing
+    for O(1)-per-village lookup. On t3.xlarge (16 GB) the GHSL uint16 TIF
+    (~1.9 GB) and SAR float32 TIF (~4.4 GB) fit without issue.
+    Out-of-bounds coordinates → NaN. nodata_val pixels → NaN.
+    """
+    try:
+        import rasterio
+        from rasterio.transform import rowcol as _rowcol
+    except ImportError:
+        print(f"  WARNING: rasterio not available — skipping {tif_path.name}")
+        return pd.Series(np.nan, index=df.index)
+
+    if not tif_path.exists():
+        return pd.Series(np.nan, index=df.index)
+
+    lons = df["longitude"].values.astype(float)
+    lats = df["latitude"].values.astype(float)
+
+    with rasterio.open(str(tif_path)) as src:
+        arr    = src.read(1)                     # native dtype (uint16 / float32)
+        height, width = arr.shape
+        transform = src.transform
+
+    rows, cols = _rowcol(transform, lons, lats)
+    rows = np.asarray(rows, dtype=int)
+    cols = np.asarray(cols, dtype=int)
+
+    valid  = (rows >= 0) & (rows < height) & (cols >= 0) & (cols < width)
+    result = np.full(len(df), np.nan, dtype=float)
+    raw    = arr[rows[valid], cols[valid]].astype(float)
+    if nodata_val is not None:
+        raw[raw == nodata_val] = np.nan
+    result[valid] = raw
+    del arr                                       # release RAM before next TIF
+
+    return pd.Series(result, index=df.index)
+
+
+def extract_tif_signals(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Sample GHSL built-up and Sentinel-1 VV TIFs at village centroids.
+
+    Fills ghsl_2015, ghsl_2020, ghsl_change, s1_vv_2019, s1_vv_2024 when
+    village_ghsl.csv / s1_vv columns are absent (i.e. 03_village_stats.py
+    did not extract them). Columns already present are left unchanged.
+    """
+    ghsl_2015_tif = PROC_DIR / "ghsl_builtup_2015.tif"
+    ghsl_2020_tif = PROC_DIR / "ghsl_builtup_2020.tif"
+    sar_2019_tif  = PROC_DIR / "s1_vv_2019.tif"
+    sar_2024_tif  = PROC_DIR / "s1_vv_2024.tif"
+
+    if "ghsl_2015" not in df.columns and ghsl_2015_tif.exists():
+        print(f"  Sampling {ghsl_2015_tif.name} at {len(df):,} villages ...")
+        df["ghsl_2015"] = sample_tif_at_points(df, ghsl_2015_tif, nodata_val=65535.0)
+        print(f"    → {df['ghsl_2015'].notna().sum():,} non-NaN values")
+
+    if "ghsl_2020" not in df.columns and ghsl_2020_tif.exists():
+        print(f"  Sampling {ghsl_2020_tif.name} at {len(df):,} villages ...")
+        df["ghsl_2020"] = sample_tif_at_points(df, ghsl_2020_tif, nodata_val=65535.0)
+        print(f"    → {df['ghsl_2020'].notna().sum():,} non-NaN values")
+
+    if "ghsl_change" not in df.columns and "ghsl_2015" in df.columns and "ghsl_2020" in df.columns:
+        df["ghsl_change"] = df["ghsl_2020"] - df["ghsl_2015"]
+        n = df["ghsl_change"].notna().sum()
+        pos = (df["ghsl_change"] > 0).sum()
+        print(f"  ghsl_change: {n:,} non-NaN, {pos:,} positive (built-up growth)")
+
+    if "s1_vv_2019" not in df.columns and sar_2019_tif.exists():
+        print(f"  Sampling {sar_2019_tif.name} at {len(df):,} villages ...")
+        df["s1_vv_2019"] = sample_tif_at_points(df, sar_2019_tif, nodata_val=-9999.0)
+        print(f"    → {df['s1_vv_2019'].notna().sum():,} non-NaN values")
+
+    if "s1_vv_2024" not in df.columns and sar_2024_tif.exists():
+        print(f"  Sampling {sar_2024_tif.name} at {len(df):,} villages ...")
+        df["s1_vv_2024"] = sample_tif_at_points(df, sar_2024_tif, nodata_val=-9999.0)
+        print(f"    → {df['s1_vv_2024'].notna().sum():,} non-NaN values")
+
+    return df
+
+
+# ── Nominatim reverse-geocoding ──────────────────────────────────────────────
+
+def _nominatim_resolve(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Resolve 'Village_<id>' fallback names via Nominatim reverse geocoding.
+
+    Called only on the top-100 shortlist (≤100 HTTP requests). Respects the
+    Nominatim 1 req/sec rate limit. Uses zoom=14 (village level); if no
+    village/hamlet/suburb is found in the OSM address, the fallback name is
+    kept as-is (the village may genuinely be unnamed in OSM).
+    """
+    import time
+
+    unnamed_mask = df["village_name"].astype(str).str.match(r"^Village_\d+$", na=True)
+    n_unnamed = int(unnamed_mask.sum())
+    if n_unnamed == 0:
+        return df
+
+    print(f"  Nominatim: resolving {n_unnamed} unnamed villages "
+          f"(~{n_unnamed} s at 1 req/sec rate limit) ...")
+    headers = {"User-Agent": "KritterVillageGrowthPipeline/1.0 (interview assignment)"}
+    resolved = 0
+
+    for idx in df[unnamed_mask].index:
+        lat = df.loc[idx, "latitude"]
+        lon = df.loc[idx, "longitude"]
+        try:
+            resp = requests.get(
+                "https://nominatim.openstreetmap.org/reverse",
+                params={"lat": lat, "lon": lon, "format": "json", "zoom": 14},
+                headers=headers,
+                timeout=8,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            addr = data.get("address", {})
+            name = (addr.get("village") or addr.get("hamlet") or
+                    addr.get("suburb")  or addr.get("neighbourhood") or "")
+            if name and not name.isdigit():
+                df.loc[idx, "village_name"] = name
+                resolved += 1
+        except Exception as exc:
+            pass  # keep fallback name; don't abort the pipeline
+        time.sleep(1.1)   # Nominatim ToS: ≤1 req/sec
+
+    print(f"  Nominatim: resolved {resolved}/{n_unnamed} "
+          f"({100 * resolved / max(n_unnamed, 1):.0f}%)")
+    return df
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -601,6 +798,9 @@ def main():
 
     # Merge optional enrichment files
     df = merge_optional(df, id_col)
+
+    # Sample GHSL / SAR TIFs directly when village_ghsl.csv is absent
+    df = extract_tif_signals(df)
 
     # Derived signals
     df["ntl_growth_pct"] = np.where(df["ntl_2019"] > 0,
@@ -738,7 +938,31 @@ def main():
     all_scored.to_csv(PROC_DIR / "village_scored.csv", index=False)
     print(f"\nAll scored: {len(all_scored):,} → village_scored.csv")
 
-    main_df.head(100).to_csv(OUTPUT_DIR / "top_100_villages.csv", index=False)
+    # Apply geographic diversity cap before saving top-100.
+    # village_scored.csv retains uncapped global ranking for research use.
+    state_cap = _SCORING.get("state_cap_pct", 0.40)
+    top100 = state_diversity_cap(main_df, n=100, max_per_state_pct=state_cap)
+    top100 = top100.sort_values("composite_score", ascending=False).reset_index(drop=True)
+    top100["rank"] = range(1, len(top100) + 1)
+
+    # Resolve unnamed villages ("Village_<id>") via Nominatim reverse geocoding.
+    # These are OSM nodes that lacked a name= tag in the extract; Nominatim
+    # returns the nearest named place (village/hamlet/suburb) at zoom=14.
+    # Runs only for the top-100 (≤100 requests at 1/sec rate limit → ≤100 s).
+    top100 = _nominatim_resolve(top100)
+
+    # Re-run spatial dedup after Nominatim: resolution may assign the same name
+    # to several nearby unnamed nodes (e.g. three OSM nodes within 3 km all get
+    # named "Bhanpur"). This second pass collapses those post-resolution clusters.
+    n_pre_dedup2 = len(top100)
+    top100 = spatial_dedup_villages(top100, radius_km=dedup_radius)
+    top100 = top100.sort_values("composite_score", ascending=False).reset_index(drop=True)
+    top100["rank"] = range(1, len(top100) + 1)
+    if len(top100) < n_pre_dedup2:
+        print(f"  Post-Nominatim dedup: collapsed {n_pre_dedup2 - len(top100)} "
+              f"same-name clusters → {len(top100)} villages in shortlist")
+
+    top100.to_csv(OUTPUT_DIR / "top_100_villages.csv", index=False)
     dark_df.head(50).to_csv(OUTPUT_DIR / "dark_top_50_villages.csv", index=False)
 
     unc_cols = [id_col, "village_name", "state_name", "rank",

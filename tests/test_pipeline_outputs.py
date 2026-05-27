@@ -8,10 +8,12 @@ Tests validate output/top_100_villages.csv against the schema produced by
 04_score_rank.py → 12_shap_archetypes.py.
 
 Row count note: the output file contains the top-N *deduplicated* villages
-(N ≤ 100). Spatial deduplication (radius 5 km, same base name) collapses
-multiple OSM point nodes that represent the same settlement into a single
-representative entry. The current run yields 87 rows; a full 8-signal run
-with a fresh OSM extract may differ slightly.
+(N ≤ 100). Two deduplication passes (5 km radius, same base name) collapse
+OSM multi-node clusters: (1) global pass before ranking, (2) post-Nominatim
+pass after name resolution assigns the same name to nearby unnamed nodes.
+The current 10-signal run (GHSL now active) yields 88 rows across 10 states
+with a 40%-per-state diversity cap; a run with a different OSM extract may
+differ slightly.
 """
 
 import pathlib
@@ -129,13 +131,13 @@ def test_state_diversity(df):
 def test_no_state_dominant_majority(df):
     """No single state should exceed 50% of the shortlist.
 
-    Current run (post-dedup): Karnataka 38%, Uttar Pradesh 16%.
-    Karnataka over-representation (7× vs village-count share) is documented
-    in the README limitations section — WorldCover 10 m may capture
-    shade-house agriculture as built-up area in Karnataka.
+    Current run (post-dedup, 40% state cap): Uttar Pradesh 40%, Maharashtra 18%.
+    UP over-representation is due to GHSL TIF concentration bias in UP's
+    urbanisation corridors. A 40%-per-state cap (config.yaml → scoring.state_cap_pct)
+    enforces geographic diversity; see README limitations for details.
 
-    The 50% guard rail catches pathological feedback loops seen in earlier
-    pipeline versions (UP at 83%, Karnataka at 95% in pre-fix runs).
+    The 50% guard rail catches pathological concentration (UP hit 72% before the cap
+    was added; Karnataka was 95% in an earlier pre-fix run).
     """
     counts = df["state_name"].value_counts(normalize=True)
     dominant_state = counts.index[0]
