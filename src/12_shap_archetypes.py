@@ -226,113 +226,123 @@ def rule_based_archetype(row: pd.Series) -> str:
 
 def assign_archetype_names(km, feature_names: list) -> list:
     """
-    Auto-label K-means clusters by inspecting centroid profiles.
-    Uses absolute thresholds when all key signals are available;
-    falls back to NTL-rank-based naming when signals are sparse.
-    Returns list of archetype names in cluster-index order.
+    Auto-label K-means clusters by comparing centroid profiles RELATIVE to each other.
+
+    Design principle: all comparisons are cluster-vs-cluster (above/below mean across
+    clusters), so the logic is scale-invariant and works regardless of how RobustScaler
+    transforms the feature space.  Absolute thresholds in scaled space are fragile
+    (centroid values depend on data distribution) and are intentionally avoided.
+
+    Assignment order:
+      Clusters are processed highest-composite-growth first.  For each cluster,
+      the first matching condition claims a semantic label (greedy; once claimed
+      a label is locked so no two clusters share the same name).
+
+      Conditions (all relative to cross-cluster mean):
+        "Urban Fringe Surge"   : above-avg NTL+NDBI  AND  below-avg dist_city
+        "Construction Boom"    : above-avg NTL+NDBI+GHSL  (physical build activity)
+        "Industrial Corridor"  : below-avg dist_highway  AND  above-avg NTL
+        "Rural Electrification": above-avg NTL  AND  below-avg NDBI  (lights, no build)
+        "Agricultural Shift"   : above-avg NDBI  AND  below-avg NTL
+        "Connectivity-Led Growth": above-avg tower  AND  not above-avg NTL or NDBI
+
+      Unmatched clusters fall to a rank-based pool:
+        "Active Growth" → "Emerging Growth" → "Latent Potential" → …
+
+    Returns list of archetype names in cluster-index order (length = k).
     """
-    centers = km.cluster_centers_  # shape (k, n_features), scaled units
+    centers = km.cluster_centers_   # (k, n_features) in RobustScaler space
+    k = len(centers)
 
-    idx = {f: (feature_names.index(f) if f in feature_names else -1)
-           for f in ["ntl_growth_pct", "ndbi_growth", "dist_city_km",
-                     "dist_highway_km", "ghsl_change", "pop_growth_rate",
-                     "tower_growth"]}
+    def _v(c, key):
+        i = feature_names.index(key) if key in feature_names else -1
+        return float(c[i]) if i >= 0 else 0.0
 
-    rich_signals = sum(1 for f in ["ndbi_growth", "dist_city_km", "ghsl_change"]
-                       if idx.get(f, -1) >= 0)
-    has_ndbi = idx.get("ndbi_growth", -1) >= 0
+    ntl_v   = [_v(c, "ntl_growth_pct")  for c in centers]
+    ndbi_v  = [_v(c, "ndbi_growth")     for c in centers]
+    ghsl_v  = [_v(c, "ghsl_change")     for c in centers]
+    dcity_v = [_v(c, "dist_city_km")    for c in centers]
+    dhwy_v  = [_v(c, "dist_highway_km") for c in centers]
+    tower_v = [_v(c, "tower_growth")    for c in centers]
 
-    # ── Rich-signal path: absolute thresholds (scaled space) ──────────────────
-    # Requires ndbi_growth as it is the primary discriminator for semantic labels.
-    # Without it, dist_city + ghsl alone cannot reliably separate archetypes.
-    if rich_signals >= 2 and has_ndbi:
-        names = []
-        for c in centers:
-            ntl   = c[idx["ntl_growth_pct"]] if idx["ntl_growth_pct"] >= 0 else 0
-            ndbi  = c[idx["ndbi_growth"]]    if idx["ndbi_growth"] >= 0    else 0
-            dcity = c[idx["dist_city_km"]]   if idx["dist_city_km"] >= 0   else 0
-            dhw   = c[idx["dist_highway_km"]]if idx["dist_highway_km"] >= 0 else 0
-            ghsl  = c[idx["ghsl_change"]]    if idx["ghsl_change"] >= 0    else 0
-            pop   = c[idx["pop_growth_rate"]]if idx["pop_growth_rate"] >= 0 else 0
+    # Cross-cluster means (reference for "above/below average")
+    mu_ntl   = np.mean(ntl_v)
+    mu_ndbi  = np.mean(ndbi_v)
+    mu_ghsl  = np.mean(ghsl_v)
+    mu_dcity = np.mean(dcity_v)
+    mu_dhwy  = np.mean(dhwy_v)
+    mu_tower = np.mean(tower_v)
 
-            if dcity < -0.3 and ntl > 0.3 and ndbi > 0.2:
-                names.append("Urban Fringe Surge")
-            elif ntl > 0.5 and ndbi < 0 and dhw > 0.3:
-                names.append("Rural Electrification")
-            elif ndbi > 0.4 and ghsl > 0.3 and pop > 0.2:
-                names.append("Construction Boom")
-            elif dhw < -0.3 and ntl > 0.2 and ndbi > 0.1:
-                names.append("Industrial Corridor")
-            elif ndbi > 0.3 and ntl < 0:
-                names.append("Agricultural Shift")
-            else:
-                names.append("Steady Grower")
+    has_dcity = "dist_city_km"    in feature_names
+    has_dhwy  = "dist_highway_km" in feature_names
+    has_tower = "tower_growth"    in feature_names
+    has_ghsl  = "ghsl_change"     in feature_names
 
-        # ── Relative-centroid fallback ──────────────────────────────────────
-        # Triggered when absolute thresholds (which rely on dist_city/highway)
-        # all fall through to "Steady Grower" because those features are absent.
-        # Sorts clusters by NTL signal and assigns distinct names by rank so the
-        # uniqueness suffix logic never appends " 2" to a meaningful archetype.
-        if all(n == "Steady Grower" for n in names):
-            ntl_i  = idx.get("ntl_growth_pct", 0)
-            ndbi_i = idx.get("ndbi_growth", -1)
-            ghsl_i = idx.get("ghsl_change", -1)
+    # Process highest-composite-growth cluster first
+    growth = [
+        ntl_v[i] * 0.4 + ndbi_v[i] * 0.3 + ghsl_v[i] * 0.2 + tower_v[i] * 0.1
+        for i in range(k)
+    ]
+    growth_order = sorted(range(k), key=lambda i: growth[i], reverse=True)
 
-            # Sort by sum of available scaled features — proxy for overall growth
-            # (NTL-only sort misorders when high-% villages have low composite scores)
-            signal_totals = [
-                c[ntl_i]
-                + (c[ndbi_i] if ndbi_i >= 0 else 0)
-                + (c[ghsl_i] if ghsl_i >= 0 else 0)
-                for c in centers
-            ]
-            order = sorted(range(len(centers)),
-                           key=lambda i: signal_totals[i], reverse=True)
+    names: list = [""] * k
+    used:  set  = set()
 
-            # Rank-based name pool: always distinct, all in test known set
-            for rank_pos, ci in enumerate(order):
-                ndbi = centers[ci][ndbi_i] if ndbi_i >= 0 else 0
-                ghsl = centers[ci][ghsl_i] if ghsl_i >= 0 else 0
-                if rank_pos == 0:
-                    names[ci] = "Construction Boom" if (ndbi > 0 and ghsl > 0) else "Urban Fringe Surge"
-                elif rank_pos == 1:
-                    names[ci] = "Active Growth" if ndbi > 0 else "Rural Electrification"
-                elif rank_pos == 2:
-                    names[ci] = "Emerging Growth"
-                elif rank_pos == 3:
-                    names[ci] = "Latent Potential"
-                elif rank_pos == 4:
-                    names[ci] = "Stable Base"
-                else:
-                    names[ci] = "Low Activity"
+    def _claim(ci: int, label: str) -> bool:
+        if label not in used:
+            names[ci] = label
+            used.add(label)
+            return True
+        return False
 
-    # ── Sparse-signal path: rank by primary NTL signal ────────────────────────
-    else:
-        ntl_i   = idx.get("ntl_growth_pct", -1)
-        tower_i = idx.get("tower_growth", -1)
-        pop_i   = idx.get("pop_growth_rate", -1)
+    for ci in growth_order:
+        above_ntl   = ntl_v[ci]   > mu_ntl
+        above_ndbi  = ndbi_v[ci]  > mu_ndbi
+        above_ghsl  = has_ghsl  and ghsl_v[ci]   > mu_ghsl
+        near_city   = has_dcity and dcity_v[ci]  < mu_dcity   # lower = nearer
+        near_hwy    = has_dhwy  and dhwy_v[ci]   < mu_dhwy
+        above_tower = has_tower and tower_v[ci]  > mu_tower
 
-        ntl_vals = [c[ntl_i] if ntl_i >= 0 else 0.0 for c in centers]
-        order = sorted(range(len(centers)), key=lambda i: ntl_vals[i], reverse=True)
+        if above_ntl and above_ndbi and near_city:
+            if _claim(ci, "Urban Fringe Surge"):
+                continue
+        if above_ntl and above_ndbi and above_ghsl:
+            if _claim(ci, "Construction Boom"):
+                continue
+        if above_ntl and above_ndbi:
+            # NTL+NDBI without GHSL confirmation → still construction-led
+            if _claim(ci, "Construction Boom"):
+                continue
+        if near_hwy and above_ntl:
+            if _claim(ci, "Industrial Corridor"):
+                continue
+        if above_ntl and not above_ndbi:
+            if _claim(ci, "Rural Electrification"):
+                continue
+        if above_ndbi and not above_ntl:
+            if _claim(ci, "Agricultural Shift"):
+                continue
+        if above_tower and not above_ntl and not above_ndbi:
+            if _claim(ci, "Connectivity-Led Growth"):
+                continue
 
-        fallback_names = [
-            "NTL Breakout",       # highest NTL growth
-            "Active Growth",      # 2nd
-            "Emerging Growth",    # 3rd
-            "Latent Potential",   # 4th
-            "Stable Base",        # 5th
-            "Low Activity",       # 6th+
-        ]
-        names = [""] * len(centers)
-        for rank, cluster_i in enumerate(order):
-            names[cluster_i] = fallback_names[min(rank, len(fallback_names) - 1)]
+    # Fallback pool (growth-rank order) for any still-unassigned clusters
+    pool = [
+        "Active Growth", "Emerging Growth", "Latent Potential",
+        "Stable Base", "Low Activity",
+    ]
+    for ci in growth_order:
+        if not names[ci]:
+            for label in pool:
+                if _claim(ci, label):
+                    break
 
-    # Ensure uniqueness (suffix if name repeats)
-    seen: dict = {}
+    # Ensure uniqueness: append suffix if same name used twice
+    seen_n: dict = {}
     unique = []
-    for n in names:
-        seen[n] = seen.get(n, 0) + 1
-        unique.append(f"{n} {seen[n]}" if seen[n] > 1 else n)
+    for nm in names:
+        seen_n[nm] = seen_n.get(nm, 0) + 1
+        unique.append(f"{nm} {seen_n[nm]}" if seen_n[nm] > 1 else nm)
     return unique
 
 

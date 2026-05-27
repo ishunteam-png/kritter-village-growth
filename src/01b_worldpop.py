@@ -26,20 +26,44 @@ WORLDPOP_URLS = {
 }
 
 
-def download_file(url: str, dest: Path, chunk_mb: int = 4) -> None:
+def download_file(url: str, dest: Path, chunk_mb: int = 4,
+                  min_size_mb: float = 50.0) -> None:
+    """
+    Download url → dest, skipping if the file already exists AND looks complete.
+
+    "Complete" is defined as ≥ min_size_mb on disk.  WorldPop India 100m rasters
+    are ~300 MB each; anything smaller almost certainly means the prior download
+    was truncated (network drop, EC2 spot-interruption, etc.).  A truncated raster
+    will open with rasterio but silently return NaN for missing tiles, causing
+    pop_growth_rate to be all-NaN for the affected year.
+    """
+    min_bytes = min_size_mb * 1024 * 1024
     if dest.exists():
-        print(f"  Already exists: {dest.name}")
-        return
+        actual_mb = dest.stat().st_size / 1024 / 1024
+        if dest.stat().st_size >= min_bytes:
+            print(f"  Already exists ({actual_mb:.0f} MB): {dest.name}")
+            return
+        else:
+            print(f"  Truncated file detected ({actual_mb:.1f} MB < {min_size_mb:.0f} MB) "
+                  f"— re-downloading {dest.name}")
+            dest.unlink()
+
     print(f"  Downloading {dest.name} ...")
     r = requests.get(url, stream=True, timeout=600,
                      headers={"User-Agent": "kritter-pipeline/1.0"})
     r.raise_for_status()
     total = int(r.headers.get("content-length", 0))
     chunk = chunk_mb * 1024 * 1024
-    with open(dest, "wb") as f, tqdm(total=total, unit="B", unit_scale=True) as bar:
-        for data in r.iter_content(chunk):
-            f.write(data)
-            bar.update(len(data))
+    tmp = dest.with_suffix(".tmp")
+    try:
+        with open(tmp, "wb") as f, tqdm(total=total, unit="B", unit_scale=True) as bar:
+            for data in r.iter_content(chunk):
+                f.write(data)
+                bar.update(len(data))
+        tmp.rename(dest)
+    except Exception:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 def main():

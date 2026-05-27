@@ -86,7 +86,15 @@ def search_s1_scenes(catalog, bbox, year):
     """
     Search across all quarterly windows and both S1 collections.
     Returns deduplicated list of STAC items with a 'vv' or equivalent asset.
+
+    Asset key priority order:
+      RTC:  'vv'  (float32 linear power, already calibrated)
+      GRD:  'schema-product-vv'  (uint16 DN, needs calibration in process_cell)
     """
+    # RTC keys: 'vv', 'VV' — already terrain-corrected, linear power
+    # GRD keys: 'schema-product-vv', 'schema-product-vh' — raw DN values
+    VV_KEYS = ("vv", "VV", "hh", "HH", "schema-product-vv", "schema-product-vh")
+
     seen, items = set(), []
     for collection in S1_COLLECTIONS:
         for start_tmpl, end_tmpl in QUARTERLY_WINDOWS:
@@ -103,12 +111,15 @@ def search_s1_scenes(catalog, bbox, year):
                     if item.id not in seen:
                         # Confirm item has a VV band asset before accepting
                         vv_key = next(
-                            (k for k in ("vv", "VV", "hh", "HH")
-                             if k in item.assets), None)
+                            (k for k in VV_KEYS if k in item.assets), None)
                         if vv_key:
                             seen.add(item.id)
+                            # Cache resolved key + collection so process_cell
+                            # can apply correct DN→dB calibration path
+                            item._vv_key   = vv_key
+                            item._is_grd   = vv_key.startswith("schema-")
                             items.append(item)
-            except Exception as e:
+            except Exception:
                 # Individual quarter/collection failures are non-fatal
                 pass
         if len(items) >= MIN_SCENES:
@@ -137,14 +148,17 @@ def process_cell(args):
         ncols = max(2, round((bbox[2] - bbox[0]) / OUT_RES))
         transform = from_bounds(*bbox, ncols, nrows)
 
+        VV_KEYS = ("vv", "VV", "hh", "HH", "schema-product-vv", "schema-product-vh")
+
         vv_stack = []
         for item in items:
             try:
-                vv_key = next(
-                    (k for k in ("vv", "VV", "hh", "HH")
-                     if k in item.assets), None)
+                # Use cached key from search; fall back to fresh lookup if missing
+                vv_key = getattr(item, "_vv_key", None) or next(
+                    (k for k in VV_KEYS if k in item.assets), None)
                 if not vv_key:
                     continue
+                is_grd = getattr(item, "_is_grd", vv_key.startswith("schema-"))
 
                 arr = np.zeros((nrows, ncols), dtype="float32")
                 with rasterio.open(item.assets[vv_key].href) as src:
@@ -158,9 +172,19 @@ def process_cell(args):
                         dst_nodata=0,
                     )
 
-                # Convert linear power to dB; mask ocean/invalid
-                # Land VV: typically -20 to -3 dB; ocean: -25 to -35 dB
-                arr_db = np.where(arr > 0, 10 * np.log10(arr + 1e-10), np.nan)
+                if is_grd:
+                    # GRD: uint16 DN → approximate sigma0 in dB
+                    # sigma0_dB ≈ 20·log10(DN) − 83 dB (IW mode, approximate)
+                    # This gives roughly the same numerical range as RTC dB values,
+                    # so the delta_vv change signal remains interpretable.
+                    arr_db = np.where(arr > 0,
+                                      20.0 * np.log10(arr + 1e-6) - 83.0,
+                                      np.nan)
+                else:
+                    # RTC: float32 linear power → dB
+                    arr_db = np.where(arr > 0, 10.0 * np.log10(arr + 1e-10), np.nan)
+
+                # Mask ocean/invalid: land VV typically −20 to −3 dB
                 arr_db = np.where((arr_db > -35) & (arr_db < 5), arr_db, np.nan)
                 if np.isnan(arr_db).mean() > 0.95:
                     continue   # skip scenes that are mostly NaN after masking

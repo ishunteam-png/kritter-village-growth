@@ -715,9 +715,13 @@ def _nominatim_resolve(df: pd.DataFrame) -> pd.DataFrame:
     Resolve 'Village_<id>' fallback names via Nominatim reverse geocoding.
 
     Called only on the top-100 shortlist (≤100 HTTP requests). Respects the
-    Nominatim 1 req/sec rate limit. Uses zoom=14 (village level); if no
-    village/hamlet/suburb is found in the OSM address, the fallback name is
-    kept as-is (the village may genuinely be unnamed in OSM).
+    Nominatim 1 req/sec rate limit.
+
+    Multi-zoom cascade strategy:
+      Pass 1: zoom=14 (village level)   — checks village/hamlet/suburb/neighbourhood
+      Pass 2: zoom=10 (subdistrict)     — checks city_district/county/town/city
+    Each zoom costs 1 req/sec; the cascade is skipped for villages resolved in pass 1.
+    Villages genuinely unnamed in OSM at both levels keep their fallback name.
     """
     import time
 
@@ -726,32 +730,61 @@ def _nominatim_resolve(df: pd.DataFrame) -> pd.DataFrame:
     if n_unnamed == 0:
         return df
 
+    # Estimated requests = n_unnamed (pass 1) + still-unnamed (pass 2) ≤ 2×n_unnamed
     print(f"  Nominatim: resolving {n_unnamed} unnamed villages "
-          f"(~{n_unnamed} s at 1 req/sec rate limit) ...")
+          f"(up to {2 * n_unnamed} requests at 1 req/sec) ...")
     headers = {"User-Agent": "KritterVillageGrowthPipeline/1.0 (interview assignment)"}
-    resolved = 0
 
+    def _query(lat: float, lon: float, zoom: int) -> str:
+        """Return best available place name at this zoom level, or ''."""
+        resp = requests.get(
+            "https://nominatim.openstreetmap.org/reverse",
+            params={"lat": lat, "lon": lon, "format": "json", "zoom": zoom},
+            headers=headers, timeout=8,
+        )
+        resp.raise_for_status()
+        addr = resp.json().get("address", {})
+        # Priority: village-level keys first, then subdistrict-level fallbacks
+        name = (
+            addr.get("village")       or addr.get("hamlet")       or
+            addr.get("suburb")        or addr.get("neighbourhood") or
+            addr.get("city_district") or addr.get("county")       or
+            addr.get("town")          or addr.get("city")         or ""
+        )
+        return name if (name and not name.isdigit()) else ""
+
+    resolved = 0
+    still_unnamed = []
+
+    # Pass 1: zoom=14 (village level)
     for idx in df[unnamed_mask].index:
         lat = df.loc[idx, "latitude"]
         lon = df.loc[idx, "longitude"]
         try:
-            resp = requests.get(
-                "https://nominatim.openstreetmap.org/reverse",
-                params={"lat": lat, "lon": lon, "format": "json", "zoom": 14},
-                headers=headers,
-                timeout=8,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            addr = data.get("address", {})
-            name = (addr.get("village") or addr.get("hamlet") or
-                    addr.get("suburb")  or addr.get("neighbourhood") or "")
-            if name and not name.isdigit():
+            name = _query(lat, lon, zoom=14)
+            if name:
                 df.loc[idx, "village_name"] = name
                 resolved += 1
-        except Exception as exc:
-            pass  # keep fallback name; don't abort the pipeline
-        time.sleep(1.1)   # Nominatim ToS: ≤1 req/sec
+            else:
+                still_unnamed.append(idx)
+        except Exception:
+            still_unnamed.append(idx)
+        time.sleep(1.1)
+
+    # Pass 2: zoom=10 (subdistrict/tehsil level) for remaining unnamed
+    if still_unnamed:
+        print(f"  Nominatim pass 2 (zoom=10): {len(still_unnamed)} still unnamed ...")
+        for idx in still_unnamed:
+            lat = df.loc[idx, "latitude"]
+            lon = df.loc[idx, "longitude"]
+            try:
+                name = _query(lat, lon, zoom=10)
+                if name:
+                    df.loc[idx, "village_name"] = name
+                    resolved += 1
+            except Exception:
+                pass
+            time.sleep(1.1)
 
     print(f"  Nominatim: resolved {resolved}/{n_unnamed} "
           f"({100 * resolved / max(n_unnamed, 1):.0f}%)")
@@ -833,6 +866,29 @@ def main():
     main_df = df[main_mask].copy().reset_index(drop=True)
     dark_df = df[dark_mask].copy().reset_index(drop=True)
     print(f"\nMain track: {len(main_df):,}  |  Dark track: {len(dark_df):,}")
+
+    # ── GHSL state normalization ───────────────────────────────────────────────
+    # GHSL built-up TIFs have geographic concentration bias: urban corridors in
+    # UP and Maharashtra have higher absolute built-up pixel counts than equally
+    # high-growth villages in Karnataka or Uttarakhand. Without normalization this
+    # inflates the GHSL score for UP/MH villages independently of their actual
+    # growth relative to their local context.
+    #
+    # Fix: z-score normalize ghsl_change within each state's main-track villages.
+    # After normalization a village "50 m² above its state average" scores the same
+    # whether it is in UP or Karnataka. Villages in states with <3 main-track
+    # villages (too few for meaningful std) are left unchanged (std fallback = 1).
+    if "ghsl_change" in main_df.columns and "state_name" in main_df.columns:
+        state_grp  = main_df.groupby("state_name")["ghsl_change"]
+        state_mean = state_grp.transform("mean")
+        state_std  = state_grp.transform("std").fillna(1.0).clip(lower=1e-6)
+        # States with only 1 village in the main track cannot compute std → std=1
+        state_count = main_df.groupby("state_name")["ghsl_change"].transform("count")
+        state_std   = state_std.where(state_count >= 3, 1.0)
+        main_df["ghsl_change"] = (main_df["ghsl_change"] - state_mean) / state_std
+        main_df["ghsl_change"] = main_df["ghsl_change"].fillna(0)
+        print("  GHSL change: z-score normalized within each state "
+              "(removes geographic TIF concentration bias)")
 
     # ── Main track scoring ────────────────────────────────────────────────────
     print("\nScoring main track...")
