@@ -13,6 +13,16 @@ Collection search order:
   1. sentinel-1-rtc  (Radiometric Terrain Corrected, linear power)
   2. sentinel-1-grd  (Ground Range Detected, fallback)
 
+⚠  DATA GAP — 2019 NOT AVAILABLE via Element84 STAC:
+  sentinel-1-rtc: collection starts ~2021; no items for 2019.
+  sentinel-1-grd: has 2019 items but asset 'schema-product-vv' is a metadata
+  XML (SAFE archive manifest), NOT a measurement GeoTIFF — rasterio cannot
+  open it. The actual measurement rasters require downloading the full SAFE
+  archive (~1 GB/scene). Alternative sources for 2019 SAR data:
+    - Alaska Satellite Facility (ASF): https://search.asf.alaska.edu/
+    - Copernicus Data Space: https://dataspace.copernicus.eu/
+    - Google Earth Engine: ee.ImageCollection('COPERNICUS/S1_GRD')
+
 Search is split into 4 quarterly windows per year to maximise scene count,
 since the quarterly limit is applied per search and India receives 12-day
 revisits (~30 scenes/year/cell).

@@ -42,9 +42,14 @@ scoring:
     ndbi_growth_score:     0.20
     ghsl_change_score:     0.15
     tower_growth_score:    0.10   # Round 9: mobile-tower density expansion (active signal)
-    s1_vv_delta_score:     0.05   # near-zero (s1_vv_2019 all-nodata) — weight held as placeholder
+    s1_vv_delta_score:     0.05   # PLACEHOLDER — SAR 2019 unavailable from Element84 STAC
+                                   # sentinel-1-rtc: no items before ~2021; sentinel-1-grd: metadata
+                                   # XMLs only (schema-product-vv ≠ measurement GeoTIFF). Weight held
+                                   # at 5% for when an alternative source (ASF, Copernicus Data Space)
+                                   # is wired in. Redistributes automatically in composite calculation.
     spatial_lag_score:     0.05
-  # Note: weights auto-redistribute when signals are NaN/zero-variance (SAR 2019 absent this run)
+  # Weights auto-redistribute when signals are NaN/zero-variance (SAR 2019 permanently absent
+  # from Element84 STAC — both RTC and GRD collections lack accessible measurement GeoTIFFs)
   minmax_clip_lo:   0.02                   # 2nd-percentile floor for robust min-max normalisation
   minmax_clip_hi:   0.99                   # 99th-percentile ceiling — only top 1% of villages tie at
                                            # score=100 per signal; was 0.98 (top 2% all tied, less spread)
