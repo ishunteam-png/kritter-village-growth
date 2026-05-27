@@ -1,90 +1,87 @@
 village_name,state_name,base_rank,bootstrap_inclusion_pct
-Village_8735721831,Uttar Pradesh,1,0.0
-Village_8735721830,Uttar Pradesh,2,0.0
-Manjiwala,Rajasthan,3,0.0
-Village_8703128561,Uttar Pradesh,4,0.0
-Village_8891960413,Uttar Pradesh,5,0.0
-Village_8892986300,Uttar Pradesh,6,75.5
-Village_13133054697,Karnataka,7,52.5
-Village_9187015105,Uttar Pradesh,9,64.5
-Village_8824852343,Uttar Pradesh,11,0.0
-Hanagal,Karnataka,12,62.5
-Bhanpur,Uttar Pradesh,15,0.0
-Village_8125936776,Uttar Pradesh,16,0.0
-Village_9045230331,Uttar Pradesh,18,0.0
-Village_8893061781,Uttar Pradesh,20,0.0
-Village_8128089592,Uttar Pradesh,22,0.0
-Village_8130691420,Uttar Pradesh,23,0.0
-Village_8130691513,Uttar Pradesh,24,0.0
-Jangīpur,Jharkhand,25,0.0
-Village_8128089571,Uttar Pradesh,26,0.0
-Bhur,Maharashtra,27,0.0
-Village_8665951656,Uttar Pradesh,28,0.0
-Village_8125936680,Uttar Pradesh,29,0.0
-Khadkarwadi,Maharashtra,30,0.5
-Village_8128089568,Uttar Pradesh,31,0.0
-Dingsi,Rajasthan,34,0.0
-Pathri,Maharashtra,36,0.0
-Dāmodarabād,Uttar Pradesh,37,0.0
-Village_8684336187,Uttar Pradesh,38,0.0
-Borphadi,Maharashtra,39,0.0
-Vengadattanur,Tamil Nadu,40,0.0
-Village_8665941817,Uttar Pradesh,41,0.0
-Thippaya Palem,Andhra Pradesh,42,0.0
-Village_8125936721,Uttar Pradesh,43,0.0
-Panpur,Uttarakhand,44,58.5
-Dagadwadi,Maharashtra,45,0.0
-Govindapuram,Telangana,46,0.5
-Village_8665942715,Uttar Pradesh,47,0.0
-Bardhangar,Uttar Pradesh,49,0.0
-Village_8128089570,Uttar Pradesh,50,0.0
-Village_9045457148,Uttar Pradesh,51,0.0
-Village_9045521282,Uttar Pradesh,52,0.0
-Village_9045230326,Uttar Pradesh,53,0.0
-Village_9045652944,Uttar Pradesh,54,0.0
-Boggudupalli,Andhra Pradesh,55,0.0
-Sonegaon,Maharashtra,56,0.0
-Kamaluwa Ghaja Kabdal,Uttarakhand,58,56.5
-Bandhewa,Rajasthan,60,0.0
-Charkāpatthal,Jharkhand,62,0.0
-Pirkalyan,Maharashtra,63,0.0
-Landgewadi,Maharashtra,64,0.0
-Venkatapuram,Telangana,69,0.0
-Village_12172321394,Karnataka,70,52.0
-Udaipur Kalan,Rajasthan,75,0.0
-Kancherupalem,Andhra Pradesh,77,0.0
-Murti,Maharashtra,81,0.0
-Sonwala,Maharashtra,85,0.0
-Gobindpur Garwal,Uttarakhand,90,47.5
-Fateh Garh,Rajasthan,95,0.0
-Rachavaram,Andhra Pradesh,97,0.0
-Abadinager Tanda,Maharashtra,101,0.0
-Karne Thanda,Telangana,102,0.0
-Sidaganahalli,Karnataka,114,0.0
-Venkatapur,Telangana,117,0.0
-Hiriyannanahalli,Karnataka,120,0.0
-Sukaliwalan,Maharashtra,121,0.0
-Karewadi,Maharashtra,123,0.0
-Hukumpeta,Andhra Pradesh,125,0.0
-Chinawara,Rajasthan,127,0.0
-Partapur,Maharashtra,128,0.0
-Lakhana,Rajasthan,131,0.0
-Marshivni Tanda,Maharashtra,132,0.0
-H. Kottala,Andhra Pradesh,133,0.0
-Deoni Kh,Maharashtra,136,0.0
-Asardhav,Maharashtra,138,0.0
-Ramaraopeta,Andhra Pradesh,139,0.0
-Village_6284194425,Maharashtra,141,0.0
-Konaigudem,Telangana,142,0.0
-Doddapura,Karnataka,144,0.0
-Amirpura Khera,Rajasthan,147,0.0
-Nandigunda,Karnataka,154,0.0
-Davuluru,Andhra Pradesh,155,0.0
-Bettahalli,Karnataka,156,0.0
-Ankli,Madhya Pradesh,157,0.0
-Chimanahalli,Karnataka,163,0.0
-Hirevuda Tanda,Karnataka,170,0.0
-Sinhaniya,Rajasthan,171,0.0
-Barewara,Rajasthan,176,0.0
-Bahiregaon,Maharashtra,177,0.0
-Village_7964818613,Chhattisgarh,180,0.0
+Manjiwala,Rajasthan,1,0.0
+Village_8735721831,Uttar Pradesh,2,0.0
+Village_13133054697,Karnataka,3,1.0
+Village_8703128561,Uttar Pradesh,5,0.0
+Hanagal,Karnataka,6,0.0
+Village_8891960413,Uttar Pradesh,7,0.0
+Village_12172321394,Karnataka,8,1.0
+Village_8824852343,Uttar Pradesh,9,0.0
+Govindapuram,Telangana,10,0.0
+Jangīpur,Jharkhand,11,0.0
+Hiriyannanahalli,Karnataka,13,0.0
+Hirevuda Tanda,Karnataka,14,0.0
+Venkatapur,Telangana,15,0.0
+Panpur,Uttarakhand,16,1.5
+Village_7966413155,Chhattisgarh,17,0.0
+Rajakumari North,Kerala,18,0.0
+Chimanahalli,Karnataka,19,0.0
+Karne Thanda,Telangana,20,0.0
+Village_8892986300,Uttar Pradesh,21,0.5
+Bhur,Maharashtra,22,0.0
+Khadkarwadi,Maharashtra,23,0.0
+Dingsi,Rajasthan,25,0.0
+Konaigudem,Telangana,26,0.0
+Pathri,Maharashtra,27,0.0
+Village_7966413099,Odisha,28,0.0
+Kamaluwa Ghaja Kabdal,Uttarakhand,30,1.0
+Doddapura,Karnataka,31,0.0
+Borphadi,Maharashtra,32,0.0
+Vengadattanur,Tamil Nadu,33,0.0
+Landgewadi,Maharashtra,34,0.0
+Dagadwadi,Maharashtra,35,0.0
+Bandhewa,Rajasthan,36,0.0
+Shadhal,Himachal Pradesh,37,0.0
+Village_8893061781,Uttar Pradesh,38,0.0
+Venkatapuram,Telangana,39,0.0
+Charkāpatthal,Jharkhand,40,0.0
+Bhanpur,Uttar Pradesh,41,0.0
+Village_9187015105,Uttar Pradesh,42,0.0
+Sonegaon,Maharashtra,44,0.0
+Ramanayakanahalli,Karnataka,46,0.0
+Village_7737312579,Chhattisgarh,47,0.0
+Village_8128089592,Uttar Pradesh,48,0.0
+Gobindpur Garwal,Uttarakhand,49,1.0
+Udaipur Kalan,Rajasthan,50,0.0
+Basti Baba Jeevan Singh,Punjab,51,0.0
+Pirkalyan,Maharashtra,52,0.0
+Haripura,Karnataka,53,0.0
+Matheri,Kerala,54,0.0
+Ankli,Madhya Pradesh,55,0.0
+Kotapalli,Karnataka,56,0.0
+Bettahalli,Karnataka,58,0.0
+Chamanpalle,Telangana,60,0.0
+Fateh Garh,Rajasthan,61,0.0
+Murti,Maharashtra,62,0.0
+Village_8090825798,Chhattisgarh,63,0.0
+Thippaya Palem,Andhra Pradesh,64,0.0
+Gidadagalahalli,Karnataka,65,0.0
+Partapur,Maharashtra,66,0.0
+Sonwala,Maharashtra,68,0.0
+Marshivni Tanda,Maharashtra,69,0.0
+Chittar,Kerala,70,0.0
+Village_8130691513,Uttar Pradesh,71,0.0
+Chikka Dasarahalli,Karnataka,72,0.5
+Maisalaga Tanda,Karnataka,73,0.0
+Village_8125936776,Uttar Pradesh,74,0.0
+Village_9045230331,Uttar Pradesh,75,0.0
+Abadinager Tanda,Maharashtra,76,0.0
+Gosai Guda,Telangana,77,0.0
+Village_8665941817,Uttar Pradesh,79,0.0
+Village_8130691420,Uttar Pradesh,80,0.0
+Kattebelaguli,Karnataka,81,0.0
+Chinawara,Rajasthan,82,0.0
+Chunchegauda Hosahalli,Karnataka,83,0.5
+Village_8665951656,Uttar Pradesh,84,0.0
+Village_9045521282,Uttar Pradesh,85,0.0
+Aryambavu,Kerala,86,0.0
+Siddareddidinne,Karnataka,87,0.0
+Boggudupalli,Andhra Pradesh,88,0.0
+Sidaganahalli,Karnataka,90,0.0
+Mullahalli,Karnataka,92,0.0
+Kancherupalem,Andhra Pradesh,93,0.0
+Village_9527342083,Tamil Nadu,94,0.0
+Agasarahalli,Karnataka,96,0.0
+Kussandra,Karnataka,97,0.0
+Chhatipahadi,Madhya Pradesh,98,0.0
+Kallunagatihalli,Karnataka,99,0.0

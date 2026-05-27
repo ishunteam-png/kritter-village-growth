@@ -278,6 +278,15 @@ def assign_archetype_names(km, feature_names: list) -> list:
     has_tower = "tower_growth"    in feature_names
     has_ghsl  = "ghsl_change"     in feature_names
 
+    # Cluster-size fractions: if one cluster is the clear majority (>40% of all
+    # points) it is the "background" cluster.  Labelling the background cluster
+    # as e.g. "Industrial Corridor" based on a slight centroid bias is
+    # misleading — 91% of main-track villages are not industrial corridors.
+    # Instead, flag it as "Steady Grower" before the relative-comparison loop so
+    # the semantic labels are reserved for the minority specialty clusters.
+    cluster_sizes = np.bincount(km.labels_)          # count per cluster
+    cluster_pct   = cluster_sizes / cluster_sizes.sum()
+
     # Process highest-composite-growth cluster first
     growth = [
         ntl_v[i] * 0.4 + ndbi_v[i] * 0.3 + ghsl_v[i] * 0.2 + tower_v[i] * 0.1
@@ -294,6 +303,12 @@ def assign_archetype_names(km, feature_names: list) -> list:
             used.add(label)
             return True
         return False
+
+    # Pre-assign majority cluster(s) to "Steady Grower" before semantic rules.
+    # Only the growth-ranked fallback pool labels remain for minority clusters.
+    for ci in range(k):
+        if cluster_pct[ci] > 0.40:
+            _claim(ci, "Steady Grower")
 
     for ci in growth_order:
         above_ntl   = ntl_v[ci]   > mu_ntl

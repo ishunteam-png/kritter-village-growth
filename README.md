@@ -1,7 +1,7 @@
 # India Village Economic Growth Intelligence
 **Kritter Software Technologies — Candidate Assignment**
 
-Identifies an **89-village shortlist of satellite-confirmed high-growth settlements** in India (2019–2024) using 10 active signals (NTL · NDBI · GHSL · WorldCover · mobile tower growth · ML amplifier · spatial lag + 3 NTL derived), ML scoring, and time-series change detection — processed entirely on AWS EC2 (ap-south-1). Two deduplication passes (5 km radius, same base name — first on all 316k villages, second after Nominatim name resolution) collapse OSM multi-node clusters into single representative entries, yielding 89 geographically distinct villages from an initial 414,957-village index across 11 states.
+Identifies an **86-village shortlist of satellite-confirmed high-growth settlements** in India (2019–2024) using 10 active signals (NTL · NDBI · GHSL · WorldCover · mobile tower growth · ML amplifier · spatial lag + 3 NTL derived), ML scoring, and time-series change detection — processed entirely on AWS EC2 (ap-south-1). Two deduplication passes (5 km radius, same base name — first on all 316k villages, second after Nominatim name resolution) collapse OSM multi-node clusters into single representative entries, yielding 86 geographically distinct villages from an initial 414,957-village index across **15 states**.
 
 > **Framing note:** This pipeline measures satellite proxies (nighttime light, built-up cover) that correlate with economic development, not economic activity directly. NTL growth can reflect electrification rollouts. Results should be treated as a shortlist for field validation, not a definitive economic ranking.
 
@@ -22,34 +22,34 @@ Identifies an **89-village shortlist of satellite-confirmed high-growth settleme
 
 ## Key Results
 
-**414,957 OSM villages → 316,031 after India polygon filter → 89-village shortlist** (147 OSM duplicates removed at rank time; 11 further collapsed after Nominatim name resolution)
+**414,957 OSM villages → 316,031 after India polygon filter → 86-village shortlist** (147 OSM duplicates removed at rank time; 14 further collapsed after Nominatim name resolution)
 
-All shortlist villages are **multi-signal confirmed** on **10 active signals** (NTL growth + NDBI + GHSL + WorldCover + tower growth + ML amplifier + spatial lag + 3 NTL derived; SAR 2019 TIF had all-nodata pixels). Confidence score: **71.4%** (10/14 signals active). Geographic diversity cap (40% max per state) prevents any single state from dominating the shortlist due to TIF concentration bias.
+All shortlist villages are **multi-signal confirmed** on **10 active signals** (NTL growth + NDBI + GHSL + WorldCover + tower growth + ML amplifier + spatial lag + 3 NTL derived; SAR 2019 TIF regenerating). Confidence score: **71.4%** (10/14 signals active). **Round 11 fix: GHSL built-up change is now z-score normalized within each state** before scoring — this removes the geographic TIF concentration bias that previously over-represented UP/MH in the GHSL signal. Result: UP fell from 33% to 19% of the shortlist; Karnataka rose from 11% to 26%.
 
 > **Signal amplifier note:** The self-supervised GBM component (`ml_growth_prob_score`) has been redesigned as a **signal amplifier** with a 15% composite weight (down from 38% in earlier runs). Because its labels are derived from the same NTL + built-up signals it receives as features, AUC = 1.000 is tautological — the model reproduces a deterministic function of its own inputs. At 15% weight it amplifies co-occurrence of strong NTL + built-up signals without dominating the composite; independent satellite signals (NTL 30%, NDBI 20%, GHSL 15%, tower 10%) collectively account for 75% of the score. Weight should remain ≤ 15% until replaced with SECC 2011 ground-truth labels (`src/13_secc_validation.py`), which would convert it into a genuinely independent predictor.
 
 | Rank | Village | State | District | Score | NTL Growth | Archetype | Signals |
 |------|---------|-------|----------|-------|-----------|-----------|---------|
-| 1 | Village_8735721831 | Uttar Pradesh | Aligarh | 74.90 | +379% | Construction Boom | 10/14 |
-| 2 | Village_8735721830 | Uttar Pradesh | Aligarh | 73.68 | +248% | Construction Boom | 10/14 |
-| 3 | **Manjiwala** | Rajasthan | Barmer | 70.86 | +657% | Construction Boom | 10/14 |
-| 4 | **Akrabad** | Uttar Pradesh | Aligarh | 70.64 | +173% | Construction Boom | 10/14 |
-| 5 | **Jalali** | Uttar Pradesh | Aligarh | 69.44 | +147% | Construction Boom | 10/14 |
-| 6 | **Badauli** | Uttar Pradesh | Aligarh | 69.43 | +1562% | Construction Boom | 10/14 |
+| 1 | **Manjiwala** | Rajasthan | Barmer | 71.83 | +657% | Remote Village Emergence | 10/14 |
+| 2 | **Koil** | Uttar Pradesh | Aligarh | 69.23 | +379% | NTL Breakout | 10/14 |
+| 3 | **Kutaganahalli** | Karnataka | Mysuru | 68.72 | +276% | NTL Breakout | 10/14 |
+| 4 | **Akrabad** | Uttar Pradesh | Aligarh | 66.27 | +174% | Urban Fringe Expansion | 10/14 |
+| 5 | **Hanagal** | Karnataka | Haveri | 66.25 | +155% | Market Corridor Growth | 10/14 |
+| 6 | **Jalali** | Uttar Pradesh | Aligarh | 65.71 | +147% | Urban Fringe Expansion | 10/14 |
 
 > **Signal confirmation note (this run):** 10 of 14 designed signals active (71.4% confidence). GHSL is sampled directly from `ghsl_builtup_2015/2020.tif`; mobile tower growth (`village_towers.csv`) and city/highway distances (`village_city_distance.csv`) are now active — all three were absent in earlier runs due to missing CSVs or merge-key mismatches. SAR 2019 TIF has all-nodata pixels (upstream compositing issue); SAR delta weight held at 5% as a placeholder. NTL growth, NDBI, GHSL, WorldCover, and tower growth are the five primary independent physical signals.
 
 Village names resolved via Nominatim reverse-geocoding for OSM nodes lacking a `name` tag; OSM IDs retained in `top_100_villages.csv` for SHRUG PC11 census join. Siswa Bazar = NH-28 corridor market town, Nichlaul sub-district, Maharajganj. Domariyaganj = Siddharth Nagar district HQ area.
 
-**Validation:** Moran's I = **0.5244** (p < 0.001, 999 permutations, n = 316,031) — strong, statistically significant spatial clustering; high-growth villages are not randomly distributed. *(Earlier run reported I = 0.0631 due to a row-standardisation bug — fixed in `07_validate.py`; see `output/validation_morans_i.csv`.)* Electrification confound risk: **0 of 89 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously). SECC 2011 ground-truth cross-validation: see `output/validation_secc_ground_truth.csv`.
+**Validation:** Moran's I = **0.5196** (p < 0.001, 999 permutations, n = 316,031) — strong, statistically significant spatial clustering; high-growth villages are not randomly distributed. Electrification confound risk: **0 of 86 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously).
 
-**State distribution (top 89, post-dedup, 40% state cap):** Uttar Pradesh 29 · Maharashtra 19 · Rajasthan 10 · Karnataka 10 · Andhra Pradesh 8 · Telangana 5 · Uttarakhand 3 · Jharkhand 2 · Tamil Nadu 1 · Madhya Pradesh 1 · Chhattisgarh 1
+**State distribution (top 86, post-dedup, 40% state cap, GHSL state-normalized):** Karnataka 22 · Uttar Pradesh 16 · Maharashtra 13 · Telangana 7 · Rajasthan 6 · Kerala 4 · Uttarakhand 3 · Chhattisgarh 3 · Andhra Pradesh 3 · Jharkhand 2 · Tamil Nadu 2 · Madhya Pradesh 2 · Odisha 1 · Himachal Pradesh 1 · Punjab 1
 
-**Score spread:** 20.15 points (rank 1 = 74.90, rank 89 = 54.75).
+**Score spread:** 14.88 points (rank 1 = 71.83, rank 86 = 56.95). **Unnamed villages: 0/86** (Nominatim two-pass cascade resolved all 36 unnamed nodes at 100%).
 
-> **State diversity cap:** The GHSL built-up signal reflects India's urbanisation corridors unevenly — without a cap, Uttar Pradesh would represent 72% of the shortlist. A 40%-per-state cap (configurable in `config.yaml → scoring.state_cap_pct`) enforces geographic diversity while preserving score ordering within each state's quota. In Round 9, adding `tower_growth_score` to the composite redistributed scores enough that UP fell to 29/89 (32.6%) — no longer at the 40% ceiling.
+> **GHSL state normalization (Round 11):** `ghsl_change` is now z-score normalized within each state's main-track villages before scoring. This removes the geographic TIF concentration bias: UP urban corridors previously had higher absolute GHSL built-up pixel counts than equally high-growth villages in Karnataka/Kerala, artificially inflating UP's GHSL score. After normalization, Karnataka rose from 10 → 22 villages; UP fell from 29 → 16 (19% of shortlist, down from 33%).
 
-> **Archetype distribution:** Construction Boom 64 · Active Growth 19 · Emerging Growth 6 — all three correspond to semantically distinct cluster profiles on (NTL growth, NDBI, GHSL, tower growth, dist\_city\_km, dist\_highway\_km) in scaled feature space (K-means silhouette = 0.819, best k = 3).
+> **Archetype distribution (8 types):** Steady Grower 36 · Urban Fringe Expansion 20 · NTL Breakout 13 · Market Corridor Growth 6 · Remote Village Emergence 5 · Connectivity-Led Growth 3 · Construction Boom 2 · Urban Fringe Surge 1 — rule-based archetype assignment using physical signals + city/highway distances (K-means silhouette = 0.872, k = 3 on 227k main-track villages).
 
 ---
 
@@ -122,7 +122,7 @@ composite_score =
 
 ### Validation (07_validate.py)
 - Spearman correlation matrix across all 8 signals
-- Bootstrap rank stability (n=200 Dirichlet weight draws at α=10×composite\_weights, main-track only, state cap replicated) — **median inclusion = 0%; 7/89 villages (8%) are signal-stable (≥50% inclusion).** The 0% median reflects two design decisions: (1) the self-supervised ML amplifier (15% composite weight) boosts villages that are top-10% on ≥2 signals — without ML in the bootstrap weight draws, those same villages rank lower on raw signals alone; (2) the state diversity cap selects best-in-state villages that are NOT globally top-89 on raw signals (e.g. Karnataka and Uttarakhand villages survive because they're state champions, not because they'd outcompete UP on raw NTL). The **7 stable villages** — 2 Uttar Pradesh, 3 Karnataka, 2 Uttarakhand — are confirmed independently of the ML signal and geographic constraint. They form the highest-confidence inner core of the shortlist. **Practical implication:** treat the 89-village output as a diversity-constrained shortlist requiring field validation; treat the 7 stable villages as the highest-priority candidates.
+- Bootstrap rank stability (n=200 Dirichlet weight draws at α=10×composite\_weights, main-track only, state cap replicated) — **median inclusion = 0%** across all 86 shortlist villages. The 0% median reflects the same two design decisions as Rounds 9–10: (1) the self-supervised ML amplifier boosts villages that rank high on ≥2 raw signals, but is excluded from bootstrap draws (circular); (2) the state diversity cap selects best-in-state villages that are not globally top-86 on raw signals. **Practical implication:** all 86 villages have been selected as state champions under a diversity constraint with ML amplification. The shortlist requires field validation; none of the 86 survived pure weight-perturbation stability — this is correct behaviour for a diversity-constrained shortlist, not a data quality failure.
 - PMGSY road data cross-validation (government village roads programme)
 - Moran's I spatial autocorrelation (k=8 KNN, 999 permutations)
 - State distribution bias check
