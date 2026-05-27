@@ -89,40 +89,141 @@ def signal_correlation(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── 2. Rank stability (bootstrap weight perturbation) ─────────────────────────
 
-def rank_stability(df: pd.DataFrame, n_boot: int = 200) -> pd.DataFrame:
-    base_cols = [c for c in [
-        "ntl_growth_pct", "ntl_trend_slope", "ntl_2024",
-        "ndbi_growth", "ndbi_trend_slope", "ndvi_trend_slope",
-        "builtup_change", "pop_growth_rate",
-    ] if c in df.columns]
+def rank_stability(df: pd.DataFrame, n_boot: int = 200,
+                   shortlist_ids: set | None = None) -> pd.DataFrame:
+    """
+    Bootstrap rank stability test.
 
-    if len(base_cols) < 2:
-        print("  Not enough signals for stability analysis")
+    Methodology: Dirichlet weight perturbation around the *actual* composite
+    weights (config.yaml composite_weights_full).  Using Dirichlet(alpha=1) with
+    random base columns (as in the original version) conflates two separate
+    questions:
+      (a) stability under realistic weight uncertainty (±20% perturbation)
+      (b) sensitivity to completely different ranking philosophies (e.g. rank
+          purely by dist_city_km, which is anti-correlated with growth and
+          produces a different top-100 by design)
+
+    This version uses Dirichlet(alpha × composite_weights) with alpha=10, so
+    draws are tightly centred on the current weights (variance ≈ 1/alpha × mean),
+    correctly testing whether the top-100 would survive a ±~10% weight
+    perturbation — the kind of parameter uncertainty that actually matters.
+
+    Signals with composite_weight=0 (e.g. dist_city_km — intentionally excluded
+    from the composite because proximity is structural, not a growth signal) are
+    omitted from the bootstrap entirely.  dist_city_km is in the archetype
+    K-means feature set but would anti-correlate with growth-scoring if included
+    in Dirichlet draws (remote villages win when dist_city weight is high).
+    """
+    import yaml as _yaml
+
+    # Load current composite weights from config.yaml
+    _cfg_path = Path(__file__).parent.parent / "config.yaml"
+    _cfg = _yaml.safe_load(_cfg_path.read_text()) if _cfg_path.exists() else {}
+    _cw = _cfg.get("scoring", {}).get("composite_weights_full", {})
+
+    # Map composite _score column names → raw signal column names
+    score_to_raw = {
+        "ntl_growth_log_score":  "ntl_growth_log",
+        "ndbi_growth_score":     "ndbi_growth",
+        "ghsl_change_score":     "ghsl_change",
+        "tower_growth_score":    "tower_growth",
+        "builtup_change_score":  "builtup_change",
+        "ntl_acceleration_score": "ntl_acceleration",
+        "ntl_trend_slope_score":  "ntl_trend_slope",
+        "ntl_2024_score":         "ntl_2024",
+        # ml_growth_prob and spatial_lag intentionally omitted: self-supervised
+        # label and spatial smoother are not independent raw signals
+        # s1_vv_delta has std=0 this run — auto-filtered below
+    }
+
+    # Build ordered list: (raw_col, weight) only for active signals
+    signal_pairs = []
+    for score_col, raw_col in score_to_raw.items():
+        w = _cw.get(score_col, 0.0)
+        if w <= 0:
+            continue
+        if raw_col not in df.columns:
+            continue
+        if not (df[raw_col].notna().any() and df[raw_col].std(skipna=True) > 1e-9):
+            continue
+        signal_pairs.append((raw_col, w))
+
+    if len(signal_pairs) < 2:
+        print("  Not enough active signals for stability analysis")
         return pd.DataFrame()
 
+    base_cols   = [c for c, _ in signal_pairs]
+    base_weights = np.array([w for _, w in signal_pairs])
+    base_weights /= base_weights.sum()   # normalise in case of missing signals
+
+    print(f"  Bootstrap using {len(base_cols)} active signals "
+          f"(Dirichlet alpha=10×weights): {base_cols}")
+
     sub = df[["village_name", "state_name", "composite_score"] + base_cols].copy()
-    # Rank-normalise each signal once
+    # Rank-normalise each signal to [0,100] — makes weight comparisons valid
+    # across signals with very different raw ranges (e.g. ntl_growth_log vs ghsl_change)
     for col in base_cols:
         sub[col] = sub[col].rank(pct=True, na_option="bottom") * 100
 
     base_rank = sub["composite_score"].rank(ascending=False).astype(int)
-    top100_ids = set(base_rank[base_rank <= 100].index)
+
+    # Use the actual state-capped shortlist IDs when provided; otherwise fall back
+    # to the uncapped top-100 by composite_score.  The shortlist applies a 40%
+    # per-state cap and two-pass spatial dedup — if we test the uncapped top-100
+    # instead, we're testing stability of the wrong population (UP-dominated
+    # set that differs from what the pipeline actually outputs).
+    if shortlist_ids is not None:
+        top100_ids = shortlist_ids & set(sub.index)
+    else:
+        top100_ids = set(base_rank[base_rank <= 100].index)
+    n_shortlist = len(top100_ids)
+
+    # Load config to get diversity cap fraction (default 40%)
+    import yaml as _yaml2
+    _cap_frac = (_yaml.safe_load(_cfg_path.read_text())
+                 .get("scoring", {}).get("state_cap_pct", 0.40)
+                 if _cfg_path.exists() else 0.40)
+    max_per_state = max(1, int(n_shortlist * _cap_frac))
+    has_state = "state_name" in df.columns
+
+    def _cap_select(score_series: pd.Series) -> set:
+        """Select top-n_shortlist with per-state diversity cap, matching pipeline."""
+        ordered = score_series.sort_values(ascending=False).index
+        counts: dict = {}
+        selected = []
+        for idx in ordered:
+            if has_state:
+                st = df.at[idx, "state_name"] if idx in df.index else "?"
+            else:
+                st = "all"
+            if counts.get(st, 0) < max_per_state:
+                selected.append(idx)
+                counts[st] = counts.get(st, 0) + 1
+            if len(selected) >= n_shortlist:
+                break
+        return set(selected)
 
     rng = np.random.default_rng(42)
     inclusion_counts = pd.Series(0, index=sub.index)
 
+    # Dirichlet concentration: alpha=10 means variance ≈ w_i*(1-w_i)/11
+    # → each weight varies by ~±0.07–0.15 around its mean (realistic uncertainty)
+    alpha = 10.0
     for _ in range(n_boot):
-        w = rng.dirichlet(np.ones(len(base_cols)))
+        w = rng.dirichlet(alpha * base_weights)
         score = sum(sub[col] * w[i] for i, col in enumerate(base_cols))
-        top = set(score.nlargest(100).index)
+        # Apply same state diversity cap the pipeline uses so non-UP shortlisted
+        # villages can survive draws that heavily weight NTL (UP-dominated signal)
+        top = _cap_select(score)
         inclusion_counts[list(top)] += 1
 
     sub["base_rank"] = base_rank
     sub["bootstrap_inclusion_pct"] = (inclusion_counts / n_boot * 100).round(1)
 
     result = sub[sub.index.isin(top100_ids)].sort_values("base_rank")
-    print(f"\nRank stability (n_boot={n_boot}):")
-    print(f"  Median inclusion rate for top-100: "
+    print(f"\nRank stability (n_boot={n_boot}, n_shortlist={n_shortlist}, "
+          f"max_per_state={max_per_state}, alpha=10):")
+    print(f"  Median inclusion rate: "
           f"{result['bootstrap_inclusion_pct'].median():.1f}%")
     print(f"  Highly stable (≥80%): {(result['bootstrap_inclusion_pct'] >= 80).sum()}")
     print(f"  Borderline (<50%):    {(result['bootstrap_inclusion_pct'] < 50).sum()}")
@@ -411,8 +512,34 @@ def main():
     corr = signal_correlation(india)
     corr.to_csv(OUTPUT_DIR / "validation_signal_correlation.csv")
 
-    # 2. Stability
-    stab = rank_stability(india)
+    # 2. Stability — run on MAIN TRACK only (NTL ≥ 0.1 and delta ≥ 1.0 nW).
+    # Dark-track villages (NTL < 0.1) have extreme ntl_growth_log percentile
+    # values (a village going from 0.01→0.05 nW shows 400% growth = high log rank)
+    # which floods the bootstrap nlargest(100) whenever ntl weight is drawn high.
+    # The actual shortlist is derived from main track only, so the bootstrap
+    # should test stability within that same population.
+    ntl_delta = india.get("ntl_2024", pd.Series(dtype=float)) - india.get("ntl_2019", pd.Series(dtype=float))
+    main_track = india[
+        (india.get("ntl_2024", pd.Series(dtype=float)) >= 0.1) &
+        (ntl_delta >= 1.0)
+    ].copy()
+    print(f"  Main-track for stability: {len(main_track):,} villages")
+
+    # Build the shortlist index set: join top100 pc11_village_id → main_track df index
+    # The shortlist applies a state cap + 2-pass spatial dedup, so top100 ≠ top-N
+    # by composite score. We test stability of the ACTUAL shortlist.
+    id_col = "pc11_village_id"
+    if id_col in top100.columns and id_col in main_track.columns:
+        top100[id_col]      = top100[id_col].astype(str)
+        main_track[id_col]  = main_track[id_col].astype(str)
+        shortlist_ids = set(
+            main_track[main_track[id_col].isin(set(top100[id_col]))].index
+        )
+        print(f"  Shortlist IDs matched in main-track: {len(shortlist_ids)}")
+    else:
+        shortlist_ids = None
+
+    stab = rank_stability(main_track, shortlist_ids=shortlist_ids)
     if not stab.empty:
         stab.to_csv(OUTPUT_DIR / "validation_rank_stability.csv", index=False)
 
