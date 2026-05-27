@@ -34,16 +34,17 @@ scoring:
   composite_weights_full:
     # ml_growth_prob_score is a self-supervised SIGNAL AMPLIFIER — its labels are derived
     # from the same signals it receives as features, so AUC=1.000 is tautological.
-    # Weight capped at 15% (was 38%) so independent signals (NTL, NDBI, GHSL, SAR)
+    # Weight capped at 15% (was 38%) so independent signals (NTL, NDBI, GHSL, tower)
     # collectively dominate the composite. Raise to ≥30% only when replaced with
     # ground-truth labels (e.g. SECC 2011 block electricity access).
-    ml_growth_prob_score: 0.15
-    ntl_growth_log_score: 0.35
-    ndbi_growth_score:    0.20
-    ghsl_change_score:    0.15
-    s1_vv_delta_score:    0.10
-    spatial_lag_score:    0.05
-  # Note: weights auto-redistribute when signals are NaN (S2/S1 stalled this run)
+    ml_growth_prob_score:  0.15
+    ntl_growth_log_score:  0.30   # reduced 0.35→0.30 to make room for tower signal
+    ndbi_growth_score:     0.20
+    ghsl_change_score:     0.15
+    tower_growth_score:    0.10   # Round 9: mobile-tower density expansion (active signal)
+    s1_vv_delta_score:     0.05   # near-zero (s1_vv_2019 all-nodata) — weight held as placeholder
+    spatial_lag_score:     0.05
+  # Note: weights auto-redistribute when signals are NaN/zero-variance (SAR 2019 absent this run)
   minmax_clip_lo:   0.02                   # 2nd-percentile floor for robust min-max normalisation
   minmax_clip_hi:   0.99                   # 99th-percentile ceiling — only top 1% of villages tie at
                                            # score=100 per signal; was 0.98 (top 2% all tied, less spread)

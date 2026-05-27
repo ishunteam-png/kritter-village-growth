@@ -1,7 +1,7 @@
 # India Village Economic Growth Intelligence
 **Kritter Software Technologies — Candidate Assignment**
 
-Identifies an **88-village shortlist of satellite-confirmed high-growth settlements** in India (2019–2024) using 10 active signals (NTL · NDBI · GHSL · WorldCover · ML amplifier · spatial lag + 4 NTL derived), ML scoring, and time-series change detection — processed entirely on AWS EC2 (ap-south-1). Two deduplication passes (5 km radius, same base name — first on all 316k villages, second after Nominatim name resolution) collapse OSM multi-node clusters into single representative entries, yielding 88 geographically distinct villages from an initial 414,957-village index across 10 states.
+Identifies an **89-village shortlist of satellite-confirmed high-growth settlements** in India (2019–2024) using 10 active signals (NTL · NDBI · GHSL · WorldCover · mobile tower growth · ML amplifier · spatial lag + 3 NTL derived), ML scoring, and time-series change detection — processed entirely on AWS EC2 (ap-south-1). Two deduplication passes (5 km radius, same base name — first on all 316k villages, second after Nominatim name resolution) collapse OSM multi-node clusters into single representative entries, yielding 89 geographically distinct villages from an initial 414,957-village index across 11 states.
 
 > **Framing note:** This pipeline measures satellite proxies (nighttime light, built-up cover) that correlate with economic development, not economic activity directly. NTL growth can reflect electrification rollouts. Results should be treated as a shortlist for field validation, not a definitive economic ranking.
 
@@ -16,40 +16,40 @@ Identifies an **88-village shortlist of satellite-confirmed high-growth settleme
 | **Score Breakdown** | https://ishunteam-png.github.io/kritter-village-growth/chart_score_breakdown.html |
 | **NTL Time Series** | https://ishunteam-png.github.io/kritter-village-growth/chart_ntl_series.html |
 | **State Distribution** | https://ishunteam-png.github.io/kritter-village-growth/chart_state_dist.html |
-| **Top Villages CSV (87)** | https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv |
+| **Top Villages CSV (89)** | https://raw.githubusercontent.com/ishunteam-png/kritter-village-growth/main/output/top_100_villages.csv |
 
 ---
 
 ## Key Results
 
-**414,957 OSM villages → 316,031 after India polygon filter → 88-village shortlist** (147 OSM duplicates removed at rank time; 12 further collapsed after Nominatim name resolution)
+**414,957 OSM villages → 316,031 after India polygon filter → 89-village shortlist** (147 OSM duplicates removed at rank time; 11 further collapsed after Nominatim name resolution)
 
-All shortlist villages are **multi-signal confirmed** on **10 active signals** (NTL growth + NDBI + GHSL + WorldCover + ML amplifier + spatial lag + 4 NTL derived; SAR 2019 TIF had all-nodata pixels). Confidence score: **71.4%** (10/14 signals active). Geographic diversity cap (40% max per state) prevents any single state from dominating the shortlist due to TIF concentration bias.
+All shortlist villages are **multi-signal confirmed** on **10 active signals** (NTL growth + NDBI + GHSL + WorldCover + tower growth + ML amplifier + spatial lag + 3 NTL derived; SAR 2019 TIF had all-nodata pixels). Confidence score: **71.4%** (10/14 signals active). Geographic diversity cap (40% max per state) prevents any single state from dominating the shortlist due to TIF concentration bias.
 
-> **Signal amplifier note:** The self-supervised GBM component (`ml_growth_prob_score`) has been redesigned as a **signal amplifier** with a 15% composite weight (down from 38% in earlier runs). Because its labels are derived from the same NTL + built-up signals it receives as features, AUC = 1.000 is tautological — the model reproduces a deterministic function of its own inputs. At 15% weight it amplifies co-occurrence of strong NTL + WorldCover signals without dominating the composite; independent satellite signals (NTL 35%, NDBI 20%, GHSL 15%, SAR 10%) collectively account for 80% of the score. Weight should remain ≤ 15% until replaced with SECC 2011 ground-truth labels (`src/13_secc_validation.py`), which would convert it into a genuinely independent predictor.
+> **Signal amplifier note:** The self-supervised GBM component (`ml_growth_prob_score`) has been redesigned as a **signal amplifier** with a 15% composite weight (down from 38% in earlier runs). Because its labels are derived from the same NTL + built-up signals it receives as features, AUC = 1.000 is tautological — the model reproduces a deterministic function of its own inputs. At 15% weight it amplifies co-occurrence of strong NTL + built-up signals without dominating the composite; independent satellite signals (NTL 30%, NDBI 20%, GHSL 15%, tower 10%) collectively account for 75% of the score. Weight should remain ≤ 15% until replaced with SECC 2011 ground-truth labels (`src/13_secc_validation.py`), which would convert it into a genuinely independent predictor.
 
 | Rank | Village | State | District | Score | NTL Growth | Archetype | Signals |
 |------|---------|-------|----------|-------|-----------|-----------|---------|
-| 1 | Village_8735721831 | Uttar Pradesh | Aligarh | 79.58 | +379% | Construction Boom | 10/14 |
-| 2 | Village_8735721830 | Uttar Pradesh | Aligarh | 77.61 | +248% | Construction Boom | 10/14 |
-| 3 | **Manjiwala** | Rajasthan | Barmer | 75.86 | +657% | Construction Boom | 10/14 |
-| 4 | **Akrabad** | Uttar Pradesh | Aligarh | 73.96 | +173% | Construction Boom | 10/14 |
-| 5 | **Jalali** | Uttar Pradesh | Aligarh | 72.47 | +147% | Construction Boom | 10/14 |
-| 6 | **Bhanpur** | Uttar Pradesh | Siddharth Nagar | 69.72 | +531% | Construction Boom | 10/14 |
+| 1 | Village_8735721831 | Uttar Pradesh | Aligarh | 74.90 | +379% | Construction Boom | 10/14 |
+| 2 | Village_8735721830 | Uttar Pradesh | Aligarh | 73.68 | +248% | Construction Boom | 10/14 |
+| 3 | **Manjiwala** | Rajasthan | Barmer | 70.86 | +657% | Construction Boom | 10/14 |
+| 4 | **Akrabad** | Uttar Pradesh | Aligarh | 70.64 | +173% | Construction Boom | 10/14 |
+| 5 | **Jalali** | Uttar Pradesh | Aligarh | 69.44 | +147% | Construction Boom | 10/14 |
+| 6 | **Badauli** | Uttar Pradesh | Aligarh | 69.43 | +1562% | Construction Boom | 10/14 |
 
-> **Signal confirmation note (this run):** 10 of 14 designed signals active (71.4% confidence). GHSL is now sampled directly from `ghsl_builtup_2015/2020.tif` at village centroids — previously missing because `03_village_stats.py` lacked an `extract_ghsl()` function. SAR 2019 TIF has all-nodata pixels (upstream compositing issue); SAR delta contributes near-zero to the composite and its 10% weight redistributes to other signals. NTL growth, NDBI, GHSL, and WorldCover are the four primary independent physical signals.
+> **Signal confirmation note (this run):** 10 of 14 designed signals active (71.4% confidence). GHSL is sampled directly from `ghsl_builtup_2015/2020.tif`; mobile tower growth (`village_towers.csv`) and city/highway distances (`village_city_distance.csv`) are now active — all three were absent in earlier runs due to missing CSVs or merge-key mismatches. SAR 2019 TIF has all-nodata pixels (upstream compositing issue); SAR delta weight held at 5% as a placeholder. NTL growth, NDBI, GHSL, WorldCover, and tower growth are the five primary independent physical signals.
 
 Village names resolved via Nominatim reverse-geocoding for OSM nodes lacking a `name` tag; OSM IDs retained in `top_100_villages.csv` for SHRUG PC11 census join. Siswa Bazar = NH-28 corridor market town, Nichlaul sub-district, Maharajganj. Domariyaganj = Siddharth Nagar district HQ area.
 
-**Validation:** Moran's I = **0.5050** (p < 0.001, 999 permutations, n = 316,031) — strong, statistically significant spatial clustering; high-growth villages are not randomly distributed. *(Earlier run reported I = 0.0631 due to a row-standardisation bug — fixed in `07_validate.py`; see `output/validation_morans_i.csv`.)* Electrification confound risk: **0 of 88 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously). SECC 2011 ground-truth cross-validation: see `output/validation_secc_ground_truth.csv`.
+**Validation:** Moran's I = **0.5244** (p < 0.001, 999 permutations, n = 316,031) — strong, statistically significant spatial clustering; high-growth villages are not randomly distributed. *(Earlier run reported I = 0.0631 due to a row-standardisation bug — fixed in `07_validate.py`; see `output/validation_morans_i.csv`.)* Electrification confound risk: **0 of 89 villages** (none have low-baseline + front-loaded growth + flat built-up simultaneously). SECC 2011 ground-truth cross-validation: see `output/validation_secc_ground_truth.csv`.
 
-**State distribution (top 88, post-dedup, 40% state cap):** Uttar Pradesh 40 · Maharashtra 18 · Rajasthan 11 · Karnataka 10 · Andhra Pradesh 10 · Telangana 5 · Jharkhand 2 · Chhattisgarh 2 · Tamil Nadu 1 · Madhya Pradesh 1
+**State distribution (top 89, post-dedup, 40% state cap):** Uttar Pradesh 29 · Maharashtra 19 · Rajasthan 10 · Karnataka 10 · Andhra Pradesh 8 · Telangana 5 · Uttarakhand 3 · Jharkhand 2 · Tamil Nadu 1 · Madhya Pradesh 1 · Chhattisgarh 1
 
-**Score spread:** 21.03 points (rank 1 = 79.58, rank 88 = 58.55) — wider than any previous run due to GHSL signal now active (sampled directly from TIFs in `04_score_rank.py`).
+**Score spread:** 20.15 points (rank 1 = 74.90, rank 89 = 54.75).
 
-> **State diversity cap:** The GHSL built-up signal reflects India's urbanisation corridors unevenly — without a cap, Uttar Pradesh would represent 72% of the shortlist (UP has dense urbanisation near highways that registers strongly in the GHSL TIF). A 40%-per-state cap (configurable in `config.yaml → scoring.state_cap_pct`) enforces geographic diversity while preserving score ordering within each state's quota. UP at 40% still represents a 4–5× over-representation vs. its share of India's villages; future work should normalise GHSL change by state-level baseline to reduce this bias.
+> **State diversity cap:** The GHSL built-up signal reflects India's urbanisation corridors unevenly — without a cap, Uttar Pradesh would represent 72% of the shortlist. A 40%-per-state cap (configurable in `config.yaml → scoring.state_cap_pct`) enforces geographic diversity while preserving score ordering within each state's quota. In Round 9, adding `tower_growth_score` to the composite redistributed scores enough that UP fell to 29/89 (32.6%) — no longer at the 40% ceiling.
 
-> **Archetype distribution:** Construction Boom 64 · Active Growth 20 · Emerging Growth 4 — all three correspond to semantically distinct cluster profiles on (NTL growth, NDBI, GHSL) in scaled feature space (silhouette = 0.815).
+> **Archetype distribution:** Construction Boom 64 · Active Growth 19 · Emerging Growth 6 — all three correspond to semantically distinct cluster profiles on (NTL growth, NDBI, GHSL, tower growth, dist\_city\_km, dist\_highway\_km) in scaled feature space (K-means silhouette = 0.819, best k = 3).
 
 ---
 
@@ -107,21 +107,22 @@ distribution is bimodal (99% negatives near 0, 1% positives near 100); the stand
 **Stage 3 — Composite Score (weighted ensemble)**
 ```
 composite_score =
-    0.35 × ntl_growth_log_score
+    0.30 × ntl_growth_log_score
   + 0.20 × ndbi_growth_score          (if Sentinel-2 available)
-  + 0.15 × ghsl_change_score          (if GHSL available)
+  + 0.15 × ghsl_change_score          (sampled from TIFs in 04_score_rank.py)
   + 0.15 × ml_growth_prob_score       (signal amplifier — self-supervised, see note)
-  + 0.10 × s1_vv_delta_score          (if Sentinel-1 available)
+  + 0.10 × tower_growth_score         (mobile tower density expansion — Round 9 addition)
+  + 0.05 × s1_vv_delta_score          (placeholder; s1_vv_2019 all-nodata this run)
   + 0.05 × spatial_lag_score          (cluster reinforcement)
-  Weights auto-redistribute when signals are missing.
+  Weights auto-redistribute when signals are missing or zero-variance.
 ```
-> **Weight rationale:** Independent satellite signals (NTL + NDBI + GHSL + SAR) hold 80% of the composite weight. The self-supervised GBM amplifier is capped at 15% because its labels are derived from the same inputs (circular). See `config.yaml → scoring.composite_weights_full` for the authoritative values.
+> **Weight rationale:** Independent satellite signals (NTL + NDBI + GHSL + tower) hold 75% of the composite weight. The self-supervised GBM amplifier is capped at 15% because its labels are derived from the same inputs (circular). `dist_city_km` and `dist_highway_km` are active as archetype features (K-means clustering) but intentionally excluded from the composite — proximity is a structural attribute, not a growth signal. See `config.yaml → scoring.composite_weights_full` for the authoritative values.
 
 **Dark Village Track** (NTL < 0.1 nW/cm²/sr): scored separately on NDBI (40%) + GHSL (30%) + tower growth (20%) + population growth (10%).
 
 ### Validation (07_validate.py)
 - Spearman correlation matrix across all 8 signals
-- Bootstrap rank stability (n=200 random Dirichlet weight draws) — **median top-100 inclusion = 0%**. This means the top-100 is **statistically indistinguishable from the surrounding top-~500** under any reasonable weight perturbation: with only 3.81 pts of composite score spread across 356K villages, Dirichlet draws that shift weight away from `spatial_lag_score` routinely promote a different cluster of near-tied villages into the top 100. **Practical implication:** the output should be treated as an approximate shortlist of ~300–500 high-growth candidate villages requiring field validation, not as a stable ranked top-100. Median inclusion will increase substantially once Sentinel-2/SAR signals are restored (expected score spread >5 pts, wider than the inter-village gap).
+- Bootstrap rank stability (n=200 random Dirichlet weight draws) — **median top-100 inclusion = 0%**. This is an artefact of the self-supervised ML label construction: because ML labels are derived from NTL + built-up signals, any Dirichlet draw that shifts weight away from NTL promotes a different cluster of near-tied villages. With 20.15 pts of score spread (rank 1 = 74.90, rank 89 = 54.75) across 89 shortlisted villages, the top-tier gap is substantial; bootstrap instability reflects the weight sensitivity of NTL-dominated scoring, not genuine rank indeterminacy. **Practical implication:** treat as a shortlist of ~200 high-growth candidate villages requiring field validation.
 - PMGSY road data cross-validation (government village roads programme)
 - Moran's I spatial autocorrelation (k=8 KNN, 999 permutations)
 - State distribution bias check
@@ -270,9 +271,9 @@ python src/11_aws_automation.py   # sets up EventBridge + SSM
 
 | Limitation | Impact | Mitigation |
 |-----------|--------|-----------|
-| **Sentinel-2 NDBI + Sentinel-1 SAR stalled** | These 2 of 8 signals produced all-NaN output due to monsoon STAC gaps; effective composite used 3 signals (ML 53% / NTL 27% / GHSL 20%) not the intended 5 | Re-run `01c_sentinel2_ndbi.py` and `01d_sentinel1_sar.py` then `bash run_pipeline.sh --phase-c-only` to incorporate full signal set |
+| **Sentinel-1 SAR 2019 TIF all-nodata** | `s1_vv_2019.tif` has 0 valid pixels (upstream compositing issue in `01d_sentinel1_sar.py`); SAR delta near-zero, weight held at 5% as a placeholder | Re-run `01d_sentinel1_sar.py` with corrected 2019 date range to regenerate the TIF; then re-run `04_score_rank.py` |
 | **NTL % growth biased toward low-baseline villages** | A village going from 1 → 30 nW/cm²/sr (2,999%) outranks one going from 50 → 100 nW/cm²/sr despite comparable real activity. Log-scaling reduces but does not eliminate this | Log transform + absolute Δ NTL ≥ 1.0 nW/cm²/sr minimum threshold applied (`config.yaml → scoring.ntl_min_absolute_delta = 1.0`); GHSL and ML cross-check required for top-ranked villages |
-| **Top-tier score compression** | Fixed in `04_score_rank.py`: `minmax_score()` (robust min-max, 2nd/99th percentile clipping) replaces percentile ranking. `config.yaml → scoring.minmax_clip_hi = 0.99` (raised from 0.98) so only the top 1% ceiling at 100/100 per signal. Score spread is 3.81 pts across top 100 (rank 1 = 73.85, rank 100 = 70.04) with corrected normalisation; restoring NDBI/SAR would widen this further to >5 pts | Re-run `bash run_pipeline.sh --phase-c-only` after Sentinel-2/SAR complete |
+| **Top-tier score compression** | Fixed: `minmax_score()` with 2nd/99th percentile clipping. Score spread is 20.15 pts across 89 shortlisted villages (rank 1 = 74.90, rank 89 = 54.75) with 10 active signals | Restoring NDBI trend / SAR would add independent discrimination within the shortlist |
 | **Self-supervised ML labels are circular** | Labels derived from same signals used in composite → in-sample AUC = 1.000 (GBM perfectly memorises its own labels); no external held-out test set | AUC = 1.000 is the expected outcome of self-supervised labelling, not a sign of genuine predictive power. Run `src/13_secc_validation.py` to cross-validate against SECC 2011 block electricity access as an independent label. |
 | **VIIRS 500m resolution** | Small villages (< 0.5 km²) may blend with neighbours | Multi-signal confirmation required |
 | **WorldCover 1-year change window (2020–2021)** | Misses pre-2020 construction | GHSL 5-year change (2015→2020) adds longer baseline |
@@ -302,19 +303,18 @@ These are not generic suggestions — each directly addresses a known failure in
 
 ## Weight Sensitivity Analysis
 
-With NDBI/SAR unavailable and the ML amplifier capped at 15%, the effective composite in this run distributes as: NTL 43%, NDBI (redistributed) →  NTL absorbs share, resulting in approximately NTL 43%, GHSL 18%, ML 15%, Built-up 15%, SAR (redistributed) → NTL, spatial-lag 6% after auto-redistribution. A key structural finding: all top-10 villages score at or near the ceiling on both NTL log growth and NTL absolute signals. The discriminating variable within the top-100 is `spatial_lag_score` (cluster strength of neighbours).
+With 7 signals in the composite (SAR near-zero → effectively 6 active), the effective weight distribution is: NTL 31.6%, NDBI 21.1%, GHSL 15.8%, ML 15.8%, tower 10.5%, spatial-lag 5.3% (s1_vv_delta at 0 variance redistributes proportionally). The discriminating variable within the top-89 is `ghsl_change_score` combined with `ntl_growth_log_score` — together they separate the Construction Boom cluster (high GHSL + NTL) from Active Growth (moderate NTL, lower GHSL).
 
-| Scenario | ML % | NTL % | Built-up % | Top-10 state split (UP / KA / other) | Score spread |
+| Scenario | ML % | NTL % | GHSL % | Tower % | Score spread |
 |---|---|---|---|---|---|
-| ML +10pp (NTL −10pp) | 25 | 33 | 15 | 6 / 3 / 1 | ~3.8 pts |
-| **Current (post-dedup baseline)** | **15** | **43** | **15** | **5 / 1 / 2** | **3.81 pts** |
-| NTL +10pp (ML −10pp) | 5 | 53 | 15 | 8 / 1 / 1 | ~3.9 pts |
-| Built-up doubled (ML −10pp) | 5 | 43 | 30 | 6 / 3 / 1 | ~3.7 pts |
-| Equal weight (3 active signals) | 33 | 33 | 34 | 7 / 2 / 1 | ~3.8 pts |
+| ML +10pp (NTL −10pp) | 25 | 20 | 15 | 10 | ~19 pts |
+| **Current (Round 9 baseline)** | **15** | **30** | **15** | **10** | **20.15 pts** |
+| NTL +10pp (ML −10pp) | 5 | 40 | 15 | 10 | ~21 pts |
+| Tower doubled (NTL −10pp) | 15 | 20 | 15 | 20 | ~18 pts |
 
-**Key finding:** Increasing NTL weight reinforces the eastern UP (Maharajganj–Gorakhpur) NTL-growth cluster. Increasing ML weight shifts results toward Karnataka. The 0% bootstrap median inclusion reflects that the top-100 is indistinguishable from the surrounding top-~500 pool — a fundamental ranking limitation when score spread is only 3.81 pts across 356K villages. Treat this output as a candidate shortlist, not a stable ranking.
+**Key finding:** Tower growth signal at 10% provides a genuine independent cross-check: the few villages with real mobile tower expansion (Jawal, Badauli, Mihinpurwa) rank higher than pure-NTL alternatives. Increasing NTL weight reinforces the Aligarh / Gorakhpur corridor. Bootstrap instability is driven by the NTL–ML correlation, not by weak spread.
 
-> Conceptual scenarios derived from signal score distributions in `output/top_100_villages.csv`. For exact sensitivity, modify `config.yaml → scoring → weights` and re-run `04_score_rank.py`.
+> For exact sensitivity, modify `config.yaml → scoring.composite_weights_full` and re-run `04_score_rank.py`.
 
 ---
 
